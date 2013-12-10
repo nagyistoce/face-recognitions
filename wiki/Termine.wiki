@@ -1,7 +1,6 @@
 #Termine, Milestones und Zeiten die das Projekt betreffen
 
-= Team-Meetings =
-
+= Wöchentliche Meetings =
 
 == Mittwochs ==
 
@@ -10,16 +9,18 @@
 
 == Donnerstags ==
 
-08.15 - ? 
+08.15 - ? Uhr Julia, Deniz, Pascal
 
 == Freitags ==
 
-?
+? Uhr Julia, Deniz?, Pascal
+
 
 = Termine =
 
 
 19.12.2013 - 02.01.2014 (Ausland, Julia)
+
 06.01.2014 Fachseminar Vortrag (Julia)
 
 09.02.2014 *Abgabe der Dokumentation*
