@@ -1,34 +1,24 @@
 #Termine, Milestones und Zeiten die das Projekt betreffen
 
-= Wöchentliche Meetings =
+== Wöchentliche Meetings ==
 
-== Mittwochs ==
+*Mittwochs*
 
 14.00 - ? Uhr Julia, Pascal, 
 15.00 - ? Uhr Deniz
 
-== Donnerstags ==
+*Donnerstags*
 
 08.15 - ? Uhr Julia, Deniz, Pascal
 
-== Freitags ==
+*Freitags*
 
 ? Uhr Julia, Deniz?, Pascal
 
-
-= Termine =
-
+== Termine ==
 
 19.12.2013 - 02.01.2014 (Ausland, Julia)
 
 06.01.2014 Fachseminar Vortrag (Julia)
 
 09.02.2014 *Abgabe der Dokumentation*
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
