@@ -2,7 +2,12 @@
 
 == Code ==
 
-*Code* Englisch,
+*Code* Englisch, Unterstriche zur besseren Lesbarkeit (siehe [http://www.python.org/dev/peps/pep-0008/ PEP-8 Style Guide])
+
+{{{
+if foo == 'blah':
+    do_blah_thing()
+}}}
 
 *Kommentare* Deutsch
 
