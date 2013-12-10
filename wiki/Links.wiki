@@ -1,20 +1,16 @@
 #summary Hilfreiche Links rund um das Projekt-Thema.
 
-== Englisch ==
-
-== Deutsch ==
-
 *Basis Artikel*
-http://cognotics.com/opencv/servo_2007_series/index.html
+ * [http://cognotics.com/opencv/servo_2007_series/index.html cognotics.com Seeing With OpenCV EN]
 
 *Repositories*
-http://code.google.com/p/visual-control/
+ * [http://code.google.com/p/visual-control/ visual-control C++]
 
 *Blogs + Websites*
-http://toefel.nl/projects/computer-vision-framework
+ * [http://toefel.nl/projects/computer-vision-framework toefel.nl EN]
 
 *Videos*
- * [http://www.youtube.com/watch?v=yFSPnu6_TZY Basic Face Detection and Face Recognition Using OpenCV]
+ * [http://www.youtube.com/watch?v=yFSPnu6_TZY Basic Face Detection and Face Recognition Using OpenCV EN]
 
 = Introduction =
 
