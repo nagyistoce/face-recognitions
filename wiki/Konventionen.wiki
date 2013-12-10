@@ -1,0 +1,16 @@
+#summary Konventionen zur Einheitlichen Projektarbeit, Code-Style etc..
+
+== Code ==
+
+*Sprache* Python
+
+*Python Style* [http://www.python.org/dev/peps/pep-0008/ PEP-8 Style Guide]
+
+*Kommentare* Deutsch
+
+= Administration =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
