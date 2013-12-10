@@ -4,17 +4,17 @@
 
 == Deutsch ==
 
-Basis Artikel
+*Basis Artikel*
 http://cognotics.com/opencv/servo_2007_series/index.html
 
-Repositories
+*Repositories*
 http://code.google.com/p/visual-control/
 
-Blogs + Websites
+*Blogs + Websites*
 http://toefel.nl/projects/computer-vision-framework
 
-YouTube
-http://www.youtube.com/watch?v=yFSPnu6_TZY
+*Videos*
+ * [http://www.youtube.com/watch?v=yFSPnu6_TZY Basic Face Detection and Face Recognition Using OpenCV]
 
 = Introduction =
 
