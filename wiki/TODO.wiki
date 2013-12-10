@@ -10,4 +10,9 @@
 
  * Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
 
- 
+
+== Fragen an Dr. Schwanecke ==
+
+ * Müssen/sollten wir Webcam Fotos verwenden
+
+ * Ist es von Voteil ein HSRM SVN Repository zu benutzen? Zugriff vom Prof etc.?
