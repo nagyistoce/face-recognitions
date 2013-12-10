@@ -1,5 +1,7 @@
 #summary Hilfreiche Links rund um das Projekt-Thema.
 
+== Facerecognition ==
+
 *Basis Artikel*
 
  * [http://eliteinformatiker.de/2013/08/28/eine-einfache-gesichtserkennung-mit-opencv-und-scikit-learn/ eliteinformatiker.de]
@@ -16,3 +18,13 @@
 
 *Videos*
  * [http://www.youtube.com/watch?v=yFSPnu6_TZY Basic Face Detection and Face Recognition Using OpenCV EN]
+
+== Python ==
+
+ * [http://wiki.ubuntuusers.de/bpython bpython] Python Interpreter, besser als Idle
+
+ * [http://www.jetbrains.com/pycharm/ PyCharm]
+
+ *[http://sumnous.wordpress.com/2012/10/17/install-pycharm-and-jdk-on-ubuntu-12-04/ install-pycharm] how to install on Linux
+
+ 
