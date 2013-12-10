@@ -3,6 +3,8 @@
 == Next ==
 
  * Sicherstellung dass jeder eine funktionierende IDE hat
+
+ * Repository Einweisung
  
  * Einlesen, in *Facerecognition* mit *Eigenfaces* (von Dr. Schwanecke empfohlen)
 
