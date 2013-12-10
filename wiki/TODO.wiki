@@ -1,0 +1,11 @@
+#summary Alles was ansteht am besten zeitlich sortiert.
+
+== Next ==
+
+ * Sicherstellung dass jeder eine funktionierende IDE hat
+ 
+ * Einlesen, in *Facerecognition* mit *Eigenfaces* (von Dr. Schwanecke empfohlen)
+
+ * Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
+
+ 
