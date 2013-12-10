@@ -1,0 +1,29 @@
+#summary Hilfreiche Links rund um das Projekt-Thema.
+
+== Englisch ==
+
+== Deutsch ==
+
+Basis Artikel
+http://cognotics.com/opencv/servo_2007_series/index.html
+
+Repositories
+http://code.google.com/p/visual-control/
+
+Blogs + Websites
+http://toefel.nl/projects/computer-vision-framework
+
+YouTube
+http://www.youtube.com/watch?v=yFSPnu6_TZY
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
