@@ -11,15 +11,3 @@
 
 *Videos*
  * [http://www.youtube.com/watch?v=yFSPnu6_TZY Basic Face Detection and Face Recognition Using OpenCV EN]
-
-= Introduction =
-
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
