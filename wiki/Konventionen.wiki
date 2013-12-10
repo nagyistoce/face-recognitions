@@ -2,15 +2,16 @@
 
 == Code ==
 
-*Sprache* Python
-
-*Python Style* [http://www.python.org/dev/peps/pep-0008/ PEP-8 Style Guide]
+*Code* Englisch,
 
 *Kommentare* Deutsch
 
-= Administration =
+*Python Style* [http://www.python.org/dev/peps/pep-0008/ PEP-8 Style Guide]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+*Sprache* [http://docs.python.org/2.7/ Python 2.7.6]
+
+*SVN Repository* https://face-recognitions.googlecode.com
+
+== Administration ==
+
+*Kommunikation* Email
