@@ -1,4 +1,4 @@
-#Termine, Milestones und Zeiten die das Projekt betreffen
+#summary Termine, Milestones und Zeiten die das Projekt betreffen.
 
 == Wöchentliche Meetings ==
 
