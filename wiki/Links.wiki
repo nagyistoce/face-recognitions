@@ -29,6 +29,6 @@
 
  * [http://www.jetbrains.com/pycharm/ PyCharm]
 
- *[http://sumnous.wordpress.com/2012/10/17/install-pycharm-and-jdk-on-ubuntu-12-04/ install-pycharm] how to install on Linux
+ * [http://sumnous.wordpress.com/2012/10/17/install-pycharm-and-jdk-on-ubuntu-12-04/ install-pycharm] how to install on Linux
 
  
