@@ -10,6 +10,7 @@
 
  * Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
 
+ * Beispiel Durchgehen Facedetection
 
 == Fragen an Dr. Schwanecke ==
 
