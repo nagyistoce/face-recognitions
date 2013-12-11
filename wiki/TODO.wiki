@@ -13,6 +13,10 @@
 
 == Fragen an Dr. Schwanecke ==
 
- * Müssen/sollten wir Webcam Fotos verwenden
+ * Müssen/sollten wir Webcam Fotos direkt neu erstellen oder einladen von DB?
+ 
+ * Soll es Bilder zuordnen oder von Webcam
+
+ * Wo muss Demo laufen? (Licht)
 
  * Ist es von Voteil ein HSRM SVN Repository zu benutzen? Zugriff vom Prof etc.?
