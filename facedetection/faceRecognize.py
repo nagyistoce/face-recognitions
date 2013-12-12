@@ -216,20 +216,9 @@ class ARWidget(QtOpenGL.QGLWidget):
 class MyMainWindow(QtGui.QWidget):
     def __init__(self):
         self.lframe = None
-        self.gray = False
-        self.invert = False
-        self.grws = False
-        self.shw = False
-        self.shwo = False
-        self.hista = False
-        #self.video=True
-        #self.image = False
-        self.brightnessContrast = False
-        self.erbsenzaehler = False
-
         QtGui.QWidget.__init__(self, None)
         self.setWindowTitle('Simple AR Display')
-        #self.grafik = QtGui.QIMage("confetti.jpg")
+
         # specify layout
         vbox = QtGui.QGridLayout(self)
 
