@@ -26,6 +26,7 @@
 == OpenCV ==
 
  * [http://docs.opencv.org/modules/contrib/doc/facerec/facerec_tutorial.html facerec Tutorial]
+ * [http://docs.opencv.org/trunk/doc/py_tutorials/py_objdetect/py_face_detection/py_face_detection.html?highlight=face%20tracking#haar-cascade-detection-in-opencv face Recognize Beispiel]
 
 == Python ==
 
