@@ -23,6 +23,10 @@
 
  * [http://docs.scipy.org/doc/numpy-1.7.0/reference/index.html numpy 1.7.0] Doku
 
+== OpenCV ==
+
+ * [http://docs.opencv.org/modules/contrib/doc/facerec/facerec_tutorial.html facerec Tutorial]
+
 == Python ==
 
  * [http://wiki.ubuntuusers.de/bpython bpython] Python Interpreter, besser als Idle
