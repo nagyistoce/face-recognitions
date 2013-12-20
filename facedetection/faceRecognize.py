@@ -81,7 +81,9 @@ class ARWidget(QtOpenGL.QGLWidget):
         self._cameraDevice = cameraDevice
         self._cameraDevice.newFrame.connect(self._onNewFrame)
 
-        w, h = self._cameraDevice.frameSize
+        #w, h = self._cameraDevice.frameSize
+        w = 640
+        h = 480
 
         if not w*h:
             w = 640
@@ -218,6 +220,7 @@ class MyMainWindow(QtGui.QWidget):
         self.lframe = None
         QtGui.QWidget.__init__(self, None)
         self.setWindowTitle('Simple AR Display')
+        #cv2.resize(self.lframe,100,100)
 
         # specify layout
         vbox = QtGui.QGridLayout(self)
@@ -238,6 +241,7 @@ class MyMainWindow(QtGui.QWidget):
         alpha = 2.2
         beta = 50
 
+        # ================================ Face Recognize =========================================== #
         aframe =frame.copy()
 
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
@@ -266,7 +270,6 @@ class MyMainWindow(QtGui.QWidget):
             frame[:] = self.lframe
 
         self.lframe = aframe
-
 
 
 if __name__ == "__main__":
