@@ -242,25 +242,25 @@ class MyMainWindow(QtGui.QWidget):
         beta = 50
 
         # ================================ Face Recognize =========================================== #
-        aframe =frame.copy()
+        img =frame.copy()
         
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
         #mouth_cascade = cv2.CascadeClassifier("haarcascade_mcs_mouth.xml")
 
-        img = aframe
         #Image fuer Gesichts Erkennung vorbereiten
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        detection_width = 320
-        scale = img.shape[1] / float(detection_width)
-        if img.shape[1] > detection_width:
+        DETECTION_WIDTH = 320
+        scale = img.shape[1] / float(DETECTION_WIDTH)
+        if img.shape[1] > DETECTION_WIDTH:
             scaled_height = int(img.shape[0]/scale +0.5)
-            smallg = cv2.resize(g, (detection_width,scaled_height))
+            smallg = cv2.resize(g, (DETECTION_WIDTH,scaled_height))
         else:
             smallg = g
+        smallg = cv2.equalizeHist(smallg)
         faces = face_cascade.detectMultiScale(smallg, 1.3, 5)
         for (x,y,w,h) in faces:
-            if img.shape[1] > detection_width:
+            if img.shape[1] > DETECTION_WIDTH:
                 x = int(x * scale + 0.5)
                 y = int(y * scale + 0.5)
                 w = int(w * scale + 0.5)
@@ -275,13 +275,10 @@ class MyMainWindow(QtGui.QWidget):
 
             #mouth = mouth_cascade.detectMultiScale(g, 1.3, 5)
             
-        aframe= img
-
-
         if self.lframe is not None:
             frame[:] = self.lframe
 
-        self.lframe = aframe
+        self.lframe = img
 
 
 if __name__ == "__main__":
