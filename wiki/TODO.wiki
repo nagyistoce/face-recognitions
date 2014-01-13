@@ -15,8 +15,8 @@
 == Fragen an Dr. Schwanecke ==
 
  * Müssen/sollten wir Webcam Fotos direkt neu erstellen oder einladen von DB?
- ** Bilddatenbankd können wir vorher anlegen und trainieren
- ** Zu erkennende Person wird 'live' per Cam fotografiert und erkannt
+  * Bilddatenbankd können wir vorher anlegen und trainieren
+  * Zu erkennende Person wird 'live' per Cam fotografiert und erkannt
  
  * Soll es Bilder zuordnen oder von Webcam
  ** von der Webcam muss es funktionieren
