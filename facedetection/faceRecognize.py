@@ -1,6 +1,5 @@
 import cv2, sys, numpy as np
 
-
 from PyQt4 import QtCore
 from PyQt4 import Qt
 from PyQt4 import QtGui
@@ -9,9 +8,6 @@ from PyQt4 import QtOpenGL
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-
-
-
 
 
 class CameraDevice(QtCore.QObject):
@@ -238,17 +234,20 @@ class MyMainWindow(QtGui.QWidget):
 
     def onNewCameraFrame(self, frame):
 
-        alpha = 2.2
-        beta = 50
-
         # ================================ Face Recognize =========================================== #
         img =frame.copy()
-        
+
+        # Quadrat zum Groessenvergleich 
+        square = 400
+        cv2.rectangle(img,(320-square/2, 240-square/2),(320+square/2, 240+square/2),(255, 255, 0), 2)
+
+        #face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")    # schneller angeblilch    
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
         #mouth_cascade = cv2.CascadeClassifier("haarcascade_mcs_mouth.xml")
 
         #Image fuer Gesichts Erkennung vorbereiten
+        assert(img.shape[2] == 3)
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         DETECTION_WIDTH = 320
         scale = img.shape[1] / float(DETECTION_WIDTH)
@@ -258,7 +257,16 @@ class MyMainWindow(QtGui.QWidget):
         else:
             smallg = g
         smallg = cv2.equalizeHist(smallg)
-        faces = face_cascade.detectMultiScale(smallg, 1.3, 5)
+        # Parameter erhoehen die Performance
+        
+        faces = face_cascade.detectMultiScale(image=smallg,                                                       
+                                              scaleFactor = 1.2, 
+                                              minNeighbors = 4, 
+                                              minSize = (100, 100),
+                                              maxSize = (400, 400),
+                                              flags = cv2.cv.CV_HAAR_SCALE_IMAGE #| cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT | cv2.cv.CV_HAAR_DO_ROUGH_SEARCH
+                                              )
+
         for (x,y,w,h) in faces:
             if img.shape[1] > DETECTION_WIDTH:
                 x = int(x * scale + 0.5)
