@@ -29,7 +29,7 @@
 
  * OK Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
 
- * OK Beispiel Durchgehen Facedetection
+ * *OK* Beispiel Durchgehen Facedetection
 
 == Fragen an Dr. Schwanecke ==
 
