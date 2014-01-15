@@ -6,6 +6,19 @@
 
 == Face preprocessing ==
 
+=== Ellypsen Maske ===
+
+
+=== Smoothing (Bilateral-Filter) ===
+
+
+=== Separaten Histogrammausgleich, linke + rechte Gesichtshälfte ===
+
+
+=== Geometrische transformation + cropping ===
+
+ * Stirn, Kinn, Ohren, Hintergrund croppen (wegschneiden)
+
 === Eye-Detection für rechtes + linkes Auge ===
 
  * 
