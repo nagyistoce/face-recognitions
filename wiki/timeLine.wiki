@@ -6,6 +6,8 @@
 
 === Facedetection ===
 
+* [http://books.google.de/books?id=cIM7xK5j8fYC&pg=PA34&lpg=PA34&dq=CV_HAAR_SCALE_IMAGE&source=bl&ots=c5ZPVsKdIh&sig=tjFHRk0Pj5NqyfzvA0cdxVMevxY&hl=de&sa=X&ei=LAnWUoHgHKme0QXsqYDoCg&ved=0CHgQ6AEwCA#v=onepage&q=CV_HAAR_SCALE_IMAGE&f=false Gesichtserkennung Buch DE]
+
 {{{
 cv2.CascadeClassifier.detectMultiScale(...)
 }}}
