@@ -1,4 +1,4 @@
-#summary Alles was ansteht am besten zeitlich sortiert.
+#summary Alles was ansteht zeitlich sortiert, älteste Einträge stehen unten.
 
 == Face recognition ==
 
