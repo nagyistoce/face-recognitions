@@ -1,6 +1,5 @@
 ﻿import cv2, sys, numpy as np
 
-
 from PyQt4 import QtCore
 from PyQt4 import Qt
 from PyQt4 import QtGui
@@ -247,30 +246,54 @@ class MyMainWindow(QtGui.QWidget):
         # 
         # int flags = CASCADE_FIND_BIGGEST_OBJECT | CASCADE_DO_ROUGH_SEARCH;
         # Eye detectors that detect open or closed eyes are as follows:
-•	# haarcascade_mcs_lefteye.xml (and haarcascade_mcs_righteye.xml)
+        # haarcascade_mcs_lefteye.xml (and haarcascade_mcs_righteye.xml)
         # 
         # bester detector wenn nur ohne brille
-•	# haarcascade_lefteye_2splits.xml (and haarcascade_righteye_2splits.xml)
+        # haarcascade_lefteye_2splits.xml (and haarcascade_righteye_2splits.xml)
         # Eye detectors that detect open eyes only are as follows:
-•	# haarcascade_eye.xml
-•	# haarcascade_eye_tree_eyeglasses.xml -> erkennt nur mit brille
+        # haarcascade_eye.xml
+        # haarcascade_eye_tree_eyeglasses.xml -> erkennt nur mit brille
+        """
+        TODO: video.capture.open(camID) cv.VideoCapture.set((640,480)) python pendant 
+        
+        """
 
 
         
         img = frame.copy()
         print img.shape
 
-        
+        # TODO: try catch um datei-einladen
         #face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")  # schneller
+        
+        
+        
+        
+        """def detect_faces(img, cascade_fn='/usr/share/opencv/haarcascades/haarcascade_frontalface_alt.xml',
+        scaleFactor=1.1, minNeighbors=4, minSize=(100, 100), maxSize=(2000, 2000    ),
+        flags=cv.CV_HAAR_SCALE_IMAGE):
+ 
+        cascade = cv2.CascadeClassifier(cascade_fn)
+        rects = cascade.detectMultiScale(img, scaleFactor=scaleFactor,
+            minNeighbors=minNeighbors, minSize=minSize, maxSize=maxSize,
+        
+        """
+        
+        # Beispielgroesse
+        print img.shape
+        cv2.rectangle(img,(320-150, 240-150),(320+150,240+150),(0, 0, 0), 2)
+        cv2.rectangle(img,(0,0),(100,100),(255, 255,0), 2)
+        
+        
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
         #mouth_cascade = cv2.CascadeClassifier("haarcascade_mcs_mouth.xml")
-
+        
         #Image fuer Gesichts Erkennung vorbereiten
         assert(img.shape[2] == 3)
-        print 'type ', type(img)
+        
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        print 'shape ', g.shape
+        
         DETECTION_WIDTH = 320
         scale = img.shape[1] / float(DETECTION_WIDTH)
         if img.shape[1] > DETECTION_WIDTH:
