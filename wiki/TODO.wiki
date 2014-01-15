@@ -29,11 +29,13 @@
 
  * (Frage) Wer weiß was rejectLevels, levelWeighs, outputRejectLevels der Funktion [http://docs.opencv.org/2.4.6/modules/objdetect/doc/cascade_classification.html?highlight=cascadeclassifier#CascadeClassifier CascadeClassifier.detectMultiScale] machen?? 
 
- * Schwellwert maximale Gesichtsgröße setzen maxSize
+ * (Performance+) Schwellwert maximale Gesichtsgröße setzen maxSize
 
- * Schwellwert minimale Gesichtsgröße setzen minSize(80x80)
+ * (Performance+) Schwellwert minimale Gesichtsgröße setzen minSize(80x80)
 
- * (Nice2Have) Performance steigern durch Flags, Fenster (minfeaturesize) anpassung
+ * (Nice2Have) Performance steigern durch Flags
+  * {{{ 0|CV_HAAR_SCALE_IMAGE, }}} bewirkt das das Bild nicht das 'Fenster' skaliert wird
+  * Fenster (minfeaturesize) anpassung
 
  * *OK* Alle Gesichter finden 
 
