@@ -1,5 +1,6 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
 
+
 == FR 10.01.2014 ==
 
  * Julia, Pascal
@@ -13,6 +14,12 @@
  # Bilder auf feste Breite runter skalieren DETECTION_WIDTH = 320
  # Rahmen um erkannte Gesichter zeichnen (zurückskalieren)
 
+ * Pfad zu den .xml Dateien (Linux)
+{{{
+/usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml
+}}}
+ 
+ * Gesichtsdetector Instanziieren
 {{{
 cv2.CascadeClassifier.detectMultiScale(...)
 }}}
