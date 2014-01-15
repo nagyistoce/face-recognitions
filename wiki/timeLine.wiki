@@ -8,6 +8,11 @@
 
 * [http://books.google.de/books?id=cIM7xK5j8fYC&pg=PA34&lpg=PA34&dq=CV_HAAR_SCALE_IMAGE&source=bl&ots=c5ZPVsKdIh&sig=tjFHRk0Pj5NqyfzvA0cdxVMevxY&hl=de&sa=X&ei=LAnWUoHgHKme0QXsqYDoCg&ved=0CHgQ6AEwCA#v=onepage&q=CV_HAAR_SCALE_IMAGE&f=false Digitale Gesichtserkennung Buch DE]
 
+# Kamerabild von RGB in Grauwertbild wandeln
+# Histogrammausgleich für höheren Kontrast -> bessere Gesichtsdetektion
+# Bilder auf feste Breite runter skalieren DETECTION_WIDTH = 320
+# Rahmen um erkannte Gesichter zeichnen (zurückskalieren)
+
 {{{
 cv2.CascadeClassifier.detectMultiScale(...)
 }}}
