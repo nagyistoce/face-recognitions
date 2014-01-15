@@ -6,14 +6,21 @@
 
 == Face preprocessing ==
 
+=== Eye-Detection für rechtes + linkes Auge ===
+
+
+ * (Frage) geschlossene Augen + Brille auch? (ja, wenn erste Durchgang erfolglos)
+
+ * rechtes Auge
+
+ * linkes Auge
+
 == Facedetection ==
 
- * 
- * Eye-Detection für rechtes + linkes Auge 
 
- * 
+ * (Nice2Have) Gesichter auch am Rand des Bildes erkennen (PDF MOCV S.269)
 
- * Nur größtes Gesicht finden 
+ * (MUSS?) Nur größtes Gesicht finden 
 
  * OK Alle Gesichter finden 
 
@@ -30,6 +37,9 @@
  * *OK* Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
 
  * *OK* Beispiel Durchgehen Facedetection
+
+== Fragen die wir klären müssen ==
+
 
 == Fragen an Dr. Schwanecke ==
 
