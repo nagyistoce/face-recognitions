@@ -49,8 +49,6 @@
 
  * *OK* Beispiel Durchgehen Facedetection
 
-== Fragen die wir klären müssen ==
-
 
 == Fragen an Dr. Schwanecke ==
 
