@@ -6,4 +6,13 @@
 
 === Facedetection ===
 
-* 
+* cv2.CascadeClassifier.detectMultiScale(...)
+
+* scaleFactor
+** Die nach Gesichtern zu Durchsuchenden Fenster werden mehrmals über das Bild "geschoben". *scaleFactor* gibt an um welchen Faktor die Abbildung je Durchlauf verkleinert wird
+
+* minNeighbors
+** Jedes Gesicht wird durch die verschiedenen 'Fenster-Durchläufe' mehrfach erkannt. *minNeighbors gibt an in wievielen angrenzenden Fenstern das Gesicht mindestens gefunden werden muss
+
+*minSize
+** Größe die bestimmt ab wann Gesicher zu klein sind und ignoriert werden
