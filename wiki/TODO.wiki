@@ -8,6 +8,10 @@
 
 === Eye-Detection für rechtes + linkes Auge ===
 
+ * 
+
+ * (Frage) Welche xml benutzen wir -> ROI kleiner, groß siehe (PDF S.272 ff.)
+  * Empfehlung: haarcascade_eye wenn fail -> haarcascade_eye_tree_eyeglasses (PDF S.274)
 
  * (Frage) geschlossene Augen + Brille auch? (ja, wenn erste Durchgang erfolglos)
 
@@ -17,14 +21,21 @@
 
 == Facedetection ==
 
+ * Rechteck um gefunde/s Gesicht/er zeichnen
 
- * (Nice2Have) Gesichter auch am Rand des Bildes erkennen (PDF MOCV S.269)
+ * (Nice2Have) Gesichter auch am Rand des Bildes erkennen (PDF S.269)
 
  * (MUSS?) Nur größtes Gesicht finden 
 
- * OK Alle Gesichter finden 
+ * Schwellwert maximale Gesichtsgröße setzen maxSize
 
- * OK Haar-Like Facedetection mit OpenCV
+ * Schwellwert minimale Gesichtsgröße setzen minSize(80x80)
+
+ * (Nice2Have) Performance steigern durch Flags, Fenster (minfeaturesize) anpassung
+
+ * *OK* Alle Gesichter finden 
+
+ * *OK* Haar-Like "Viola-Jones-Algorithm" Facedetection mit OpenCV
 
 == Administration ==
 
