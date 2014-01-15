@@ -23,5 +23,8 @@ cv2.CascadeClassifier.detectMultiScale(...)
  * *minNeighbors*
   * Jedes Gesicht wird durch die verschiedenen 'Fenster-Durchläufe' mehrfach erkannt. *minNeighbors* gibt an in wievielen angrenzenden Fenstern das Gesicht mindestens gefunden werden muss
 
+ * *maxSize*
+  * Größe die bestimmt ab wann Gesichter zu groß sind und ignoriert werden
+
  * *minSize*
-  * Größe die bestimmt ab wann Gesicher zu klein sind und ignoriert werden
+  * Größe die bestimmt ab wann Gesichter zu klein sind und ignoriert werden
