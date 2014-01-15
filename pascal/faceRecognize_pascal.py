@@ -231,51 +231,8 @@ class MyMainWindow(QtGui.QWidget):
         arWidget.newFrame.connect(self.onNewCameraFrame)
         vbox.addWidget(arWidget,0,0)
 
+    
     def onNewCameraFrame(self, frame):
-
-        alpha = 2.2
-        beta = 50
-
-        # ================================ Face Recognize =========================================== #
-        img =frame.copy()
-        
-        face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-        #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
-        #mouth_cascade = cv2.CascadeClassifier("haarcascade_mcs_mouth.xml")
-
-        #Image fuer Gesichts Erkennung vorbereiten
-        g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        DETECTION_WIDTH = 320
-        scale = img.shape[1] / float(DETECTION_WIDTH)
-        if img.shape[1] > DETECTION_WIDTH:
-            scaled_height = int(img.shape[0]/scale +0.5)
-            smallg = cv2.resize(g, (DETECTION_WIDTH,scaled_height))
-        else:
-            smallg = g
-        smallg = cv2.equalizeHist(smallg)
-        faces = face_cascade.detectMultiScale(smallg, 1.3, 5)
-        for (x,y,w,h) in faces:
-            if img.shape[1] > DETECTION_WIDTH:
-                x = int(x * scale + 0.5)
-                y = int(y * scale + 0.5)
-                w = int(w * scale + 0.5)
-                h = int(h * scale + 0.5)
-            cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-            #roi_gray = g[y:y+h, x:x+w]
-
-            #roi_color = img[y:y+h, x:x+w]
-            #eyes = eye_cascade.detectMultiScale(roi_gray)
-            #for (ex,ey,ew,eh) in eyes:
-                #cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
-
-            #mouth = mouth_cascade.detectMultiScale(g, 1.3, 5)
-            
-        if self.lframe is not None:
-            frame[:] = self.lframe
-
-        self.lframe = img
-        
-    def onNewCameraFrame2(self, frame):
 
         # ========================== Face Recognize ================================= #
         # TODO
@@ -321,8 +278,8 @@ class MyMainWindow(QtGui.QWidget):
         
         # Beispielgroesse
 #         print img.shape
-#         cv2.rectangle(img,(320-150, 240-150),(320+150,240+150),(0, 0, 0), 2)
-#         cv2.rectangle(img,(0,0),(100,100),(255, 255,0), 2)
+        cv2.rectangle(img,(320-150, 240-150),(320+150,240+150),(0, 0, 0), 2)
+        cv2.rectangle(img,(0,0),(100,100),(255, 255,0), 2)
         
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
@@ -340,15 +297,15 @@ class MyMainWindow(QtGui.QWidget):
         else:
             smallg = g
         smallg = cv2.equalizeHist(smallg)
-        faces = face_cascade.detectMultiScale(smallg, 1.3, 5)
-#         
-#         faces = face_cascade.detectMultiScale(image=smallg, 
-#                                               scaleFactor=1.1, 
-#                                               minNeighbors=4, 
-#                                               minSize=(100, 100),
-#                                               maxSize=(400, 400),
-#                                               flags=cv2.cv.CV_HAAR_SCALE_IMAGE        
-#                                               )
+#         faces = face_cascade.detectMultiScale(smallg, 1.3, 5)
+         
+        faces = face_cascade.detectMultiScale(image=smallg, 
+                                              scaleFactor=1.2, 
+                                              minNeighbors=4, 
+                                              minSize=(100, 100),
+                                              maxSize=(400, 400),
+                                              flags=cv2.cv.CV_HAAR_SCALE_IMAGE        
+                                              )
         
         for (x,y,w,h) in faces:
             if img.shape[1] > DETECTION_WIDTH:
@@ -360,7 +317,7 @@ class MyMainWindow(QtGui.QWidget):
 
         # Gesichter einrahmen
         # x,y = Obere-Linke-Ecke
-        if len(faces) == 0: print 'Kein Gesicht gefunden!'
+        
             #roi_gray = g[y:y+h, x:x+w]
 
             #roi_color = img[y:y+h, x:x+w]
