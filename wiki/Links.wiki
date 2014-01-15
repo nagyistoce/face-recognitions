@@ -6,6 +6,8 @@
 
  * [http://eliteinformatiker.de/2013/08/28/eine-einfache-gesichtserkennung-mit-opencv-und-scikit-learn/ eliteinformatiker.de]
 
+ * [http://fideloper.com/facial-detection fideloper.com] Facedetection Python
+
  * [https://gist.github.com/npinto/3632388#file-cv2_detect-py github simple facedetection]
 
  * [http://cognotics.com/opencv/servo_2007_series/index.html cognotics.com Seeing With OpenCV EN]
