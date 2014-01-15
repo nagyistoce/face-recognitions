@@ -6,7 +6,9 @@
 
 === Facedetection ===
 
- * cv2.CascadeClassifier.detectMultiScale(...)
+{{{
+cv2.CascadeClassifier.detectMultiScale(...)
+}}}
 
  * scaleFactor
  ** Die nach Gesichtern zu Durchsuchenden Fenster werden mehrmals über das Bild "geschoben". *scaleFactor* gibt an um welchen Faktor die Abbildung je Durchlauf verkleinert wird
