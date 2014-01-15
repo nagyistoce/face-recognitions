@@ -19,9 +19,16 @@
 
  * Stirn, Kinn, Ohren, Hintergrund croppen (wegschneiden)
 
-=== Eye-Detection für rechtes + linkes Auge ===
+ {{{
+warpAffine() 
+}}}
+ * Affine Transformation in OpenCV
+  * Rotation -> Augen horizontal ausrichten
+  * Skalierung -> in jedem Bild den selben Abstand zwischen den Augen 
+  * Translation -> Gesicht so Verschieben dass Augen horizontal zentriert und auf einer bestimmten Höhe (welche??) sind
 
- * 
+
+=== Eye-Detection für rechtes + linkes Auge ===
 
  * (Frage) Welche xml benutzen wir -> ROI kleiner, groß siehe (PDF S.272 ff.)
   * Empfehlung: haarcascade_eye wenn fail -> haarcascade_eye_tree_eyeglasses (PDF S.274)
