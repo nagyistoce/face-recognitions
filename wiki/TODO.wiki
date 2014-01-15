@@ -1,27 +1,47 @@
 #summary Alles was ansteht am besten zeitlich sortiert.
 
-== Next ==
+== Face recognition ==
 
- * Sicherstellung dass jeder eine funktionierende IDE hat
+== Collect and leran faces ==
 
- * Repository Einweisung
+== Face preprocessing ==
+
+== Facedetection ==
+
+ * 
+ * Eye-Detection für rechtes + linkes Auge 
+
+ * 
+
+ * Nur größtes Gesicht finden 
+
+ * OK Alle Gesichter finden 
+
+ * OK Haar-Like Facedetection mit OpenCV
+
+== Administration ==
+
+ * OK Sicherstellung dass jeder eine funktionierende IDE hat
+
+ * OK Repository Einweisung
  
- * Einlesen, in *Facerecognition* mit *Eigenfaces* (von Dr. Schwanecke empfohlen)
+ * OK Einlesen, in *Facerecognition* mit *Eigenfaces* (von Dr. Schwanecke empfohlen)
 
- * Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
+ * OK Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
 
- * Beispiel Durchgehen Facedetection
+ * OK Beispiel Durchgehen Facedetection
 
 == Fragen an Dr. Schwanecke ==
 
  * Müssen/sollten wir Webcam Fotos direkt neu erstellen oder einladen von DB?
-  * Bilddatenbankd können wir vorher anlegen und trainieren
-  * Zu erkennende Person wird 'live' per Cam fotografiert und erkannt
+  * A: Bilddatenbankd können wir vorher anlegen und trainieren
+  * A: Zu erkennende Person wird 'live' per Cam fotografiert und erkannt
  
  * Soll es Bilder zuordnen oder von Webcam
-  * von der Webcam muss es funktionieren
+  * A: von der Webcam muss es funktionieren
 
  * Wo muss Demo laufen? (Licht)
- 
+  * A: Auf einem beliebigen Rechner
+
  * Ist es von Voteil ein HSRM SVN Repository zu benutzen? Zugriff vom Prof etc.?
-  * Ist egal
+  * A: Ist egal
