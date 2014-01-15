@@ -1,4 +1,4 @@
-import cv2, sys, numpy as np
+﻿import cv2, sys, numpy as np
 
 
 from PyQt4 import QtCore
@@ -240,6 +240,22 @@ class MyMainWindow(QtGui.QWidget):
         # - haarcascade_frontalface_alt2.xml testen ob schneller
         # - flag = 0 | CV_HAAR_SCALE_IMAGE "optimierung Performance",
         #   Abbildung anstelle des Fensters wird skaliert
+        # CASCADE_FIND_BIGGEST_OBJECT should run faster. There are several
+        # other parameters you can add to make the detection about one percent or two
+        # percent faster, such as CASCADE_DO_ROUGH_SEARCH or CASCADE_SCALE_IMAGE
+        #     CASCADE_SCALE_IMAGE - Nach mehreren gesichtern suchen
+        # 
+        # int flags = CASCADE_FIND_BIGGEST_OBJECT | CASCADE_DO_ROUGH_SEARCH;
+        # Eye detectors that detect open or closed eyes are as follows:
+•	# haarcascade_mcs_lefteye.xml (and haarcascade_mcs_righteye.xml)
+        # 
+        # bester detector wenn nur ohne brille
+•	# haarcascade_lefteye_2splits.xml (and haarcascade_righteye_2splits.xml)
+        # Eye detectors that detect open eyes only are as follows:
+•	# haarcascade_eye.xml
+•	# haarcascade_eye_tree_eyeglasses.xml -> erkennt nur mit brille
+
+
         
         img = frame.copy()
         print img.shape
@@ -252,7 +268,9 @@ class MyMainWindow(QtGui.QWidget):
 
         #Image fuer Gesichts Erkennung vorbereiten
         assert(img.shape[2] == 3)
+        print 'type ', type(img)
         g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        print 'shape ', g.shape
         DETECTION_WIDTH = 320
         scale = img.shape[1] / float(DETECTION_WIDTH)
         if img.shape[1] > DETECTION_WIDTH:
@@ -261,6 +279,7 @@ class MyMainWindow(QtGui.QWidget):
         else:  # img.width <= DETECTION_WIDTH
             smallg = g
         smallg = cv2.equalizeHist(smallg)
+        print type(smallg)
         faces = face_cascade.detectMultiScale(image=smallg, scaleFactor=1.3, minNeighbors=5,
                                               #flags=None, minSize=None, maxSize=None
                                               )
