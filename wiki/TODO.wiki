@@ -21,13 +21,13 @@
 
 == Administration ==
 
- * OK Sicherstellung dass jeder eine funktionierende IDE hat
+OK Sicherstellung dass jeder eine funktionierende IDE hat
 
- * OK Repository Einweisung
+OK Repository Einweisung
  
- * OK Einlesen, in *Facerecognition* mit *Eigenfaces* (von Dr. Schwanecke empfohlen)
+OK Einlesen, in *Facerecognition* mit *Eigenfaces* (von Dr. Schwanecke empfohlen)
 
- * OK Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
+OK Anforderungs-Analyse - Teilaufgaben klären die das System leisten muss
 
 *OK* Beispiel Durchgehen Facedetection
 
