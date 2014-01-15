@@ -1,9 +1,9 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
 
-= FR 10.01.2014 =
+== FR 10.01.2014 ==
 
 *Julia, Pascal
 
-== Facedetection ==
+=== Facedetection ===
 
 * 
