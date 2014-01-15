@@ -235,25 +235,28 @@ class MyMainWindow(QtGui.QWidget):
     def onNewCameraFrame(self, frame):
 
         # ========================== Face Recognize ================================= #
-        # TODO
-        # - haarcascade_frontalface_alt2.xml testen ob schneller
-        # - flag = 0 | CV_HAAR_SCALE_IMAGE "optimierung Performance",
-        #   Abbildung anstelle des Fensters wird skaliert
-        # CASCADE_FIND_BIGGEST_OBJECT should run faster. There are several
-        # other parameters you can add to make the detection about one percent or two
-        # percent faster, such as CASCADE_DO_ROUGH_SEARCH or CASCADE_SCALE_IMAGE
-        #     CASCADE_SCALE_IMAGE - Nach mehreren gesichtern suchen
-        # 
-        # int flags = CASCADE_FIND_BIGGEST_OBJECT | CASCADE_DO_ROUGH_SEARCH;
-        # Eye detectors that detect open or closed eyes are as follows:
-        # haarcascade_mcs_lefteye.xml (and haarcascade_mcs_righteye.xml)
-        # 
-        # bester detector wenn nur ohne brille
-        # haarcascade_lefteye_2splits.xml (and haarcascade_righteye_2splits.xml)
-        # Eye detectors that detect open eyes only are as follows:
-        # haarcascade_eye.xml
-        # haarcascade_eye_tree_eyeglasses.xml -> erkennt nur mit brille
         """
+        TODO
+        - haarcascade_frontalface_alt2.xml testen ob schneller
+        - flag = 0 | CV_HAAR_SCALE_IMAGE "optimierung Performance",
+          Abbildung anstelle des Fensters wird skaliert
+        
+        - CASCADE_FIND_BIGGEST_OBJECT should run faster. There are several
+          other parameters you can add to make the detection about one percent or two
+          percent faster, such as 
+        -- CASCADE_DO_ROUGH_SEARCH or CASCADE_SCALE_IMAGE
+            CASCADE_SCALE_IMAGE - Nach mehreren gesichtern suchen
+        
+        int flags = CASCADE_FIND_BIGGEST_OBJECT | CASCADE_DO_ROUGH_SEARCH;
+        Eye detectors that detect open or closed eyes are as follows:
+        haarcascade_mcs_lefteye.xml (and haarcascade_mcs_righteye.xml)
+        
+        bester detector wenn nur ohne brille
+        haarcascade_lefteye_2splits.xml (and haarcascade_righteye_2splits.xml)
+        Eye detectors that detect open eyes only are as follows:
+        haarcascade_eye.xml
+        haarcascade_eye_tree_eyeglasses.xml -> erkennt nur mit brille
+        
         TODO: video.capture.open(camID) cv.VideoCapture.set((640,480)) python pendant 
         
         """
@@ -278,8 +281,9 @@ class MyMainWindow(QtGui.QWidget):
         
         # Beispielgroesse
 #         print img.shape
-        cv2.rectangle(img,(320-150, 240-150),(320+150,240+150),(0, 0, 0), 2)
-        cv2.rectangle(img,(0,0),(100,100),(255, 255,0), 2)
+        square = 300
+        cv2.rectangle(img,(320-square/2, 240-square/2),(320+square/2, 240+square/2),(255, 255, 0), 2)
+#         cv2.rectangle(img,(0,0),(100,100),(255, 255,0), 2)
         
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
@@ -304,7 +308,7 @@ class MyMainWindow(QtGui.QWidget):
                                               minNeighbors=4, 
                                               minSize=(100, 100),
                                               maxSize=(400, 400),
-                                              flags=cv2.cv.CV_HAAR_SCALE_IMAGE        
+                                              #flags=cv2.cv.CV_HAAR_SCALE_IMAGE        
                                               )
         
         for (x,y,w,h) in faces:
