@@ -274,7 +274,7 @@ class MyMainWindow(QtGui.QWidget):
         """
         
         img = frame.copy()
-        print img.shape
+
         
         # Beispielgroesse
 #         print img.shape
