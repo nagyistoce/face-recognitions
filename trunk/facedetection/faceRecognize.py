@@ -238,9 +238,9 @@ class MyMainWindow(QtGui.QWidget):
         img =frame.copy()
 
         # Quadrat zum Groessenvergleich 
-        square = 400
-        cv2.rectangle(img,(320-square/2, 240-square/2),(320+square/2, 240+square/2),(255, 255, 0), 2)
-
+##        square = 400
+##        cv2.rectangle(img,(320-square/2, 240-square/2),(320+square/2, 240+square/2),(255, 255, 0), 2)
+##
         #face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")    # schneller angeblilch    
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
@@ -259,10 +259,10 @@ class MyMainWindow(QtGui.QWidget):
         smallg = cv2.equalizeHist(smallg)
         # Parameter erhoehen die Performance
         
-        faces = face_cascade.detectMultiScale(image=smallg,                                                       
+        faces = face_cascade.detectMultiScale(smallg,                                                       
                                               scaleFactor = 1.2, 
                                               minNeighbors = 4, 
-                                              minSize = (100, 100),
+                                              minSize = (60, 60),
                                               maxSize = (400, 400),
                                               flags = cv2.cv.CV_HAAR_SCALE_IMAGE #| cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT | cv2.cv.CV_HAAR_DO_ROUGH_SEARCH
                                               )
