@@ -1,5 +1,11 @@
 #summary Hilfreiche Links rund um das Projekt-Thema.
 
+== PyQT ==
+
+ * [http://wrdeoftheday.com/?page_id=2 wrdeoftheday.com] example
+
+ * [http://stackoverflow.com/questions/9465608/videocapture-and-pyqt stackoverflow]
+
 == Facerecognition ==
 
 *Basis Artikel*
