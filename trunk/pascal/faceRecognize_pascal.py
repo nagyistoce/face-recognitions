@@ -279,10 +279,11 @@ class MyMainWindow(QtGui.QWidget):
         img = frame.copy()
 
         
-        # Beispielgroesse
-#         print img.shape
-        square = 300
-        cv2.rectangle(img,(320-square/2, 240-square/2),(320+square/2, 240+square/2),(255, 255, 0), 2)
+        # Quadrat zum Groessenvergleich 
+        h, w, c = img.shape
+        square = 20        
+        cv2.rectangle(img,(w/2-square/2, h/2-square/2),(w/2+square/2, h/2+square/2),(255, 255, 0), 2)
+        
 #         cv2.rectangle(img,(0,0),(100,100),(255, 255,0), 2)
         
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
