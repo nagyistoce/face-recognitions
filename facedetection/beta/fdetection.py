@@ -22,7 +22,9 @@ class FaceDetector(object):
         else:
             smallg = g
         smallg = cv2.equalizeHist(smallg)
-        faces = self.classifier.detectMultiScale(smallg)
+        faces = self.classifier.detectMultiScale(smallg,
+                                                 flags=cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
+                                                 )
 
         for (x,y,w,h) in faces:
             if self.img.shape[1] > DETECTION_WIDTH:
