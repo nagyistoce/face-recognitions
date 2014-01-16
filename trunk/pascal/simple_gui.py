@@ -15,33 +15,35 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 class Video():
+    """Klasse zum konver"""
     def __init__(self,capture):
         self.capture = capture
-        self.currentFrame=np.ndarray([])
+        self.current_frame=np.ndarray([])
  
-    def captureNextFrame(self):
-        """capture frame and reverse RBG BGR and return opencv image"""
-        ret, readFrame=self.capture.read()
-        if(ret==True):
-            self.currentFrame=cv2.cvtColor(readFrame,cv2.COLOR_BGR2RGB)
+    def capture_next_frame(self):
+        """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB"""
+        ret, read_frame=self.capture.read()
+        if ret:
+            self.current_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
  
-    def convertFrame(self):
-        """converts frame to format suitable for QtGui"""
-        try:
-            height,width=self.currentFrame.shape[:2]
-            img=QtGui.QImage(self.currentFrame,
-                              width,
-                              height,
-                              QtGui.QImage.Format_RGB888)
-            img=QtGui.QPixmap.fromImage(img)
-            self.previousFrame = self.currentFrame
-            return img
+    def convert_frame(self):
+        """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
+        try:            
+            height, width = self.current_frame.shape[:2]
+            image = QtGui.QImage(self.current_frame, width, height,
+                                 QtGui.QImage.Format_RGB888)
+            image = QtGui.QPixmap.fromImage(image)
+            #self.previous_frame = self.current_frame
+            return image
         except:
-            return None
+            print "Fehler beim konvertieren des Kamerabildes:", sys.exc_info()[0]
+            raise
+
         
 class Gui(QtGui.QMainWindow):
-    def __init__(self, *args):
-        """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
+    """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
+    
+    def __init__(self, *args):        
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -65,11 +67,8 @@ class Gui(QtGui.QMainWindow):
         palette = QtGui.QPalette()
         palette.setColor(self.quit_button.foregroundRole(),Qt.QColor("red"))
         self.quit_button.setPalette(palette)
-        Qt.QObject.connect(self.quit_button,
-                           Qt.SIGNAL('clicked()'),
-                           Qt.qApp,
-                           Qt.SLOT('quit()')
-                           )
+        Qt.QObject.connect(self.quit_button, Qt.SIGNAL('clicked()'), Qt.qApp,
+                           Qt.SLOT('quit()'))
         boxLayout.addWidget(self.quit_button)
         
         # Video-Bild umwandeln und updaten
@@ -80,9 +79,11 @@ class Gui(QtGui.QMainWindow):
         self.update()
  
     def play(self):
+        """Zum stetig wiederholtem Aufrufen um Kamerabild zu aktualisieren"""
         try:
-            self.video.captureNextFrame()
-            self.video_label.setPixmap(self.video.convertFrame())
+            # naechsten Frame holen und diesen konvertiert als Pixmap in GUI anzeigen
+            self.video.capture_next_frame()            
+            self.video_label.setPixmap(self.video.convert_frame())
         except TypeError:
             print "No frame"
  
@@ -95,7 +96,7 @@ def main(args):
                 Qt.SIGNAL('lastWindowClosed()'), # Signal
                 app,                             # Empfaenger
                 Qt.SLOT('quit()')                # aktivierter Slot
-            )
+                )
     return app.exec_()
     
 if __name__ == '__main__':
