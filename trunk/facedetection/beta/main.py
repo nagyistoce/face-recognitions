@@ -10,12 +10,12 @@ class WebcamController(object):
         cv2.namedWindow("preview")
         if self.webcam.isOpened(): # try to get the first frame
             self.test, self.frame = self.webcam.read()
-            detect = fd.FaceDetector()
+            self.detect = fd.FaceDetector()
         else:
             self.test = False
         
         while self.test:
-            img = detect.detectFace(self.frame)
+            img = self.detect.detectFace(self.frame)
             cv2.imshow("preview", img)
 
             # get next frame
