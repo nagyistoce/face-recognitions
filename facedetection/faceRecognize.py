@@ -243,7 +243,7 @@ class MyMainWindow(QtGui.QWidget):
 ##
         #face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")    # schneller angeblilch    
         face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-        #eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
+        eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
         #mouth_cascade = cv2.CascadeClassifier("haarcascade_mcs_mouth.xml")
 
         #Image fuer Gesichts Erkennung vorbereiten
@@ -274,7 +274,7 @@ class MyMainWindow(QtGui.QWidget):
                 w = int(w * scale + 0.5)
                 h = int(h * scale + 0.5)
             cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-            roi_gray = g[y:y+h, x:x+w]
+            roi_gray = img[y:y+h, x:x+w]
 
             roi_color = img[y:y+h, x:x+w]
             eyes = eye_cascade.detectMultiScale(roi_gray)
