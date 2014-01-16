@@ -25,6 +25,8 @@ class WebcamController(object):
             if key in [27, ord('Q'), ord('q')]: # exit on ESC
                 break
         self.webcam.release()
+        cv2.destroyWindow("preview")
+        cv2.waitKey(0)
         cv2.destroyAllWindows()
         
 if __name__ == "__main__":
