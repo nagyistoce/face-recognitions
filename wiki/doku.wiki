@@ -3,7 +3,6 @@
 == Gliederung ==
 
  # Einleitung
-
  # Facedetection
 
  # Face-Preprocessing
