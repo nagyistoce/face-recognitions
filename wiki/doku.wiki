@@ -1,0 +1,18 @@
+#summary Gliederung und Hinweise zur Dokumentation
+
+
+== Was hinein soll ==
+
+ * Hintergrund
+ 
+ * Welche Sprache/n verwenden wir
+
+ * Welche Bibliotheken verwenden wir
+
+ * Was kann das System leisten
+
+ * Was kann das System nicht leisten
+
+ * Was würden wir gerne noch machen wenn wir mehr Zeit hätten
+
+ * Probleme und wie wir sie gelöst haben
