@@ -15,6 +15,7 @@ class WebcamController(object):
             self.test = False
         
         while self.test:
+            # GESICHT ERKENNUNG AUSFUEHREN
             img = self.detect.detectFace(self.frame)
             cv2.imshow("preview", img)
 
