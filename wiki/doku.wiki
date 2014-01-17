@@ -13,7 +13,11 @@
  # Fazit
 
 
-== Was hinein soll ==
+== Rahmenbediunguen ==
+
+ * 10 Seiten
+
+=== Was hinein soll ===
 
 Im Prinzip ähnlich der Fachseminar Ausarbeitung. Kein 'Leidensbericht'.
 
