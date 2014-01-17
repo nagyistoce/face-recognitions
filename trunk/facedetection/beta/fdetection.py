@@ -90,8 +90,6 @@ class FacePreprocessor(object):
         self.gTransform()
         self.allHistEqual()
         self.warped = cv2.bilateralFilter(self.warped,d=0,sigmaColor=20.0, sigmaSpace=2.0)
-        cv2.namedWindow("smooth")
-        cv2.imshow("smooth", self.warped)
         self.ellipMask()
     def gTransform(self):
         #Mittepunkt zw. die Augen
@@ -115,9 +113,6 @@ class FacePreprocessor(object):
         self.warped = np.ndarray(shape=(self.FACE_HEIGHT,self.FACE_WIDTH), dtype=np.uint8)
         self.warped[:,:] = 128
         self.warped = cv2.warpAffine(self.face,rot_mat,self.warped.shape)
-        
-        cv2.namedWindow("warped")
-        cv2.imshow("warped", self.warped)
         
     def allHistEqual(self):
         width = self.warped.shape[1]
@@ -145,9 +140,8 @@ class FacePreprocessor(object):
                 else:
                     v = right[y,x-width/2]
                 self.warped[y,x] = v
-        cv2.namedWindow("HEqual")
-        cv2.imshow("HEqual", self.warped)
-
+        
+        
     def ellipMask(self):
         ellip= np.ndarray(shape=self.warped.shape, dtype = np.uint8)
         ellip[:,:] = 0
