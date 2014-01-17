@@ -15,7 +15,13 @@
 
 === Abstract ===
 
+ * Worum es in dieser Ausarbeitung geht
+
+In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
+ umsetzbar ist für einfache wiedererkennungssysteme...
+
 === Einleitung ===
+
 
 === Facedetection === 
 
