@@ -1,7 +1,9 @@
 #-*- coding: utf-8 -*-
 '''
+PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
+Video-Bild-Konvertierungen für PyQt Support.
+ 
 Created on 16.01.2014
-
 @author: ptreb001
 
 '''
