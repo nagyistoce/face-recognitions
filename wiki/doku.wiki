@@ -2,6 +2,7 @@
 
 == Gliederung ==
 
+ # Abstract
  # Einleitung
  # Facedetection
  # Face-Preprocessing
@@ -11,6 +12,26 @@
  # Probleme
  # Weiter Funktionen die nicht implementiert wurden
  # Fazit
+
+=== Abstract ===
+
+=== Einleitung ===
+
+=== Facedetection === 
+
+=== Face-Preprocessing=== 
+
+=== Training === 
+
+===  Face-Recognition === 
+
+=== GUI === 
+
+=== Probleme === 
+
+=== Weiter Funktionen die nicht implementiert wurden === 
+
+=== Fazit === 
 
 
 == Rahmenbediunguen ==
