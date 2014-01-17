@@ -1,5 +1,12 @@
 #summary Gliederung und Hinweise zur Dokumentation
 
+== Titelvorschläge ==
+
+ # Einfaches System zur Gesichtserkennung
+ # Einfches System zum Wiedererkennen von Gesichtern
+ # Gesichter Wiedererkennen - Ein einfaches System
+ # Ich weiß wer Du wirklich bist - Ein einfaches System um Gesichter wieder zu erkennen
+
 == Gliederung ==
 
  # Abstract
@@ -22,7 +29,11 @@ In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiederer
 
 === Einleitung ===
 
-
+ * Hintergrund, 
+  * warum wollen wir FD machen, 
+  * was ist der Nutzen,
+  * (Historische Entwicklung) heutige Anwendungsgebiete/ Möglichkeiten 
+  
 === Facedetection === 
 
 === Face-Preprocessing=== 
