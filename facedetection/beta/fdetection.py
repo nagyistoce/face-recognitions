@@ -78,15 +78,20 @@ class FaceDetector(object):
         return False, lefteyeCenter, righteyeCenter
 
 class FacePreprocessor(object):
+
     def __init__(self, lefteyeCenter, righteyeCenter, face):
         self.lefteyeCenter = lefteyeCenter
         self.righteyeCenter = righteyeCenter
         self.face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+        self.FACE_WIDTH = 70
+        self.FACE_HEIGHT = self.FACE_WIDTH
         #self.face = face
     def doPreprocess(self):
         self.gTransform()
         self.allHistEqual()
-        #img = cv2.bilateralFilter(img,d=0,sigmaColor=20.0, sigmaSpace=2.0)
+        self.warped = cv2.bilateralFilter(self.warped,d=0,sigmaColor=20.0, sigmaSpace=2.0)
+        cv2.namedWindow("smooth")
+        cv2.imshow("smooth", self.warped)
         self.ellipMask()
     def gTransform(self):
         #Mittepunkt zw. die Augen
@@ -100,22 +105,56 @@ class FacePreprocessor(object):
         LEFT_EYE_X = 0.16
         LEFT_EYE_Y = 0.14
         RIGHT_EYE_X = (1.0-0.16)
-        FACE_WIDTH = 70
-        FACE_HEIGHT = FACE_WIDTH
         desiredLen = (RIGHT_EYE_X - LEFT_EYE_X)
-        scale = desiredLen * FACE_WIDTH/length
+        scale = desiredLen * self.FACE_WIDTH/length
         #Rotations Matrix
         rot_mat = cv2.getRotationMatrix2D(eyeCenter, angle, scale)
-        rot_mat[0][2] += (FACE_WIDTH * 0.5) - eyeCenter[0]
-        rot_mat[1][2] += (FACE_HEIGHT * LEFT_EYE_Y) - eyeCenter[1]
+        rot_mat[0][2] += (self.FACE_WIDTH * 0.5) - eyeCenter[0]
+        rot_mat[1][2] += (self.FACE_HEIGHT * LEFT_EYE_Y) - eyeCenter[1]
         #Erst mit grauwerten definiert
-        warped = np.ndarray(shape=(FACE_HEIGHT,FACE_WIDTH), dtype=np.uint8)
-        warped[:,:] = 128
-        warped = cv2.warpAffine(self.face,rot_mat,warped.shape)
+        self.warped = np.ndarray(shape=(self.FACE_HEIGHT,self.FACE_WIDTH), dtype=np.uint8)
+        self.warped[:,:] = 128
+        self.warped = cv2.warpAffine(self.face,rot_mat,self.warped.shape)
         
         cv2.namedWindow("warped")
-        cv2.imshow("warped", warped)
+        cv2.imshow("warped", self.warped)
+        
     def allHistEqual(self):
-        pass
+        width = self.warped.shape[1]
+        #Histogramm Ausgleich wird auf getrennt auf linke und rechte Seite angewendet, mitte gemischt
+        left = self.warped[0:self.warped.shape[0],0:width/2]
+        right = self.warped[0:self.warped.shape[0],width/2:width]
+        entire = cv2.equalizeHist(self.warped)
+        left = cv2.equalizeHist(left)
+        right = cv2.equalizeHist(right)
+        for x in range(width):
+            for y in range(self.warped.shape[0]):
+                v = 0
+                if x<(width/4):
+                    v = left[y,x]
+                elif x<(width/2):
+                    l = left[y,x]
+                    e = entire[y,x]
+                    f = (x-width/4.0)/(width/4)
+                    v = int((1.0-f) * l+ f*e +0.5)
+                elif x < (width*3/4):
+                    r = right[y,x-width/2]
+                    e = entire[y,x]
+                    f = (x-width/2.0)/(width/4)
+                    v = int((1.0-f)*e+f*r+0.5)
+                else:
+                    v = right[y,x-width/2]
+                self.warped[y,x] = v
+        cv2.namedWindow("HEqual")
+        cv2.imshow("HEqual", self.warped)
+
     def ellipMask(self):
-        pass
+        ellip= np.ndarray(shape=self.warped.shape, dtype = np.uint8)
+        ellip[:,:] = 0
+        cv2.ellipse(ellip, 
+                    (int(self.FACE_WIDTH*0.5+0.5),int(self.FACE_HEIGHT*0.4+0.5)),
+                    (int(self.FACE_WIDTH*0.5+0.5),int(self.FACE_HEIGHT*0.8+0.5)),
+                    0, 0,360, 255, cv2.cv.CV_FILLED)
+        self.warped[:,:]=np.where(ellip[:,:] == 0,0,self.warped[:,:])
+        cv2.namedWindow("Mask")
+        cv2.imshow("Mask", self.warped)
