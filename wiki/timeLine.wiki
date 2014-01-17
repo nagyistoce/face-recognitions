@@ -1,6 +1,19 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
 
+== DO 16.01.2014 ==
 
+=== Facedetection ===
+
+ * Nur größtes Gesicht wird erkannt
+
+ * 
+=== GUI === 
+
+ *  
+=== Teamentscheidungen ===
+
+ * PyQT + Buttons + Videobild kein highgui (OpenCV-GUI) mehr da nur Slider möglich
+   
 == FR 10.01.2014 ==
 
  * Julia, Pascal
