@@ -1,5 +1,25 @@
 #summary Gliederung und Hinweise zur Dokumentation
 
+== Gliederung ==
+
+ # Einleitung
+
+ # Facedetection
+
+ # Face-Preprocessing
+
+ # Training
+
+ # Face-Recognition
+
+ # GUI
+
+ # Probleme
+
+ # Weiter Funktionen die nicht implementiert wurden
+
+ # Fazit
+
 
 == Was hinein soll ==
 
