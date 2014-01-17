@@ -97,19 +97,17 @@ class FacePreprocessor(object):
         length = math.sqrt(dx*dx+dy*dy)
         angle = math.atan2(dy,dx)*180.0/math.pi
         #Konstante von der Auge, die man braucht
-        LEFT_EYE_X=0.16
+        LEFT_EYE_X = 0.16
         LEFT_EYE_Y = 0.14
         RIGHT_EYE_X = (1.0-0.16)
         FACE_WIDTH = 70
         FACE_HEIGHT = FACE_WIDTH
         desiredLen = (RIGHT_EYE_X - LEFT_EYE_X)
-        scale = desiredLen*FACE_WIDTH/length
+        scale = desiredLen * FACE_WIDTH/length
         #Rotations Matrix
         rot_mat = cv2.getRotationMatrix2D(eyeCenter, angle, scale)
-        exx = (FACE_WIDTH * 0.5) - eyeCenter[0]
-        eyy = (FACE_HEIGHT *LEFT_EYE_Y) - eyeCenter[1]
-        rot_mat[0][2] += exx
-        rot_mat[1][2] += eyy
+        rot_mat[0][2] += (FACE_WIDTH * 0.5) - eyeCenter[0]
+        rot_mat[1][2] += (FACE_HEIGHT * LEFT_EYE_Y) - eyeCenter[1]
         #Erst mit grauwerten definiert
         warped = np.ndarray(shape=(FACE_HEIGHT,FACE_WIDTH), dtype=np.uint8)
         warped[:,:] = 128
