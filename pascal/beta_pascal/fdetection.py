@@ -4,14 +4,16 @@ import cv2, math, numpy as np
 
 class FaceDetector(object):
     #greift auf Haar-Cascade XML Dateien
+    # TODO uebergeben
     def __init__(self):
         self.faceDefault = "haarcascade_frontalface_default.xml"
         self.faceAlt2 = "haarcascade_frontalface_alt2.xml"
         self.lefteyeCenter = cv2.CascadeClassifier("haarcascade_lefteye_2splits.xml")
         self.righteyeCenter = cv2.CascadeClassifier("haarcascade_righteye_2splits.xml")
         self.classifier = cv2.CascadeClassifier(self.faceAlt2)
-    #Sucht nach Gesichter und Augen im frame und zeichnet die Bereiche ein     
+    
     def detectFace(self, frame):
+        """Sucht nach Gesichter und Augen im Frame und zeichnet die Bereiche ein."""
         self.img = frame.copy()
         # detect faces and draw bounding boxes
         assert(self.img.shape[2] == 3)
