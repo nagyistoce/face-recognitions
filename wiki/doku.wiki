@@ -16,6 +16,7 @@
 == Rahmenbediunguen ==
 
  * 10 Seiten
+ * Auf Highlevel normalen Text schreiben der einfach erklärt was man machen muss um die Facedetection umzusetzen
 
 === Was hinein soll ===
 
