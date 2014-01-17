@@ -25,12 +25,11 @@ class Video():
  
     def capture_next_frame(self):
         """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB"""
-        have_frame, read_frame=self.webcam.read()
-               
-        if have_frame:            
+        success, read_frame=self.webcam.read()
+        if success:           
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
             self.current_frame = self.detect.detectFace(read_frame)
- 
+            
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
         try:            
