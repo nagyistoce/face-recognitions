@@ -15,35 +15,25 @@
  # Abstract
   * Worum es in dieser Ausarbeitung geht
  # Einleitung
- * Hintergrund, 
-  * warum wollen wir FD machen, 
-  * was ist der Nutzen,
- * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
+  * Hintergrund, 
+   * warum wollen wir FD machen, 
+   * was ist der Nutzen,
+  * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
  # Verwendete Bibliotheken und Sprachen
- 
+ # Was leistet das System?
+ # Was kann das System nicht leisten?
+ # Zukunftsausblick
+  * Was würden wir gerne noch machen wenn wir mehr Zeit hätten
+ # Probleme und deren Lösung
+  * Probleme und wie wir sie gelöst haben
 
+ # Fazit
+
+ 
  # Facedetection
  # Face-Preprocessing
  # Training
  # Face-Recognition
- # GUI
- # Probleme
- # Weiter Funktionen die nicht implementiert wurden
- # Fazit
-
-* Hintergrund
- 
- * Welche Sprache/n verwenden wir
-
- * Welche Bibliotheken verwenden wir
-
- * Was kann das System leisten
-
- * Was kann das System nicht leisten
-
- * Was würden wir gerne noch machen wenn wir mehr Zeit hätten
-
- * Probleme und wie wir sie gelöst haben
 
 === Abstract ===
 
