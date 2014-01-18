@@ -41,16 +41,19 @@
    # Bilder auf feste Breite skalieren ohne Veränderung des Aspectratio
    # Histogrammausgleich für höheren Kontrast in wichtigen Gesichtsbereichen, Auge, Nase, Mund, 
     * Einsatz beim lernen der Datenbank sowie beim tatsächlichen Erkennungsvorgang
-   # Viola-Jones-Algorithmus mit haarcascades + nur größtest Gesicht finden
-     * Gesicht muss als Gesicht erkannt werden zusätzlich
-     * Augen als rechtes und Linkes Auge müssen erkannt werden
+   # Facedetection
+    * Viola-Jones-Algorithmus mit haarcascades + nur größtest Gesicht finden
+    * Gesicht muss als Gesicht erkannt werden zusätzlich
+    * Quadratisches Gesichtsbild ermittelt mit dem weiter gearbeitet wird
+   # Eyedetection
+    * Augen als rechtes und Linkes Auge müssen erkannt werden zusätzlich zum Gesicht an sich
       * Verwendet statistisch erhobene Daten von Standard-Augen-Positionen + Gesichtsmerkmalen
    # Transformation
     * Augen horizontal ausrichten
    # Histogrammausgleich auf linker und rechter Gesichtshälfte, in der Mitte gemittelt aus beiden Seiten um harte Kante zu vermeiden
    # Bilateral-Filter: 
     * Weichzeichnung um...?
-   # Quadratisches Gesichtsbild ermitteln
+
    # Cropping nicht relevanter Bildbereiche (Ellypse): 
     * Haare
     * Bart (Wangen)
