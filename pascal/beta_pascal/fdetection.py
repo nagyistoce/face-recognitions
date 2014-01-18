@@ -15,8 +15,14 @@ class Haarcascades(object):
         self.haarcascades_xml_path = os.path.split(haarcascades.__file__)[0]
         self.FRONTAL_FACE_DEFAULT = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_default.xml')
         self.FRONTAL_FACE_ALT2 = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_alt2.xml')
-        self.LEFT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_lefteye_2splits.xml')
+        self.PROFILE_FACE = os.path.join(self.haarcascades_xml_path, 'haarcascade_profileface.xml')
+        self.EYE = os.path.join(self.haarcascades_xml_path, 'haarcascade_eye.xml')                          # 40%  5ms
+        self.LEFT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_lefteye_2splits.xml') # 60%  7ms
+        self.MCS_LEFT_EYE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_lefteye.xml')         # 80% 18ms
         self.RIGHT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_righteye_2splits.xml')
+        self.MCS_MOUTH = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_mouth.xml')
+        self.MCS_NOSE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_nose.xml')
+
         
 class FaceDetector(object):
     #greift auf Haar-Cascade XML Dateien
