@@ -39,22 +39,25 @@
    * Ziel: Bilde der Gesichter Maschinell vergleichbar machen
    # Grauwertumwandlug 
    # Bilder auf feste Breite skalieren ohne Veränderung des Aspectratio
-   # Histogrammausgleich für höheren Kontrast in wichtigen Gesichtsbereichen, Auge, Nase, Mund, 
+   # Histogrammausgleich für Lichtverhältnisausgleich, höheren Kontrast in wichtigen Gesichtsbereichen, Auge, Nase, Mund, 
     * Einsatz beim lernen der Datenbank sowie beim tatsächlichen Erkennungsvorgang
    # Facedetection
     * Viola-Jones-Algorithmus mit haarcascades + nur größtest Gesicht finden
-    * Gesicht muss als Gesicht erkannt werden zusätzlich
     * Quadratisches Gesichtsbild ermittelt mit dem weiter gearbeitet wird
    # Eyedetection
     * Augen als rechtes und Linkes Auge müssen erkannt werden zusätzlich zum Gesicht an sich
-      * Verwendet statistisch erhobene Daten von Standard-Augen-Positionen + Gesichtsmerkmalen
+    * Unser System verwendet ...eye_2split.xml => großer ROI Bereich um die Augen vorteilhaft etc. (S.273)
+    * Verwendet statistisch erhobene Daten von Standard-Augen-Positionen + Gesichtsmerkmalen
+    * Mund und Nase nicht so hilfreich deshalb weggelassen
+    * System erkennt geschlossenen Augen und offene
    # Transformation
-    * Augen horizontal ausrichten
+    * Augenpositionen zum horizontalen ausrichten des Gesichtes benutzt
+    * Gesichter werden skaliert auf feste Größe
    # Histogrammausgleich auf linker und rechter Gesichtshälfte, in der Mitte gemittelt aus beiden Seiten um harte Kante zu vermeiden
    # Bilateral-Filter: 
     * Weichzeichnung um...?
-
-   # Cropping nicht relevanter Bildbereiche (Ellypse): 
+   # Cropping per ellyptische Maske 
+    * nicht relevanter Bildbereiche werden entfernt
     * Haare
     * Bart (Wangen)
   # Gesichter-Lernen und Datenbank füllen (Trainig)
@@ -73,7 +76,10 @@
  # Probleme und deren Lösung
   * Probleme und wie wir sie gelöst haben
  # Fazit
-  * Großes Sicherheitsproblem:  zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
+  * positiv
+   * für einfache Systeme schönes Addon, in Zukunft bestimmt immer besser
+  * negativ
+   * Großes Sicherheitsproblem, zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
  
 
 === Abstract ===
