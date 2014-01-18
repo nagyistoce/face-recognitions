@@ -17,17 +17,31 @@
   * 2-3 Sätze?
  # Einleitung
   * Hintergrund 
-  * warum wollen wir FD machen:  Interessant, aktuell überall Kameras verfügbar (Handy, Webcam, sogar in Desktop Pc standard) 
-  * was ist der Nutzen:  Usabilty + Barrierefreiheit + Performance durch Zeiteinsparung alternativer Loginvorgänge etc.
-  * nicht sicherheitskritische einsatz ok
+  * warum wollen wir FD machen: 
+   * Interessant
+   * aktuell überall Kameras verfügbar Handy, Webcam, sogar in Desktop Pcs 
+  * was ist der Nutzen:
+   *Usabilty + Barrierefreiheit + Performance durch Zeiteinsparung alternativer Loginvorgänge etc.
   * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
+   * nicht sicherheitskritische einsatz, Handylogin, PC-Login
  # Verwendete Bibliotheken und Sprachen, Technologieen
-  * OpenCV 2.x, Python, PyQt4.x, numpy:  weil Lizenzfrei, OS-Unabhängig
-  * standard Webcam:  weil fast überall verfügbar etc.
-  * Warum haar und nicht LBP:  System nicht Zeitkritisch, haar besser vortrainiert
+  * OpenCV 2.x, Python, PyQt4.x, numpy:  
+   * weil Lizenzfrei, OS-Unabhängig, schöne + mächtige GUI mit PyQt4
+  * standard Webcam:
+   * weil fast überall verfügbar
+  * Warum haar und nicht LBP:
+   * System nicht Zeitkritisch, haar besser vortrainiert
  # Was leistet das System?
   # Facedetection
-  # Face Preprocessing
+   * Begriff und Unterschied zu Facerecognition erläutern, nur check ob Gesicht und NICHT welches Gesicht
+   * Einsatz beim lernen der Datenbank sowie beim tatsächlichen Erkennungsvorgang
+  # Face Preprocessing (@Julia BITTE KORRIGIEREN)
+   * Ziel: Bilde der Gesichter Maschinell vergleichbar machen
+   # Grauwertumwandlug 
+   # Bilder auf feste Breite skalieren ohne Veränderung des Aspectratio
+   # Histogrammausgleich für höheren Kontrast in wichtigen Gesichtsbereichen, Auge, Nase, Mund, 
+    * Einsatz beim lernen der Datenbank sowie beim tatsächlichen Erkennungsvorgang
+  # Cropping nicht relevanter Bildbereiche: Haare, Bart
   # Gesichter-Lernen und Datenbank füllen (Trainig)
   # Face Recognition
    * Bekannte Gesichter wieder erkennen
