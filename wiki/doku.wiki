@@ -14,10 +14,12 @@
 
  # Abstract
   * Worum es in dieser Ausarbeitung geht
+  * 2-3 Sätze?
  # Einleitung
-  * Hintergrund, 
-   * warum wollen wir FD machen, 
-   * was ist der Nutzen,
+  * Hintergrund 
+  * warum wollen wir FD machen -> Interessant, aktuell überall Kameras verfügbar (Handy, Webcam, sogar in Desktop Pc standard) 
+  * was ist der Nutzen -> Usabilty + Barrierefreiheit + Performance durch Zeiteinsparung alternativer Loginvorgänge etc.
+  * nicht sicherheitskritische einsatz ok
   * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
  # Verwendete Bibliotheken und Sprachen, Technologieen
   * OpenCV 2.x, Python, PyQt4.x, numpy -> weil Lizenzfrei, OS-Unabhängig
@@ -41,8 +43,8 @@
   * Schnittstelle um eine beliebige Software anbinden zu können
  # Probleme und deren Lösung
   * Probleme und wie wir sie gelöst haben
-
  # Fazit
+  * Großes Sicherheitsproblem -> zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
  
 
 === Abstract ===
