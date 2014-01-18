@@ -20,6 +20,9 @@
    * was ist der Nutzen,
   * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
  # Verwendete Bibliotheken und Sprachen
+  * OpenCV 2.x, Python, PyQt, numpy -> weil Lizenzfrei, OS-Unabhängig
+  * Warum haar nicht LBP -> System nicht Zeitkritisch, haar besser vortrainiert
+  * 
  # Was leistet das System?
  # Was kann das System nicht leisten?
  # Zukunftsausblick
