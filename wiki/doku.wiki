@@ -17,14 +17,14 @@
   * 2-3 Sätze?
  # Einleitung
   * Hintergrund 
-  * warum wollen wir FD machen -> Interessant, aktuell überall Kameras verfügbar (Handy, Webcam, sogar in Desktop Pc standard) 
-  * was ist der Nutzen -> Usabilty + Barrierefreiheit + Performance durch Zeiteinsparung alternativer Loginvorgänge etc.
+  * warum wollen wir FD machen:  Interessant, aktuell überall Kameras verfügbar (Handy, Webcam, sogar in Desktop Pc standard) 
+  * was ist der Nutzen:  Usabilty + Barrierefreiheit + Performance durch Zeiteinsparung alternativer Loginvorgänge etc.
   * nicht sicherheitskritische einsatz ok
   * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
  # Verwendete Bibliotheken und Sprachen, Technologieen
-  * OpenCV 2.x, Python, PyQt4.x, numpy -> weil Lizenzfrei, OS-Unabhängig
-  * standard Webcam -> weil fast überall verfügbar etc.
-  * Warum haar und nicht LBP -> System nicht Zeitkritisch, haar besser vortrainiert
+  * OpenCV 2.x, Python, PyQt4.x, numpy:  weil Lizenzfrei, OS-Unabhängig
+  * standard Webcam:  weil fast überall verfügbar etc.
+  * Warum haar und nicht LBP:  System nicht Zeitkritisch, haar besser vortrainiert
  # Was leistet das System?
   # Facedetection
   # Face Preprocessing
@@ -44,7 +44,7 @@
  # Probleme und deren Lösung
   * Probleme und wie wir sie gelöst haben
  # Fazit
-  * Großes Sicherheitsproblem -> zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
+  * Großes Sicherheitsproblem:  zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
  
 
 === Abstract ===
