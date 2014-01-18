@@ -13,6 +13,12 @@
 == Gliederung ==
 
  # Abstract
+  * Worum es in dieser Ausarbeitung geht
+{{{
+In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
+ umsetzbar ist für einfache wiedererkennungssysteme...
+}}}
+
  # Einleitung
  # Facedetection
  # Face-Preprocessing
@@ -25,19 +31,17 @@
 
 === Abstract ===
 
- * Worum es in dieser Ausarbeitung geht
 
-In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
- umsetzbar ist für einfache wiedererkennungssysteme...
 
 === Einleitung ===
 
  * Hintergrund, 
   * warum wollen wir FD machen, 
   * was ist der Nutzen,
-  * (Historische Entwicklung) heutige Anwendungsgebiete/ Möglichkeiten 
+ * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung) 
   
 === Facedetection === 
+
 
 === Face-Preprocessing=== 
 
