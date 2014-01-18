@@ -44,6 +44,12 @@
    # Viola-Jones-Algorithmus mit haarcascades + nur größtest Gesicht finden
      * Gesicht muss als Gesicht erkannt werden zusätzlich
      * Augen als rechtes und Linkes Auge müssen erkannt werden
+      * Verwendet statistisch erhobene Daten von Standard-Augen-Positionen + Gesichtsmerkmalen
+   # Transformation
+    * Augen horizontal ausrichten
+   # Histogrammausgleich auf linker und rechter Gesichtshälfte, in der Mitte gemittelt aus beiden Seiten um harte Kante zu vermeiden
+   # Bilateral-Filter: 
+    * Weichzeichnung um...?
    # Quadratisches Gesichtsbild ermitteln
    # Cropping nicht relevanter Bildbereiche (Ellypse): 
     * Haare
