@@ -82,30 +82,6 @@
    * Großes Sicherheitsproblem, zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
  
 
-=== Abstract ===
-
-In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
- umsetzbar ist für einfache wiedererkennungssysteme...
-
-=== Einleitung ===
-  
-=== Facedetection === 
-
-=== Face-Preprocessing=== 
-
-=== Training === 
-
-===  Face-Recognition === 
-
-=== GUI === 
-
-=== Probleme === 
-
-=== Weiter Funktionen die nicht implementiert wurden === 
-
-=== Fazit === 
-
-
 == Rahmenbediunguen ==
 
  * 10 Seiten
