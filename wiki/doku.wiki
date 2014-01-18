@@ -41,7 +41,13 @@
    # Bilder auf feste Breite skalieren ohne Veränderung des Aspectratio
    # Histogrammausgleich für höheren Kontrast in wichtigen Gesichtsbereichen, Auge, Nase, Mund, 
     * Einsatz beim lernen der Datenbank sowie beim tatsächlichen Erkennungsvorgang
-  # Cropping nicht relevanter Bildbereiche: Haare, Bart
+   # Viola-Jones-Algorithmus mit haarcascades + nur größtest Gesicht finden
+     * Gesicht muss als Gesicht erkannt werden zusätzlich
+     * Augen als rechtes und Linkes Auge müssen erkannt werden
+   # Quadratisches Gesichtsbild ermitteln
+   # Cropping nicht relevanter Bildbereiche (Ellypse): 
+    * Haare
+    * Bart (Wangen)
   # Gesichter-Lernen und Datenbank füllen (Trainig)
   # Face Recognition
    * Bekannte Gesichter wieder erkennen
