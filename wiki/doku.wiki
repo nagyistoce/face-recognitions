@@ -14,12 +14,12 @@
 
  # Abstract
   * Worum es in dieser Ausarbeitung geht
-{{{
-In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
- umsetzbar ist für einfache wiedererkennungssysteme...
-}}}
-
  # Einleitung
+ * Hintergrund, 
+  * warum wollen wir FD machen, 
+  * was ist der Nutzen,
+ * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung) 
+
  # Facedetection
  # Face-Preprocessing
  # Training
@@ -31,14 +31,12 @@ In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiederer
 
 === Abstract ===
 
-
+In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
+ umsetzbar ist für einfache wiedererkennungssysteme...
 
 === Einleitung ===
 
- * Hintergrund, 
-  * warum wollen wir FD machen, 
-  * was ist der Nutzen,
- * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung) 
+
   
 === Facedetection === 
 
