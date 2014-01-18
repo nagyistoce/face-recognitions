@@ -18,7 +18,9 @@
  * Hintergrund, 
   * warum wollen wir FD machen, 
   * was ist der Nutzen,
- * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung) 
+ * heutige Anwendungsgebiete/ Möglichkeiten, (Historische Entwicklung)
+ # Verwendete Bibliotheken und Sprachen
+ 
 
  # Facedetection
  # Face-Preprocessing
@@ -29,17 +31,28 @@
  # Weiter Funktionen die nicht implementiert wurden
  # Fazit
 
+* Hintergrund
+ 
+ * Welche Sprache/n verwenden wir
+
+ * Welche Bibliotheken verwenden wir
+
+ * Was kann das System leisten
+
+ * Was kann das System nicht leisten
+
+ * Was würden wir gerne noch machen wenn wir mehr Zeit hätten
+
+ * Probleme und wie wir sie gelöst haben
+
 === Abstract ===
 
 In diesem Artikel werden wir die Frage klären wie eine moderne Gesichtswiedererkenn
  umsetzbar ist für einfache wiedererkennungssysteme...
 
 === Einleitung ===
-
-
   
 === Facedetection === 
-
 
 === Face-Preprocessing=== 
 
