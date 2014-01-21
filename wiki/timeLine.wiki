@@ -2,20 +2,18 @@
 
 == MI 22.01.2014 ==
 
- * Methoden fuer Buttons 
-
+ * Button-Callback Methoden angelegt
 {{{
 foto_clicked()
 who_i_clicked()
 }}}
- * Button-Callback Methoden angelegt
+
+ * Klasse fuer Zentrale XML Datenhaltung
 {{{
 facedetect.Haarcascades
 }}}
- * Klasse fuer Zentrale XML Datenhaltung
  * Docstrings erweitert
  * Encoding fuer alle Module auf utf-8
- 
  
 == DO 16.01.2014 ==
 
