@@ -17,9 +17,19 @@
       * lächelnd, neutral, böse
  * Code/Funktion/Routine
   * 1Bild/1sec und/oder nur ein gültiges Gesicht (eyedetector + facedetector = True) aufnehmen in Training-Set
- * 
+  * jedes Bild auch einmal gespiegelt ins Training-Set aufnehmen  [http://docs.opencv.org/2.4.6/modules/core/doc/operations_on_arrays.html?highlight=flip#cv2.flip cv2.flip()]
+{{{
+cv2.flip(src, flipCode[, dst]) → dst
+}}}
+ 
  * Abspeichern als Datei
-  
+
+==== Nice 2 Have (wenn wir mehr Zeit hätten) ====  
+
+ * L2 Error - Trainingsset wird automatisch erstellt mit L2 Error vergleich um Positions/Blickrichtungs-Änderungen sicherzustellen
+  *  0.3 Als Schwellwert um neues Foto in Training-Set aufzunehmen
+
+
 == Face preprocessing ==
 
 === Ellypsen Maske ===
