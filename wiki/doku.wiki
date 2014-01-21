@@ -9,7 +9,7 @@
  # Prototyp zur automatischen Wiedererkennung von drei Gesichtern
  # Gesichter Wiedererkennen - Ein einfaches System
  # Ich weiß wer Du wirklich bist - Ein einfaches System um Gesichter wieder zu erkennen
-  # Ich weiß wer Du wirklich bist - Eine Kamera erkennt Gesichter wieder
+ # Ich weiß wer Du wirklich bist - Eine Kamera erkennt Gesichter wieder
 
 == Gliederung ==
 
