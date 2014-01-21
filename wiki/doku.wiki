@@ -51,7 +51,7 @@
     * Mund und Nase nicht so hilfreich deshalb weggelassen
     * System erkennt geschlossenen Augen und offene
    # Transformation
-    * Augenpositionen zum horizontalen ausrichten des Gesichtes benutzt
+    * Augenpositionen zum horizontalen ausrichten des Gesichtes benutzt (dient der vergleichbarkeit der Bilder, nicht dazu schief gehaltene Gesichter zu erkennen)
     * Gesichter werden skaliert auf feste Größe
    # Histogrammausgleich auf linker und rechter Gesichtshälfte, in der Mitte gemittelt aus beiden Seiten um harte Kante zu vermeiden
    # Bilateral-Filter: 
