@@ -15,7 +15,7 @@ import cv2
 from PyQt4 import Qt
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from ctypes.wintypes import DOUBLE
+
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
