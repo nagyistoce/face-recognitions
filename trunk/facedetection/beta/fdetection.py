@@ -1,16 +1,34 @@
 __author__ = 'deniz'
 
 import cv2, math, numpy as np
+import os
+import haarcascades
 
+class Haarcascades(object):    
+    """Stellt die Haarcascade-XML Dateien bereit"""
+    def __init__(self):
+#         print ' tst ', test.__name__
+        assert(haarcascades.__file__)
+        self.haarcascades_xml_path = os.path.split(haarcascades.__file__)[0]
+        self.FRONTAL_FACE_DEFAULT = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_default.xml')
+        self.FRONTAL_FACE_ALT2 = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_alt2.xml')
+        self.PROFILE_FACE = os.path.join(self.haarcascades_xml_path, 'haarcascade_profileface.xml')
+        self.EYE = os.path.join(self.haarcascades_xml_path, 'haarcascade_eye.xml')                          # 40%  5ms
+        self.LEFT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_lefteye_2splits.xml') # 60%  7ms
+        self.MCS_LEFT_EYE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_lefteye.xml')         # 80% 18ms
+        self.RIGHT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_righteye_2splits.xml')
+        self.MCS_MOUTH = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_mouth.xml')
+        self.MCS_NOSE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_nose.xml')
+
+        
 class FaceDetector(object):
     #greift auf Haar-Cascade XML Dateien
     def __init__(self):
-        self.face_default = "haarcascade_frontalface_default.xml"
-        self.face_alt2 = "haarcascade_frontalface_alt2.xml"
-        self.lefteye_center = cv2.CascadeClassifier("haarcascade_lefteye_2splits.xml")
-        self.righteye_center = cv2.CascadeClassifier("haarcascade_righteye_2splits.xml")
-        self.classifier = cv2.CascadeClassifier(self.face_alt2)
-    #Sucht nach Gesichter und Augen im frame und zeichnet die Bereiche ein     
+        self.haarcascades = Haarcascades()
+        self.lefteye_center = cv2.CascadeClassifier(self.haarcascades.LEFT_EYE_2SPLITS)
+        self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
+        self.classifier = cv2.CascadeClassifier(self.haarcascades.FRONTAL_FACE_ALT2)
+    #Sucht nach Gesichter und Augen im frame und zeichnet die Bereiche ein        
     def detectFace(self, frame):
         self.img = frame.copy()
         assert(self.img.shape[2] == 3)
