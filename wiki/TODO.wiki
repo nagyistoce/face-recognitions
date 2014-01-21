@@ -10,12 +10,16 @@
 
  * Aspekte
   * Licht: Links, rechts, Oben, Hinterkopf
-  * Blickrichtungen: im stehen, im sitzen, leicht schräg in Kamer links/rechts
-  * Standorte: verschiedene Positionen im Raum
-
+  * Blickrichtungen einmal normal, dann Kamera um 180Grad gedreht:
+   * Standorte: verschiedene Positionen im Raum
+    * im stehen, im sitzen, leicht schräg in Kamer links/rechts
+     * Oben, Unten, Rechts, Links
+      * lächelnd, neutral, böse
+ * Code/Funktion/Routine
+  * 1Bild/1sec und/oder nur ein gültiges Gesicht (eyedetector + facedetector = True) aufnehmen in Training-Set
+ * 
  * Abspeichern als Datei
-
- *  
+  
 == Face preprocessing ==
 
 === Ellypsen Maske ===
