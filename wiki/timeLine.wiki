@@ -1,12 +1,22 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
 
+
+== MI 22.01.2014 ==
+
+{{{
+facedetect.Haarcascades
+}}}
+ *  Klasse fuer Zentrale XML Datenhaltung
+ * Docstrings erweitert
+ * Encoding fuer alle Module auf utf-8
+ 
+ 
 == DO 16.01.2014 ==
 
 === Facedetection ===
 
  * Nur größtes Gesicht wird erkannt
-
- * 
+ 
 === GUI === 
 
  *  
