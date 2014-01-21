@@ -1,28 +1,8 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
 
-
 == MI 22.01.2014 ==
 
  * Methoden fuer Buttons 
-
-Labels:
-	
- Add a row
-Commit Log: 	Edited wiki page timeLine through web user interface.
-Hide log message
-	
-hide Wiki markup help
-=Heading1=
-==Heading2==
-===Heading3===
-
-*bold*     _italic_
-`inline code`
-escape: `*`
-
-Indent lists 2 spaces:
-  * bullet item
-  # numbered list
 
 {{{
 foto_clicked()
