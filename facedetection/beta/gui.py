@@ -15,6 +15,7 @@ import cv2
 from PyQt4 import Qt
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from ctypes.wintypes import DOUBLE
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -66,10 +67,12 @@ class Gui(QtGui.QMainWindow):
         # Foto-Button
         self.foto_button = QtGui.QPushButton("Foto", self)
         boxLayout.addWidget(self.foto_button)
+        self.foto_button.clicked.connect(self.foto_clicked)
         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
         boxLayout.addWidget(self.who_am_i_button)
+        self.who_am_i_button.clicked.connect(self.who_i_clicked)
         
         # Beenden-Button        
         self.quit_button = QtGui.QPushButton("Ende", self)
@@ -102,6 +105,13 @@ class Gui(QtGui.QMainWindow):
             self.video_label.setPixmap(self.video.convert_frame())            
         except TypeError:
             print "Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
+            
+    def foto_clicked(self):
+        print "Foto Machen"
+    
+    def who_i_clicked(self):
+        print "Who i am"
+
  
 def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
