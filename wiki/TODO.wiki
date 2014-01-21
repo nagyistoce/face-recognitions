@@ -4,6 +4,18 @@
 
 == Collect and leran faces ==
 
+=== Training Set ===
+
+ * Gesichtsbilder der zu erkennenden Personen (Julia, Deniz, Pascal)
+
+ * Aspekte
+  * Licht: Links, rechts, Oben, Hinterkopf
+  * Blickrichtungen: im stehen, im sitzen, leicht schräg in Kamer links/rechts
+  * Standorte: verschiedene Positionen im Raum
+
+ * Abspeichern als Datei
+
+ *  
 == Face preprocessing ==
 
 === Ellypsen Maske ===
