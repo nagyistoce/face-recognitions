@@ -1,10 +1,9 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 '''
 PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
 Video-Bild-Konvertierungen für PyQt Support.
  
 Created on 16.01.2014
-@author: ptreb001
 
 '''
 import sys
@@ -27,7 +26,7 @@ class Video():
         self.detect = fd.FaceDetector()
  
     def capture_next_frame(self):
-        """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB"""
+        """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
         if success:           
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
@@ -50,7 +49,11 @@ class Video():
 class Gui(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
     
-    def __init__(self, *args):        
+    def __init__(self, *args):
+        """Buttons und ein Label fuer das Videobild sowie ein Timer zum 
+        periodischen Ausfuehren der play() Methode
+        
+        """      
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -77,7 +80,6 @@ class Gui(QtGui.QMainWindow):
         # Beenden-Button        
         self.quit_button = QtGui.QPushButton("Ende", self)
         boxLayout.addWidget(self.quit_button)
-        
         palette = QtGui.QPalette()
         palette.setColor(self.quit_button.foregroundRole(),Qt.QColor("red"))
         self.quit_button.setPalette(palette)
