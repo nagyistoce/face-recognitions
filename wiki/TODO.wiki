@@ -5,7 +5,7 @@
  * *Frage*: Wollen wir:
   # Eigenface: Gut für Rekonstruktion
   # Fisherfaces: Gut für Recognition
-  # [www.face-rec.org/algorithms LBPH oder andere sehe]
+  # LBPH oder andere sehe: [http://www.face-rec.org/algorithms]
  * *Frage*: brauchen wir Face Validation?
 == Collecting Faces ==
 === Training Set ===
@@ -93,8 +93,8 @@ warpAffine()
 {{{ 
 0|cv2.cv.CV_HAAR_SCALE_IMAGE
 }}} 
-  * [http://books.google.de/books?id=cIM7xK5j8fYC&pg=PA34&lpg=PA34&dq=CV_HAAR_SCALE_IMAGE&source=bl&ots=c5ZPVsKdIh&sig=tjFHRk0Pj5NqyfzvA0cdxVMevxY&hl=de&sa=X&ei=LAnWUoHgHKme0QXsqYDoCg&ved=0CHgQ6AEwCA#v=onepage&q=CV_HAAR_SCALE_IMAGE&f=false bewirkt] das das Bild nicht das 'Fenster' skaliert wird
-  * OK Fenster (minfeaturesize) anpassung
+ * [http://books.google.de/books?id=cIM7xK5j8fYC&pg=PA34&lpg=PA34&dq=CV_HAAR_SCALE_IMAGE&source=bl&ots=c5ZPVsKdIh&sig=tjFHRk0Pj5NqyfzvA0cdxVMevxY&hl=de&sa=X&ei=LAnWUoHgHKme0QXsqYDoCg&ved=0CHgQ6AEwCA#v=onepage&q=CV_HAAR_SCALE_IMAGE&f=false bewirkt] das das Bild nicht das 'Fenster' skaliert wird
+ * *OK* Fenster (minfeaturesize) anpassung
 
  * *OK* Alle Gesichter finden 
 
