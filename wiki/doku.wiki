@@ -56,7 +56,7 @@
     * Gesichter werden skaliert auf feste Größe
    # Histogrammausgleich auf linker und rechter Gesichtshälfte, in der Mitte gemittelt aus beiden Seiten um harte Kante zu vermeiden
    # Bilateral-Filter: 
-    * Weichzeichnung um...?
+    * Weichzeichnung um Rauschen, die durch das vorherige Histogrammausgleich zu verringern
    # Cropping per ellyptische Maske 
     * nicht relevanter Bildbereiche werden entfernt
     * Haare
