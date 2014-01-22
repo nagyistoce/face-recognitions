@@ -33,7 +33,7 @@ class FaceDetector(object):
         assert(self.img.shape[2] == 3)
         # bereitet Bild fuer Gesichtserkennung vor
         # Konvertiert Bild zu ein Grauwertbild
-        g_img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+        g_img = cv2.cvtColor(self.img, cv2.COLOR_RGB2GRAY)
         DETECTION_WIDTH = 320
         scale = self.img.shape[1] / float(DETECTION_WIDTH)
         # skaliert das Bild runter auf eine Breite von 320, falls bild groesser ist als 320
@@ -79,7 +79,7 @@ class FaceDetector(object):
         EYE_SY=0.17
         EYE_SW=0.37
         EYE_SH=0.36
-        g_face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+        g_face = cv2.cvtColor(face,cv2.COLOR_RGB2GRAY)
         # Rechtes und linkes Augenbereich
         left_x=int(face.shape[0]*EYE_SX +0.5)
         top_y=int(face.shape[1]*EYE_SY +0.5)
@@ -113,7 +113,7 @@ class FacePreprocessor(object):
     def __init__(self, lefteye_center, righteye_center, face):        
         self.lefteye_center = lefteye_center
         self.righteye_center = righteye_center
-        self.face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+        self.face = cv2.cvtColor(face,cv2.COLOR_RGB2GRAY)
         self.FACE_WIDTH = 70
         self.FACE_HEIGHT = self.FACE_WIDTH
         # self.face = face
