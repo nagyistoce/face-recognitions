@@ -19,6 +19,8 @@
  * [http://cognotics.com/opencv/servo_2007_series/index.html cognotics.com Seeing With OpenCV EN]
 
  * [http://www.google.de/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&ved=0CFkQFjAF&url=http%3A%2F%2Fgeneral-k-cut.googlecode.com%2Fsvn-history%2Fr150%2Ftrunk%2Fbooks%2F1849517827_OpenCV.pdf&ei=mlugUrGyIqfV4gS4zoHwDw&usg=AFQjCNGVPEncqIeQLpMGv3arDKpcBJbeVA&bvm=bv.57155469,d.bGE&cad=rja Mastering OpenCV PDF]
+ 
+ *[http://bytefish.de/blog/] Hat viele Beispiele und genaue Erklärungen
 
 
 *Repositories*
