@@ -1,7 +1,7 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
 
 == DI 21.01.2014 ==
-
+ * TODO Wiki Seiter erweitert und Theorie gelesen
  * Button-Callback Methoden angelegt
 {{{
 foto_clicked()
