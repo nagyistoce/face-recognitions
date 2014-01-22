@@ -15,12 +15,23 @@ facedetect.Haarcascades
  * Docstrings erweitert
  * Encoding fuer alle Module auf utf-8
  
+== FR 17.01.2014 ==
+ 	
+ * Face Preprocessing abgeschlossen
+ * Neue GUI Klasse (PyQt) die Videobild und Buttons anzeigt
+ * Facedetection und Preprocessing werden automatisch ausgefuehrt
+ * main.py ist NURNOCH das Bootstrap Modul und startet die Anwendung
+
 == DO 16.01.2014 ==
 
 === Facedetection ===
 
  * Nur größtes Gesicht wird erkannt
- 
+ * Umstellung auf kleines schnelleres Modul ohne OpenGL nur mit HighGui Windowtoolkit
+ * Beide Augen werden individuell erkannt.
+ * Gefundene Gesicht wird geometrisch transformiert und momentan angezeigt
+ * PyQt GUI Grundgerüst mit Videobild und Buttons
+
 === GUI === 
 
  *  
