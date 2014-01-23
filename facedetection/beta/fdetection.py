@@ -3,7 +3,7 @@
 import cv2, math, numpy as np
 import os
 import haarcascades
-
+from datetime import datetime
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
     def __init__(self):
@@ -26,7 +26,7 @@ class FaceDetector(object):
         self.lefteye_center = cv2.CascadeClassifier(self.haarcascades.LEFT_EYE_2SPLITS)
         self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
         self.classifier = cv2.CascadeClassifier(self.haarcascades.FRONTAL_FACE_ALT2)
-        
+        self.fpp = FacePreprocessor()
     def detectFace(self, frame):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
@@ -66,8 +66,7 @@ class FaceDetector(object):
             success, lefteye_center, righteye_center = self.detectEyes(face)
             # Nur wenn beide Augen gefunden werden, wird dieses Gesicht weiter an ein FacePreprocessor weiter gegeben
             if success:
-                fpp = FacePreprocessor(lefteye_center,righteye_center,o_face)
-                fpp.doPreprocess()
+                self.fpp.doPreprocess(lefteye_center, righteye_center, o_face)
         return self.img
     
     def detectEyes(self, face):
@@ -90,8 +89,8 @@ class FaceDetector(object):
         top_right_face = g_face[top_y:top_y+height_y,right_x:right_x+width_x]
         # Suchgebiete der Augen
         # TODO: brauchen wir die auskommentierten Zeilen?
-        # cv2.rectangle(face,(left_x,top_y),(left_x+width_x,top_y+height_y),(0,255,255),2)
-        # cv2.rectangle(face,(right_x,top_y),(right_x+width_x,top_y+height_y),(0,255,0),2)
+        #cv2.rectangle(face,(left_x,top_y),(left_x+width_x,top_y+height_y),(0,255,255),2)
+        #cv2.rectangle(face,(right_x,top_y),(right_x+width_x,top_y+height_y),(0,255,0),2)
         # In vorherfestgelegte Augenbereich werden die Augen individuell gesucht
         lefteye = self.lefteye_center.detectMultiScale(top_left_face)
         righteye = self.righteye_center.detectMultiScale(top_right_face)
@@ -110,21 +109,22 @@ class FaceDetector(object):
 
 class FacePreprocessor(object):
     """Wichtige Bearbeitungsschritte um das Gesicht besser vergleichbar zu machen."""    
-    def __init__(self, lefteye_center, righteye_center, face):        
+    def __init__(self):        
+        self.FACE_WIDTH = 70
+        self.FACE_HEIGHT = self.FACE_WIDTH
+        self.old_face = None
+        self.old_time = datetime.now()
+        
+    def doPreprocess(self,lefteye_center, righteye_center, face):
+        """Fuehrt Transformation, Histogrammausgleich, Weichzeichnungsfilter und Cropping des Gesichtes durch."""
         self.lefteye_center = lefteye_center
         self.righteye_center = righteye_center
         self.face = cv2.cvtColor(face,cv2.COLOR_RGB2GRAY)
-        self.FACE_WIDTH = 70
-        self.FACE_HEIGHT = self.FACE_WIDTH
-        # self.face = face
-        
-    def doPreprocess(self):
-        """Fuehrt Transformation, Histogrammausgleich, Weichzeichnungsfilter und Cropping des Gesichtes durch."""
         self.gTransform()
         self.allHistEqual()
         self.fpp_result = cv2.bilateralFilter(self.fpp_result,d=0,sigmaColor=20.0, sigmaSpace=2.0)
         self.ellipMask()
-        
+        self.acceptNewFace(self.fpp_result)
     def gTransform(self):
         """Transformiert das Gesicht, so dass die Augen horizontal ausgerichtet sind."""
         # Mittepunkt zw. die Augen
@@ -186,5 +186,25 @@ class FacePreprocessor(object):
                     (int(self.FACE_WIDTH*0.5+0.5),int(self.FACE_HEIGHT*0.8+0.5)),
                     0, 0,360, 255, cv2.cv.CV_FILLED)
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
-        cv2.namedWindow("Mask")
-        cv2.imshow("Mask", self.fpp_result)
+    
+    def acceptNewFace(self, new_face):
+        # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
+        current_time = datetime.now()
+        simular = 1.0
+        if self.old_face != None:
+            simular = self.compare(new_face, self.old_face)
+        result = current_time - self.old_time   
+        if result.seconds >= 1 and simular >= 0.3:
+            #new_face wird gespiegelt
+            mirror_face = cv2.flip(new_face,1)
+#             cv2.namedWindow("Face")
+#             cv2.imshow("Face", new_face)
+#             cv2.namedWindow("Mirror")
+#             cv2.imshow("Mirror", mirror_face)
+            #TODO: new_face und mirror_face in Verzeichnis ID abspeichern, Label und Bildpfad in info.dat schreiben 
+            self.old_time = current_time
+            self.old_face = new_face.copy()
+        
+    def compare(self,new,old):
+        l2 = cv2.norm(new,old,cv2.NORM_L2)
+        return l2/(new.shape[0]*new.shape[1])
