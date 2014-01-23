@@ -16,25 +16,36 @@ class FileSystem(object):
     """Legt Ordnrestruktur der Trainings-Sets an"""
     
     def __init__(self):
-        self.init_folder_structure()
-                         
-    def init_folder_structure(self):
-        """Ueberprueft ob Training-Set-Ordnerstruktur existiert und legt diese bei Bedarf neu an"""
+        self.path = os.path.expanduser('~/Dropbox/FACERECOGNITION/_TRAINING_SETS_')
+        self.init_folder_structure()        
         
-        self.path = os.path.expanduser('/home/mi/ptreb001/Desktop/TEST/')
-        print self.path
+    def create_folder(self, path, name=''):
+        """Legt einen neuen Ordner an."""
         # check ob Ordner bereits existiert
-        if not os.path.exists(self.path):
-            print 'lege vz an'
+        path = os.path.join(path, name)
+        print path
+        if not os.path.exists(path):
+            print 'lege vz ', path, ' an.'
             try:
-                os.makedirs(self.path)
+                os.makedirs(path)
             except OSError, e:
                 if e.errno == errno.EEXIST:
                     print 'ignoriere os.error'
         else:
-            print "Verzeichnis bereits vorhannden"
-            
-    
+            print "Verzeichnis bereits vorhannden"        
+        
+    def init_folder_structure(self):
+        """Ueberprueft ob Training-Set-Ordnerstruktur existiert und legt diese bei Bedarf neu an"""
+        self.create_folder(self.path)
+
+    def add_face(self, id, face):
+        """Fuegt ein Gesichtsbild dem entsprechenden Ordner (ID) hinzu"""
+        
+    def add_id(self, id):
+        """Legt eine neue ID (Ordner) an"""
+        self.create_folder(self.path, id)
+        
+        
 def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
     app = QtGui.QApplication(args)
@@ -47,7 +58,6 @@ def main(args):
                 )
     # Trainig-Set Dateistruktur anlegen
     fs = FileSystem()
-    
     
     return app.exec_()
     
