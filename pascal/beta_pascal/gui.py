@@ -50,12 +50,12 @@ class Video():
 class Gui(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
     
-    def __init__(self, file_system, *args):
+    def __init__(self, *args):
         """Buttons und ein Label fuer das Videobild sowie ein Timer zum 
         periodischen Ausfuehren der play() Methode
         
         """
-        self.file_system = file_system
+        self.training_set = fd.TrainingSet(0)
         
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
@@ -113,7 +113,7 @@ class Gui(QtGui.QMainWindow):
             
     def foto_clicked(self):
         print "Foto Machen"
-        self.file_system.add_face(0, self.video.convert_frame())
+        self.training_set.add_face(self.video.convert_frame())
         
     
     def who_i_clicked(self):
