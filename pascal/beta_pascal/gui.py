@@ -1,8 +1,9 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 '''
+PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
+Video-Bild-Konvertierungen für PyQt Support.
+ 
 Created on 16.01.2014
-
-@author: ptreb001
 
 '''
 import sys
@@ -14,6 +15,7 @@ from PyQt4 import Qt
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
+
 class Video():
     """Klasse zum konvertieren des Videobilds"""
     def __init__(self,webcam):
@@ -24,7 +26,7 @@ class Video():
         self.detect = fd.FaceDetector()
  
     def capture_next_frame(self):
-        """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB"""
+        """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
         if success:           
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
@@ -47,7 +49,11 @@ class Video():
 class Gui(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
     
-    def __init__(self, *args):        
+    def __init__(self, *args):
+        """Buttons und ein Label fuer das Videobild sowie ein Timer zum 
+        periodischen Ausfuehren der play() Methode
+        
+        """      
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -64,15 +70,16 @@ class Gui(QtGui.QMainWindow):
         # Foto-Button
         self.foto_button = QtGui.QPushButton("Foto", self)
         boxLayout.addWidget(self.foto_button)
+        self.foto_button.clicked.connect(self.foto_clicked)
         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
         boxLayout.addWidget(self.who_am_i_button)
+        self.who_am_i_button.clicked.connect(self.who_i_clicked)
         
         # Beenden-Button        
         self.quit_button = QtGui.QPushButton("Ende", self)
         boxLayout.addWidget(self.quit_button)
-        
         palette = QtGui.QPalette()
         palette.setColor(self.quit_button.foregroundRole(),Qt.QColor("red"))
         self.quit_button.setPalette(palette)
@@ -100,6 +107,13 @@ class Gui(QtGui.QMainWindow):
             self.video_label.setPixmap(self.video.convert_frame())            
         except TypeError:
             print "Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
+            
+    def foto_clicked(self):
+        print "Foto Machen"
+    
+    def who_i_clicked(self):
+        print "Who i am"
+
  
 def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
