@@ -22,10 +22,10 @@
    * Kopf(-Position): Leicht nach Oben, leicht nach Unten, nach links geneigt, nach rechts geneigt 
    * Emotionen: lächelnd, neutral, böse
  * Code/Funktion/Routine
-  * 1Bild/1sec und/oder nur Gesicht die unterschiedlich sind zu vorherigen preprocessed Bild aufnehmen in Training-Set
-   * L2 Error - Trainingsset wird automatisch erstellt mit L2 Error vergleich um Positions/Blickrichtungs-Änderungen sicherzustellen
-    *  0.3 Als Schwellwert um neues Foto in Training-Set aufzunehmen
-  * jedes Bild auch einmal gespiegelt ins Training-Set aufnehmen  [http://docs.opencv.org/2.4.6/modules/core/doc/operations_on_arrays.html?highlight=flip#cv2.flip cv2.flip()]
+  * *OK* 1Bild/1sec und/oder nur Gesicht die unterschiedlich sind zu vorherigen preprocessed Bild aufnehmen in Training-Set
+   * *OK* L2 Error - Trainingsset wird automatisch erstellt mit L2 Error vergleich um Positions/Blickrichtungs-Änderungen sicherzustellen
+    *  *OK* 0.3 Als Schwellwert um neues Foto in Training-Set aufzunehmen
+  * *OK* jedes Bild auch einmal gespiegelt ins Training-Set aufnehmen  [http://docs.opencv.org/2.4.6/modules/core/doc/operations_on_arrays.html?highlight=flip#cv2.flip cv2.flip()]
 {{{
 cv2.flip(src, flipCode[, dst]) → dst
 }}}
