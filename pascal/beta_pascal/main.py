@@ -17,7 +17,9 @@ class FileSystem(object):
     
     def __init__(self):
         self.path = os.path.expanduser('~/Dropbox/FACERECOGNITION/_TRAINING_SETS_')
-        self.init_folder_structure()        
+        self.init_folder_structure()
+        self.add_id(0)
+        
         
     def create_folder(self, path, name=''):
         """Legt einen neuen Ordner an."""
@@ -38,18 +40,25 @@ class FileSystem(object):
         """Ueberprueft ob Training-Set-Ordnerstruktur existiert und legt diese bei Bedarf neu an"""
         self.create_folder(self.path)
 
-    def add_face(self, id, face):
+    def add_face(self, id, face):                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (ID) hinzu"""
-        
+        if os.path.exists(os.path.join(self.path, str(id))):
+            print 'Okay, ID existiert'
+            print type(face)
+            assert(isinstance(face, QtGui.QPixmap))
+            face.save(os.path.join(self.path, str(id)) + '/bild.jpg')
+        else:
+            print 'Fehler '
+
     def add_id(self, id):
         """Legt eine neue ID (Ordner) an"""
-        self.create_folder(self.path, id)
-        
+        self.create_folder(self.path, str(id))
         
 def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
     app = QtGui.QApplication(args)
-    win = gui.Gui()
+    fs = FileSystem()
+    win = gui.Gui(fs)
     win.show()
     app.connect(app,                             # Sender-Widget
                 Qt.SIGNAL('lastWindowClosed()'), # Signal
@@ -57,7 +66,7 @@ def main(args):
                 Qt.SLOT('quit()')                # aktivierter Slot
                 )
     # Trainig-Set Dateistruktur anlegen
-    fs = FileSystem()
+    
     
     return app.exec_()
     

@@ -15,6 +15,7 @@ from PyQt4 import Qt
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
+import main
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -49,11 +50,13 @@ class Video():
 class Gui(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
     
-    def __init__(self, *args):
+    def __init__(self, file_system, *args):
         """Buttons und ein Label fuer das Videobild sowie ein Timer zum 
         periodischen Ausfuehren der play() Methode
         
-        """      
+        """
+        self.file_system = file_system
+        
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -110,6 +113,8 @@ class Gui(QtGui.QMainWindow):
             
     def foto_clicked(self):
         print "Foto Machen"
+        self.file_system.add_face(0, self.video.convert_frame())
+        
     
     def who_i_clicked(self):
         print "Who i am"
