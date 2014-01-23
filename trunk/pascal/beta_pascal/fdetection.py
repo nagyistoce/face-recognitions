@@ -14,6 +14,7 @@ class TrainingSet(object):
         self.path = os.path.expanduser(path)
         self.FACE_ID = face_id
         self.name = '' if name == None else name
+        # TOD0: automatisch Ordnerstruktur anlegen falls sie noch nicht existiert
         self.add_face_id(self.FACE_ID)
         
     def create_folder(self, path, name=''):
@@ -49,49 +50,7 @@ class TrainingSet(object):
         """Legt eine neue face_id (Ordner) an"""
         self.create_folder(self.path, str(face_id))
         
-        
-class TrainingSets(object):
-    """Legt Ordnrestruktur der Trainings-Sets an, stellt ggf. alten Zustand wieder her."""
-    
-    def __init__(self):
-        self.path = os.path.expanduser('~/Dropbox/FACERECOGNITION/_TRAINING_SETS_')
-        self.init_folder_structure()
-        self.add_id(0)
-        
-        
-    def create_folder(self, path, name=''):
-        """Legt einen neuen Ordner an."""
-        # check ob Ordner bereits existiert
-        path = os.path.join(path, name)
-        print path
-        if not os.path.exists(path):
-            print 'lege vz ', path, ' an.'
-            try:
-                os.makedirs(path)
-            except OSError, e:
-                if e.errno == errno.EEXIST:
-                    print 'ignoriere os.error'
-        else:
-            print "Verzeichnis bereits vorhannden"        
-        
-    def init_folder_structure(self):
-        """Ueberprueft ob Training-Set-Ordnerstruktur existiert und legt diese bei Bedarf neu an"""
-        self.create_folder(self.path)
 
-    def add_face(self, id, face):                
-        """Fuegt ein Gesichtsbild dem entsprechenden Ordner (ID) hinzu"""
-        if os.path.exists(os.path.join(self.path, str(id))):
-            print 'Okay, ID existiert'
-            print type(face)
-            assert(isinstance(face, QtGui.QPixmap))
-            face.save(os.path.join(self.path, str(id)) + '/bild.jpg')
-        else:
-            print 'Fehler '
-
-    def add_id(self, id):
-        """Legt eine neue ID (Ordner) an"""
-        self.create_folder(self.path, str(id))
-        
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
     def __init__(self):
