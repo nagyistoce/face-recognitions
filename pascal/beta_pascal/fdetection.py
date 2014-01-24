@@ -10,8 +10,8 @@ from PyQt4 import QtGui
 class TrainingSet(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
     
-    def __init__(self, id, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):      
-        self.ID = id
+    def __init__(self, face_id, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):      
+        self.FACE_ID = face_id
         self.path = os.path.expanduser(path)
         self.counter = 0
         self.name = name
@@ -38,12 +38,12 @@ class TrainingSet(object):
         self.create_folder(self.path)
 
     def add_frame(self, frame):                
-        """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""
-        if os.path.exists(os.path.join(self.path, str(self.ID))):
-            print 'Okay, ID existiert'
+        """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.FACE_ID) hinzu"""
+        if os.path.exists(os.path.join(self.path, str(self.FACE_ID))):
+            print 'Okay, FACE_ID existiert'
             print type(frame)
             assert(isinstance(frame, QtGui.QPixmap))
-            frame.save(os.path.join(self.path, str(self.ID)) + '/bild.jpg')
+            frame.save(os.path.join(self.path, str(self.FACE_ID)) + '/bild.jpg')
         else:
             print 'Fehler '
 
