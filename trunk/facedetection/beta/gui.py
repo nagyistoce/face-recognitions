@@ -19,8 +19,10 @@ import model
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
-    def __init__(self,webcam):
+    def __init__(self, webcam, face_id=None, save_face=False):
         self.webcam = webcam
+        self.face_id = face_id
+        self.save_face = save_face
         self.current_frame=np.ndarray([])
         
         # Facedetekor-Objekt
@@ -29,9 +31,9 @@ class Video():
     def capture_next_frame(self):
         """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
-        if success:           
+        if success:              
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
-            self.current_frame = self.detect.detectFace(read_frame)
+            self.current_frame = self.detect.detectFace(read_frame,self.face_id,self.save_face)
             
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
@@ -55,7 +57,8 @@ class Gui(QtGui.QMainWindow):
         periodischen Ausfuehren der play() Methode
         
         """      
-        self.training_set = model.TrainingSet(0)
+        
+        
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -121,10 +124,10 @@ class Gui(QtGui.QMainWindow):
     def foto_clicked(self):
         print "Foto Machen"
         # shost is a QString object
-        print 'der TEXT ', self.id_text.text()
+        print 'der TEXT ', self.id_text
+        self.video.save_face = True
+        self.video.face_id = self.id_text.text()
         
-
-        self.training_set.add_face((self.video.convert_frame()))
         
     def who_i_clicked(self):
         print "Who i am"

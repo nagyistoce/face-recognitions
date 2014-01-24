@@ -4,6 +4,7 @@ import cv2, math, numpy as np
 import os
 import haarcascades
 from datetime import datetime
+import model
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
     def __init__(self):
@@ -27,13 +28,15 @@ class FaceDetector(object):
         self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
         self.classifier = cv2.CascadeClassifier(self.haarcascades.FRONTAL_FACE_ALT2)
         self.fpp = FacePreprocessor()
+        self.training_set = model.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
-        self.save_face = False
-        self.face_id = None
-    def detectFace(self, frame):
+
+    def detectFace(self, frame,face_id,save_face):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
+        self.face_id = face_id
+        self.save_face = save_face
         assert(self.img.shape[2] == 3)
         # bereitet Bild fuer Gesichtserkennung vor
         # Konvertiert Bild zu ein Grauwertbild
@@ -71,7 +74,9 @@ class FaceDetector(object):
             # Nur wenn beide Augen gefunden werden, wird dieses Gesicht weiter an ein FacePreprocessor weiter gegeben
             if success:
                 self.pp_face = self.fpp.doPreprocess(lefteye_center, righteye_center, o_face)
-                self.acceptNewFace(self.pp_face)
+                #print self.save_face
+                if self.save_face:
+                    self.acceptNewFace(self.pp_face)
         return self.img
     
     def detectEyes(self, face):
@@ -122,10 +127,14 @@ class FaceDetector(object):
         if result.seconds >= 1 and simular >= 0.3:
             #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
-            cv2.namedWindow("Face")
-            cv2.imshow("Face", new_face)
-            cv2.namedWindow("Mirror")
-            cv2.imshow("Mirror", mirror_face)
+            self.training_set.add_face(new_face, self.face_id)
+            self.training_set.add_face(mirror_face, self.face_id)
+            print "saved a new face"
+            
+#             cv2.namedWindow("Face")
+#             cv2.imshow("Face", new_face)
+#             cv2.namedWindow("Mirror")
+#             cv2.imshow("Mirror", mirror_face)
             #TODO: new_face und mirror_face in Verzeichnis ID abspeichern, Label und Bildpfad in info.dat schreiben 
             self.old_time = current_time
             self.old_face = new_face.copy()
@@ -150,6 +159,7 @@ class FacePreprocessor(object):
         self.fpp_result = cv2.bilateralFilter(self.fpp_result,d=0,sigmaColor=20.0, sigmaSpace=2.0)
         self.ellipMask()
         return self.fpp_result
+    
     def gTransform(self):
         """Transformiert das Gesicht, so dass die Augen horizontal ausgerichtet sind."""
         # Mittepunkt zw. die Augen
@@ -201,7 +211,7 @@ class FacePreprocessor(object):
                 else:
                     p = right[y,x-width/2]
                 self.fpp_result[y,x] = p
-        
+    
     def ellipMask(self):
         """Cropping mit ellyptischer Maske entfernt nicht relevante Gesichtsbereiche wie Wangen und Haare."""
         ellip= np.ndarray(shape=self.fpp_result.shape, dtype = np.uint8)
