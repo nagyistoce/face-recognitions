@@ -57,6 +57,7 @@ class Gui(QtGui.QMainWindow):
         """
         self.training_set = fd.TrainingSet(0)
         
+        
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -66,14 +67,25 @@ class Gui(QtGui.QMainWindow):
         boxLayout = QtGui.QVBoxLayout()    
         widget.setLayout(boxLayout)
         
+        
         # QLabel als Videoframe Container
         self.video_label = QtGui.QLabel("Videobild")
         boxLayout.addWidget(self.video_label)
+        
+#         
+#         def showText():
+#             show.setText(name.text())
+#         widget.connect(save, QtCore.SIGNAL('clicked()'), showText)
 
-        # Foto-Button
-        self.foto_button = QtGui.QPushButton("Foto", self)
-        boxLayout.addWidget(self.foto_button)
-        self.foto_button.clicked.connect(self.foto_clicked)
+        # ID Textfeld
+        self.id_line = QtGui.QLineEdit(widget)
+        self.id_line = self.id_line.setMinimumWidth(180)
+        boxLayout.addWidget(self.id_line)
+        
+        # Training-Set-Aufnehmen-Button
+        self.training_set_button = QtGui.QPushButton("Training-Set", self)
+        boxLayout.addWidget(self.training_set_button)
+        self.training_set_button.clicked.connect(self.foto_clicked)
         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
