@@ -17,28 +17,27 @@ class TrainingSet(object):
         self.name = name
         self.images = {}
         # TOD0: automatisch Ordnerstruktur anlegen falls sie noch nicht existiert
-        self.add_id(self.ID)
         
     def create_folder(self, path, name=''):
-        """Legt einen neuen Ordner im Dateisystem an: path/name."""
-        # check ob Ordner bereits existiert
+        """Ueberprueft ob Ordner bereits existiert, und legt ihn ansonsten an"""
         path = os.path.join(path, name)
         print path
         if not os.path.exists(path):
-            print 'path ', 'wird angelegt...'
+            print path, ' wird angelegt...'
             try:
                 os.makedirs(path)
             except OSError, e:
                 if e.errno == errno.EEXIST:
+                    # TODO: print rausnehmen 
                     print 'ignoriere os.error'
         else:
             print path, ' bereits vorhannden'        
         
     def init_folder_structure(self):
-        """Ueberprueft ob Training-Set-Ordnerstruktur existiert und legt diese bei Bedarf neu an"""
+        """ und legt diese bei Bedarf neu an"""
         self.create_folder(self.path)
 
-    def add_face(self, face):                
+    def add_image(self, face):                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""
         if os.path.exists(os.path.join(self.path, str(self.ID))):
             print 'Okay, ID existiert'
@@ -48,10 +47,6 @@ class TrainingSet(object):
         else:
             print 'Fehler '
 
-    def add_id(self, id):
-        """Legt eine neue id (Ordner) an"""
-        self.create_folder(self.path, str(id))
-        
 
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
