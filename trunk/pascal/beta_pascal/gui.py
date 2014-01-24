@@ -113,7 +113,7 @@ class Gui(QtGui.QMainWindow):
             
     def foto_clicked(self):
         print "Foto Machen"
-        self.training_set.add_face(self.video.convert_frame())
+        self.training_set.add_image((self.video.convert_frame()))
         
     
     def who_i_clicked(self):
