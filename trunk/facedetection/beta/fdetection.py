@@ -29,6 +29,8 @@ class FaceDetector(object):
         self.fpp = FacePreprocessor()
         self.old_face = None
         self.old_time = datetime.now()
+        self.save_face = False
+        self.face_id = None
     def detectFace(self, frame):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
