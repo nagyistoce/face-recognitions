@@ -21,7 +21,7 @@ def main(args):
                 Qt.SLOT('quit()')                # aktivierter Slot
                 )
     # Trainig-Set Dateistruktur anlegen
-    
+   
     
     return app.exec_()
     
