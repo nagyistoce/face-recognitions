@@ -27,6 +27,8 @@ class FaceDetector(object):
         self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
         self.classifier = cv2.CascadeClassifier(self.haarcascades.FRONTAL_FACE_ALT2)
         self.fpp = FacePreprocessor()
+        self.old_face = None
+        self.old_time = datetime.now()
     def detectFace(self, frame):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
@@ -66,7 +68,8 @@ class FaceDetector(object):
             success, lefteye_center, righteye_center = self.detectEyes(face)
             # Nur wenn beide Augen gefunden werden, wird dieses Gesicht weiter an ein FacePreprocessor weiter gegeben
             if success:
-                self.fpp.doPreprocess(lefteye_center, righteye_center, o_face)
+                self.pp_face = self.fpp.doPreprocess(lefteye_center, righteye_center, o_face)
+                self.acceptNewFace(self.pp_face)
         return self.img
     
     def detectEyes(self, face):
@@ -106,14 +109,34 @@ class FaceDetector(object):
                 righteye_center[1] = ey +(eh/2)+top_y
             return True, lefteye_center, righteye_center
         return False, lefteye_center, righteye_center
-
+    
+    def acceptNewFace(self, new_face):
+        # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
+        current_time = datetime.now()
+        simular = 1.0
+        if self.old_face != None:
+            simular = self.compare(new_face, self.old_face)
+        result = current_time - self.old_time   
+        if result.seconds >= 1 and simular >= 0.3:
+            #new_face wird gespiegelt
+            mirror_face = cv2.flip(new_face,1)
+            cv2.namedWindow("Face")
+            cv2.imshow("Face", new_face)
+            cv2.namedWindow("Mirror")
+            cv2.imshow("Mirror", mirror_face)
+            #TODO: new_face und mirror_face in Verzeichnis ID abspeichern, Label und Bildpfad in info.dat schreiben 
+            self.old_time = current_time
+            self.old_face = new_face.copy()
+        
+    def compare(self,new,old):
+        l2 = cv2.norm(new,old,cv2.NORM_L2)
+        return l2/(new.shape[0]*new.shape[1])
+    
 class FacePreprocessor(object):
     """Wichtige Bearbeitungsschritte um das Gesicht besser vergleichbar zu machen."""    
     def __init__(self):        
         self.FACE_WIDTH = 70
         self.FACE_HEIGHT = self.FACE_WIDTH
-        self.old_face = None
-        self.old_time = datetime.now()
         
     def doPreprocess(self,lefteye_center, righteye_center, face):
         """Fuehrt Transformation, Histogrammausgleich, Weichzeichnungsfilter und Cropping des Gesichtes durch."""
@@ -124,7 +147,7 @@ class FacePreprocessor(object):
         self.allHistEqual()
         self.fpp_result = cv2.bilateralFilter(self.fpp_result,d=0,sigmaColor=20.0, sigmaSpace=2.0)
         self.ellipMask()
-        self.acceptNewFace(self.fpp_result)
+        return self.fpp_result
     def gTransform(self):
         """Transformiert das Gesicht, so dass die Augen horizontal ausgerichtet sind."""
         # Mittepunkt zw. die Augen
@@ -187,24 +210,3 @@ class FacePreprocessor(object):
                     0, 0,360, 255, cv2.cv.CV_FILLED)
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
     
-    def acceptNewFace(self, new_face):
-        # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
-        current_time = datetime.now()
-        simular = 1.0
-        if self.old_face != None:
-            simular = self.compare(new_face, self.old_face)
-        result = current_time - self.old_time   
-        if result.seconds >= 1 and simular >= 0.3:
-            #new_face wird gespiegelt
-            mirror_face = cv2.flip(new_face,1)
-#             cv2.namedWindow("Face")
-#             cv2.imshow("Face", new_face)
-#             cv2.namedWindow("Mirror")
-#             cv2.imshow("Mirror", mirror_face)
-            #TODO: new_face und mirror_face in Verzeichnis ID abspeichern, Label und Bildpfad in info.dat schreiben 
-            self.old_time = current_time
-            self.old_face = new_face.copy()
-        
-    def compare(self,new,old):
-        l2 = cv2.norm(new,old,cv2.NORM_L2)
-        return l2/(new.shape[0]*new.shape[1])
