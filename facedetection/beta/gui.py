@@ -7,7 +7,6 @@ Created on 16.01.2014
 
 '''
 import sys
-import fdetection as fd
 import numpy as np
 import cv2
 
@@ -15,6 +14,8 @@ from PyQt4 import Qt
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
+import fdetection as fd
+import model
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -54,6 +55,7 @@ class Gui(QtGui.QMainWindow):
         periodischen Ausfuehren der play() Methode
         
         """      
+        self.training_set = model.TrainingSet(0)
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -68,9 +70,19 @@ class Gui(QtGui.QMainWindow):
         boxLayout.addWidget(self.video_label)
 
         # Foto-Button
-        self.foto_button = QtGui.QPushButton("Foto", self)
-        boxLayout.addWidget(self.foto_button)
-        self.foto_button.clicked.connect(self.foto_clicked)
+#         self.foto_button = QtGui.QPushButton("Foto", self)
+#         boxLayout.addWidget(self.foto_button)
+#         self.foto_button.clicked.connect(self.foto_clicked)
+        
+        # ID Textfeld
+        self.id_line = QtGui.QLineEdit(widget)
+        self.id_line = self.id_line.setMinimumWidth(180)
+        boxLayout.addWidget(self.id_line)
+        
+        # Training-Set-Aufnehmen-Button
+        self.training_set_button = QtGui.QPushButton("Training-Set", self)
+        boxLayout.addWidget(self.training_set_button)
+        self.training_set_button.clicked.connect(self.foto_clicked)
         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
@@ -110,7 +122,8 @@ class Gui(QtGui.QMainWindow):
             
     def foto_clicked(self):
         print "Foto Machen"
-    
+        self.training_set.add_face((self.video.convert_frame()))
+        
     def who_i_clicked(self):
         print "Who i am"
 
