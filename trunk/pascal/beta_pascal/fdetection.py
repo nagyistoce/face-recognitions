@@ -10,45 +10,47 @@ from PyQt4 import QtGui
 class TrainingSet(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
     
-    def __init__(self, face_id, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=None):      
+    def __init__(self, id, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):      
+        self.ID = id
         self.path = os.path.expanduser(path)
-        self.FACE_ID = face_id
-        self.name = '' if name == None else name
+        self.counter = 0
+        self.name = name
+        self.images = {}
         # TOD0: automatisch Ordnerstruktur anlegen falls sie noch nicht existiert
-        self.add_face_id(self.FACE_ID)
+        self.add_id(self.ID)
         
     def create_folder(self, path, name=''):
-        """Legt einen neuen Ordner an."""
+        """Legt einen neuen Ordner im Dateisystem an: path/name."""
         # check ob Ordner bereits existiert
         path = os.path.join(path, name)
         print path
         if not os.path.exists(path):
-            print 'lege vz ', path, ' an.'
+            print 'path ', 'wird angelegt...'
             try:
                 os.makedirs(path)
             except OSError, e:
                 if e.errno == errno.EEXIST:
                     print 'ignoriere os.error'
         else:
-            print "Verzeichnis bereits vorhannden"        
+            print path, ' bereits vorhannden'        
         
     def init_folder_structure(self):
         """Ueberprueft ob Training-Set-Ordnerstruktur existiert und legt diese bei Bedarf neu an"""
         self.create_folder(self.path)
 
     def add_face(self, face):                
-        """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.FACE_ID) hinzu"""
-        if os.path.exists(os.path.join(self.path, str(self.FACE_ID))):
-            print 'Okay, FACE_ID existiert'
+        """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""
+        if os.path.exists(os.path.join(self.path, str(self.ID))):
+            print 'Okay, ID existiert'
             print type(face)
             assert(isinstance(face, QtGui.QPixmap))
-            face.save(os.path.join(self.path, str(self.FACE_ID)) + '/bild.jpg')
+            face.save(os.path.join(self.path, str(self.ID)) + '/bild.jpg')
         else:
             print 'Fehler '
 
-    def add_face_id(self, face_id):
-        """Legt eine neue face_id (Ordner) an"""
-        self.create_folder(self.path, str(face_id))
+    def add_id(self, id):
+        """Legt eine neue id (Ordner) an"""
+        self.create_folder(self.path, str(id))
         
 
 class Haarcascades(object):    
