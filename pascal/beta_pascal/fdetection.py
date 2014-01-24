@@ -37,16 +37,15 @@ class TrainingSet(object):
         """ und legt diese bei Bedarf neu an"""
         self.create_folder(self.path)
 
-    def add_image(self, face):                
+    def add_frame(self, frame):                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""
         if os.path.exists(os.path.join(self.path, str(self.ID))):
             print 'Okay, ID existiert'
-            print type(face)
-            assert(isinstance(face, QtGui.QPixmap))
-            face.save(os.path.join(self.path, str(self.ID)) + '/bild.jpg')
+            print type(frame)
+            assert(isinstance(frame, QtGui.QPixmap))
+            frame.save(os.path.join(self.path, str(self.ID)) + '/bild.jpg')
         else:
             print 'Fehler '
-
 
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
