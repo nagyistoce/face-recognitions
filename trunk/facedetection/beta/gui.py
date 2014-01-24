@@ -69,27 +69,22 @@ class Gui(QtGui.QMainWindow):
         self.video_label = QtGui.QLabel("Videobild")
         boxLayout.addWidget(self.video_label)
 
-        # Foto-Button
-#         self.foto_button = QtGui.QPushButton("Foto", self)
-#         boxLayout.addWidget(self.foto_button)
-#         self.foto_button.clicked.connect(self.foto_clicked)
-        
         # ID Textfeld
-        self.id_line = QtGui.QLineEdit(widget)
-        self.id_line = self.id_line.setMinimumWidth(180)
-        boxLayout.addWidget(self.id_line)
-        
+        self.id_text = QtGui.QLineEdit("ID", self)
+        Qt.QObject.connect(self.id_text, Qt.SIGNAL('textChanged(const QString&)'), self.do_training_set)
+
         # Training-Set-Aufnehmen-Button
         self.training_set_button = QtGui.QPushButton("Training-Set", self)
         boxLayout.addWidget(self.training_set_button)
         self.training_set_button.clicked.connect(self.foto_clicked)
-        
+        Qt.QObject.connect(self.training_set_button, Qt.SIGNAL('clicked()'), self.foto_clicked)
+                        
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
         boxLayout.addWidget(self.who_am_i_button)
         self.who_am_i_button.clicked.connect(self.who_i_clicked)
         
-        # Beenden-Button        
+        # Beenden-Button
         self.quit_button = QtGui.QPushButton("Ende", self)
         boxLayout.addWidget(self.quit_button)
         palette = QtGui.QPalette()
@@ -110,7 +105,10 @@ class Gui(QtGui.QMainWindow):
         else:
             self.test = False
             print "Web-Cam nicht angeschlossen"
- 
+    
+    def do_training_set(self, text):
+        print 'Text ', text
+        
     def play(self):
         """Zum stetig wiederholtem Aufrufen um Kamerabild zu aktualisieren"""
         try:
@@ -122,6 +120,10 @@ class Gui(QtGui.QMainWindow):
             
     def foto_clicked(self):
         print "Foto Machen"
+        # shost is a QString object
+        print 'der TEXT ', self.id_text.text()
+        
+
         self.training_set.add_face((self.video.convert_frame()))
         
     def who_i_clicked(self):
