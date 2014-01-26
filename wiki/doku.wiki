@@ -77,15 +77,16 @@
   * Portabilität auf Linux, Windows, andere Hardware, Mobile
   * Schnittstelle um eine beliebige Software anbinden zu können
  # Probleme und deren Lösung
-  * Probleme und wie wir sie gelöst haben
+  * Probleme/ Lösung
  # Fazit
   * positiv
    * für einfache Systeme schönes Addon, in Zukunft bestimmt immer besser
   * negativ
    * Großes Sicherheitsproblem, zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit
 # Quellen
-  * Wikipedia
-  * bsi.bund.de
+  * Online
+    * Wikipedia
+    * bsi.bund.de
   * Literatur
     * Master OpenCV
  
