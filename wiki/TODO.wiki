@@ -7,6 +7,8 @@
   # Fisherfaces: Gut für Recognition
   # LBPH oder andere sehe: [http://www.face-rec.org/algorithms]
  * *Frage*: brauchen wir Face Validation?
+
+ * *Antwort: Fischerface
 == Collecting Faces ==
 === Training Set ===
 
