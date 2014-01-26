@@ -82,7 +82,14 @@
   * positiv
    * für einfache Systeme schönes Addon, in Zukunft bestimmt immer besser
   * negativ
-   * Großes Sicherheitsproblem, zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit 
+   * Großes Sicherheitsproblem, zb. Gesichtsdatenbank in falschen Händen, Fehleranfälligkeit
+# Quellen
+  * Wikipedia
+  * bsi.bund.de
+  * Literatur
+    * Master OpenCV
+ 
+ 
  
 
 == Rahmenbediunguen ==
