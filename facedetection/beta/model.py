@@ -5,9 +5,10 @@ Created on 24.01.2014
 '''
 import os
 import errno
+import sys
 
 from PyQt4 import QtGui
-import cv2
+import cv2, numpy as np
 
 class TrainingSets(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
@@ -55,8 +56,25 @@ class TrainingSets(object):
         #assert(isinstance(face, QtGui.QPixmap))
         #face.save(os.path.join(self.path, self.get_image_name()))
         self.counter += 1
-        
-            
+    
+    def get_faces(self):
+        ids = 0
+        face_images,face_ids = [],[]
+        for dirname, dirnames,filenames in os.walk(self.path):
+            for subdirname in dirnames:
+                id_path = os.path.join(dirname, subdirname)
+                for face_image in os.listdir(id_path):
+                    try:
+                        im = cv2.imread(os.path.join(id_path,face_image), cv2.IMREAD_GRAYSCALE)
+                        face_images.append(np.asarray(im,dtype = np.uint8))
+                        face_ids.append(ids)
+                    except IOError,(errno,strerror):
+                        print "I/O error{0}: {1}".format(errno,strerror)
+                    except:
+                        print "Unexpected error:", sys.exc_info()[0]
+                        raise
+                ids = ids +1
+        return [face_images,face_ids]
             
             
         
