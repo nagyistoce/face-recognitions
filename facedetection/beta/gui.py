@@ -17,6 +17,7 @@ from PyQt4 import QtGui
 import fdetection as fd
 import model
 
+
 class Video():
     """Klasse zum konvertieren des Videobilds"""
     def __init__(self, webcam, face_id=None, save_face=False):
@@ -58,7 +59,6 @@ class Gui(QtGui.QMainWindow):
         
         """      
         
-        
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -78,6 +78,7 @@ class Gui(QtGui.QMainWindow):
 
         # Training-Set-Aufnehmen-Button
         self.training_set_button = QtGui.QPushButton("Training-Set", self)
+        self.training_set_button.setCheckable(True)
         boxLayout.addWidget(self.training_set_button)
         self.training_set_button.clicked.connect(self.foto_clicked)
         Qt.QObject.connect(self.training_set_button, Qt.SIGNAL('clicked()'), self.foto_clicked)
@@ -86,6 +87,7 @@ class Gui(QtGui.QMainWindow):
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
         boxLayout.addWidget(self.who_am_i_button)
         self.who_am_i_button.clicked.connect(self.who_i_clicked)
+        
         
         # Beenden-Button
         self.quit_button = QtGui.QPushButton("Ende", self)
@@ -108,6 +110,7 @@ class Gui(QtGui.QMainWindow):
         else:
             self.test = False
             print "Web-Cam nicht angeschlossen"
+
     
     def do_training_set(self, text):
         print 'Text ', text
@@ -122,11 +125,15 @@ class Gui(QtGui.QMainWindow):
             print "Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
             
     def foto_clicked(self):
-        print "Foto Machen"
-        # shost is a QString object
-        print 'der TEXT ', self.id_text
-        self.video.save_face = True
-        self.video.face_id = self.id_text.text()
+        if self.training_set_button.isChecked():
+            self.training_set_button.setText("Anhalten")
+            print "Foto Machen"
+            # shost is a QString object
+            print 'der TEXT ', self.id_text
+            self.video.save_face = True
+            self.video.face_id = self.id_text.text()
+        else:
+            self.training_set_button.setText("Training-Set")
         
         
     def who_i_clicked(self):
