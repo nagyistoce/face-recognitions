@@ -31,7 +31,6 @@ class FaceDetector(object):
         self.training_set = model.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
-
     def detectFace(self, frame,face_id,save_face):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
