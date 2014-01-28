@@ -5,15 +5,13 @@ Video-Bild-Konvertierungen für PyQt Support.
  
 
 '''
-import sys
-import numpy as np
+from PyQt4 import Qt, QtCore, QtGui
 import cv2
-
-from PyQt4 import Qt
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+import sys
 
 import fdetection as fd
+import numpy as np
+
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -45,7 +43,6 @@ class Video():
         except:
             print "Fehler beim konvertieren des Kamerabildes: ", sys.exc_info()[0]
             raise
-
         
 class Gui(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
@@ -77,14 +74,12 @@ class Gui(QtGui.QMainWindow):
         self.training_set_button = QtGui.QPushButton("Training-Set", self)
         self.training_set_button.setCheckable(True)
         boxLayout.addWidget(self.training_set_button)
-        self.training_set_button.clicked.connect(self.training_set_clicked)
         Qt.QObject.connect(self.training_set_button, Qt.SIGNAL('clicked()'), self.training_set_clicked)
                         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
         boxLayout.addWidget(self.who_am_i_button)
         self.who_am_i_button.clicked.connect(self.who_i_clicked)
-        
         
         # Beenden-Button
         self.quit_button = QtGui.QPushButton("Ende", self)
@@ -108,7 +103,6 @@ class Gui(QtGui.QMainWindow):
             self.test = False
             print "Web-Cam nicht angeschlossen"
 
-    
     def do_training_set(self, text):
         print 'do_training_set(): ', text
         
@@ -120,22 +114,20 @@ class Gui(QtGui.QMainWindow):
             self.video_label.setPixmap(self.video.convert_frame())            
         except TypeError:
             print "Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
-            
+    
+    # Button-Callback-Funktionen
     def training_set_clicked(self):
+        print 'training_set_clicked() und button-status: ', self.training_set_button.isChecked()
         if self.training_set_button.isChecked():
             self.training_set_button.setText("Anhalten")
-            print "Foto Machen"
-            # shost is a QString object
-            print 'der TEXT ', self.id_text
             self.video.save_face = True
             self.video.face_id = self.id_text.text()
-        else:
+        else: # not button.isChecked()
             self.training_set_button.setText("Training-Set")
-        
+            self.video.save_face = False
         
     def who_i_clicked(self):
         print "Who i am"
-
  
 def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
