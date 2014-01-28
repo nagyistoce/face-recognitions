@@ -50,7 +50,7 @@ class TrainingSets(object):
         
         if not os.path.exists(folder):
             self.create_folder(self.path, face_id)
-        print 'Okay, ID existiert'
+        #print 'Okay, ID existiert'
         cv2.imwrite(os.path.join(folder,self.get_image_name(face_id)), face)
         #assert(isinstance(face, QtGui.QPixmap))
         #face.save(os.path.join(self.path, self.get_image_name()))
