@@ -7,7 +7,6 @@ import os
 import errno
 import sys
 
-from PyQt4 import QtGui
 import cv2, numpy as np
 
 class TrainingSets(object):
@@ -22,9 +21,9 @@ class TrainingSets(object):
         # TOD0: automatisch Ordnerstruktur anlegen falls sie noch nicht existiert
         self.init_folder_structure()
     
-    def get_image_name(self, id):
+    def get_image_name(self, face_id):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck"""
-        return '%s_%s.jpg' % (str(id), self.counter)
+        return '%s_%s.jpg' % (str(face_id), self.counter)
     
     def create_folder(self, path, face_id=''):
         """Legt einen neuen Ordner im Dateisystem an: path/name."""
@@ -45,14 +44,14 @@ class TrainingSets(object):
         """Legt Ordnerstrukur an"""
         self.create_folder(self.path)
 
-    def add_face(self, face, id):                
+    def add_face(self, face, face_id):                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""     
-        folder = os.path.join(self.path, str(id))
+        folder = os.path.join(self.path, str(face_id))
         
         if not os.path.exists(folder):
-            self.create_folder(self.path, id)
+            self.create_folder(self.path, face_id)
         print 'Okay, ID existiert'
-        cv2.imwrite(os.path.join(folder,self.get_image_name(id)), face)
+        cv2.imwrite(os.path.join(folder,self.get_image_name(face_id)), face)
         #assert(isinstance(face, QtGui.QPixmap))
         #face.save(os.path.join(self.path, self.get_image_name()))
         self.counter += 1

@@ -3,7 +3,6 @@
 PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
 Video-Bild-Konvertierungen für PyQt Support.
  
-Created on 16.01.2014
 
 '''
 import sys
@@ -15,8 +14,6 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 import fdetection as fd
-import model
-
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -34,7 +31,7 @@ class Video():
         success, read_frame=self.webcam.read()
         if success:              
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
-            self.current_frame = self.detect.detectFace(read_frame,self.face_id,self.save_face)
+            self.current_frame = self.detect.detectFace(read_frame, self.face_id,self.save_face)
             
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
@@ -46,7 +43,7 @@ class Video():
             #self.previous_frame = self.current_frame
             return image
         except:
-            print "Fehler beim konvertieren des Kamerabildes:", sys.exc_info()[0]
+            print "Fehler beim konvertieren des Kamerabildes: ", sys.exc_info()[0]
             raise
 
         
@@ -58,7 +55,6 @@ class Gui(QtGui.QMainWindow):
         periodischen Ausfuehren der play() Methode
         
         """      
-        
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
         widget = QtGui.QWidget(self)
@@ -75,13 +71,14 @@ class Gui(QtGui.QMainWindow):
         # ID Textfeld
         self.id_text = QtGui.QLineEdit("ID", self)
         Qt.QObject.connect(self.id_text, Qt.SIGNAL('textChanged(const QString&)'), self.do_training_set)
-
+        boxLayout.addWidget(self.id_text)
+        
         # Training-Set-Aufnehmen-Button
         self.training_set_button = QtGui.QPushButton("Training-Set", self)
         self.training_set_button.setCheckable(True)
         boxLayout.addWidget(self.training_set_button)
-        self.training_set_button.clicked.connect(self.foto_clicked)
-        Qt.QObject.connect(self.training_set_button, Qt.SIGNAL('clicked()'), self.foto_clicked)
+        self.training_set_button.clicked.connect(self.training_set_clicked)
+        Qt.QObject.connect(self.training_set_button, Qt.SIGNAL('clicked()'), self.training_set_clicked)
                         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
@@ -113,7 +110,7 @@ class Gui(QtGui.QMainWindow):
 
     
     def do_training_set(self, text):
-        print 'Text ', text
+        print 'do_training_set(): ', text
         
     def play(self):
         """Zum stetig wiederholtem Aufrufen um Kamerabild zu aktualisieren"""
@@ -124,7 +121,7 @@ class Gui(QtGui.QMainWindow):
         except TypeError:
             print "Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
             
-    def foto_clicked(self):
+    def training_set_clicked(self):
         if self.training_set_button.isChecked():
             self.training_set_button.setText("Anhalten")
             print "Foto Machen"
