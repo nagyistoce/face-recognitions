@@ -136,7 +136,6 @@ class FaceDetector(object):
 #             cv2.imshow("Face", new_face)
 #             cv2.namedWindow("Mirror")
 #             cv2.imshow("Mirror", mirror_face)
-            #TODO: new_face und mirror_face in Verzeichnis ID abspeichern, Label und Bildpfad in info.dat schreiben 
             self.old_time = current_time
             self.old_face = new_face.copy()
         
