@@ -63,7 +63,14 @@ class TrainingSets(object):
         name = '%s_%s.jpg' % (str(face_id), self.get_hash(face.tostring())) #self.counter)
         return name
 
-
+    def compare(self, hash, img):
+        """Vergleicht einen Hashwert mit dem eines Bild"""
+#         hash_before = img.split('_')[1][:-4]
+        hash_after = self.get_hash(img.tostring())
+        print hash, ' vorher'
+        print hash_after, ' nachher'
+        print '--> ', hash == hash_after
+        
     def get_faces(self, id_path):
         """Liest alle Bilder einer bestimmten ID ein"""
         id_path = os.path.join(self.path, id_path)
@@ -73,50 +80,35 @@ class TrainingSets(object):
         face_images = []
         for img in os.listdir(id_path):
             try:
-                im = cv2.imread(os.path.join(id_path, img), cv2.IMREAD_GRAYSCALE)
-                hash_before = img.split('_')[1][:-4]
-                hash_after = self.get_hash(im.tostring())
-                print hash_before, ' vorher'
-                print hash_after, ' nachher'
-                print '--> ', hash_before == hash_after
+                img_path = os.path.join(id_path, img)
+                im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 face_images.append(np.asarray(im, dtype = np.uint8))
+#                 self.compare(img_path.split('_')[1][:-4], im)
             except IOError,(errno,strerror):
                 print "I/O error{0}: {1}".format(errno, strerror)
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
                 raise
         print 'Ich habe %s Bilder eingelesen' % len(face_images)
-        
-
-    
+        return face_images, len(face_images)
             
     # warum nicht jeder face_id ne liste von face_images zuordnen?
-    def get_all_faces(self, path=None):
+    def get_all_faces(self):
         """Einlesen der Gesichtsbilder von Platte mit zuordnung der jeweiligen ID durch 2 Listen."""
-
-        path = self.path if path == None else path
-        print 'get_faces()'
-        ids = 0
+        counter = 0
         face_images, face_ids = [], []
-        for dirname, dirnames, filenames in os.walk(path):
-            print dirname
-            print dirnames
-            print filenames
+        for dirname, dirnames, filenames in os.walk(self.path):
             for subdirname in dirnames:
-                id_path = os.path.join(dirname, subdirname)
-                for face_image in os.listdir(id_path):
-                    try:
-                        im = cv2.imread(os.path.join(id_path, face_image), cv2.IMREAD_GRAYSCALE)
-                        hash = face_image.split('_')[1]
-                        print 'hash von diesem bild war beim speichern: ', hash
-                        face_images.append(np.asarray(im, dtype = np.uint8))
-                        face_ids.append(ids)
-                    except IOError,(errno,strerror):
-                        print "I/O error{0}: {1}".format(errno, strerror)
-                    except:
-                        print "Unexpected error: ", sys.exc_info()[0]
-                        raise
-                ids = ids +1 # was passiert wenn auf platte nur id (0, 2) vorhanden sind
+                if subdirname != 'ID':
+                    logging.warning('--------------------')
+                    logging.warning('subdirname '+ subdirname)
+                    id_path = os.path.join(dirname, subdirname)
+                    images, number = self.get_faces(id_path)
+                    face_images.extend(images)
+                    face_ids.extend([int(subdirname)] * number)
+                    print face_ids
+                    print number
+        print len(face_images)
         return [face_images, face_ids]
     
         
