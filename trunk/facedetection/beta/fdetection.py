@@ -31,6 +31,7 @@ class FaceDetector(object):
         self.training_set = model.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
+        
     def detectFace(self, frame,face_id,save_face):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
@@ -126,8 +127,8 @@ class FaceDetector(object):
         if result.seconds >= 1 and simular >= 0.3:
             #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
-            self.training_set.add_face(new_face, self.face_id)
-            self.training_set.add_face(mirror_face, self.face_id)
+            self.training_set.save_face(new_face, self.face_id)
+            self.training_set.save_face(mirror_face, self.face_id)
             print "saved a new face"
             
 #             cv2.namedWindow("Face")

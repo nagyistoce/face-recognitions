@@ -113,7 +113,7 @@ class Gui(QtGui.QMainWindow):
             self.video.capture_next_frame()            
             self.video_label.setPixmap(self.video.convert_frame())            
         except TypeError:
-            print "Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
+            print "GUI.play(): Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
     
     # Button-Callback-Funktionen
     def training_set_clicked(self):
