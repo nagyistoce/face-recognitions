@@ -23,7 +23,8 @@ class TrainingSets(object):
     
     def get_image_name(self, face_id):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck"""
-        return '%s_%s.jpg' % (str(face_id), self.counter)
+        #.png damit die pixel values sich nicht ändern
+        return '%s_%s.png' % (str(face_id), self.counter)
     
     def create_folder(self, path, face_id=''):
         """Legt einen neuen Ordner im Dateisystem an: path/name."""
