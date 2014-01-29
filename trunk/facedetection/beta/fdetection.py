@@ -5,6 +5,7 @@ import os
 import haarcascades
 from datetime import datetime
 import model
+
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
     def __init__(self):
