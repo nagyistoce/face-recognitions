@@ -130,6 +130,6 @@ class Gui(QtGui.QMainWindow):
         
     def who_i_clicked(self):
         print "Who i am"
-#         self.trainingSets.get_faces('/home/mi/ptreb001/Dropbox/FACERECOGNITION/_TRAINING_SETS_/ID')
-        print len(self.trainingSets.get_all_faces()), ' len'
+        self.trainingSets.get_faces('/home/mi/ptreb001/Dropbox/FACERECOGNITION/_TRAINING_SETS_/ID')
+#         print len(self.trainingSets.get_all_faces()), ' len'
         

@@ -53,6 +53,7 @@ class TrainingSets(object):
         folder = os.path.join(self.path, str(face_id))
         if not os.path.exists(folder):
             self.create_folder(self.path, face_id)
+        face = np.asarray(face, dtype = np.uint8)
         image_name = self.get_image_name(face_id, face)
         cv2.imwrite(os.path.join(folder, image_name), face)
         self.counter += 1
@@ -83,7 +84,7 @@ class TrainingSets(object):
                 img_path = os.path.join(id_path, img)
                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 face_images.append(np.asarray(im, dtype = np.uint8))
-#                 self.compare(img_path.split('_')[1][:-4], im)
+                self.compare(img.split('_')[1][:-4], im)
             except IOError,(errno,strerror):
                 print "I/O error{0}: {1}".format(errno, strerror)
             except:
