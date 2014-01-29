@@ -128,19 +128,3 @@ class Gui(QtGui.QMainWindow):
         
     def who_i_clicked(self):
         print "Who i am"
- 
-def main(args):
-    """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
-    app = QtGui.QApplication(args)
-    win = Gui()
-    win.show()
-    app.connect(app,                             # Sender-Widget
-                Qt.SIGNAL('lastWindowClosed()'), # Signal
-                app,                             # Empfaenger
-                Qt.SLOT('quit()')                # aktivierter Slot
-                )
-    return app.exec_()
-    
-if __name__ == '__main__':
-    # Endlosschleifen aufruf app.exec_ als returnwert
-    sys.exit(main(sys.argv))
