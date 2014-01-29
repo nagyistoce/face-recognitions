@@ -20,9 +20,9 @@
 
  * [http://www.google.de/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&ved=0CFkQFjAF&url=http%3A%2F%2Fgeneral-k-cut.googlecode.com%2Fsvn-history%2Fr150%2Ftrunk%2Fbooks%2F1849517827_OpenCV.pdf&ei=mlugUrGyIqfV4gS4zoHwDw&usg=AFQjCNGVPEncqIeQLpMGv3arDKpcBJbeVA&bvm=bv.57155469,d.bGE&cad=rja Mastering OpenCV PDF]
  
- * [http://bytefish.de/blog/] Hat viele Beispiele und genaue Erklärungen
+ * [http://bytefish.de/blog/ bytefish.de] Hat viele Beispiele und genaue Erklärungen
  
- * [www.face-rec.org/algorithms] Erklärung zu die verschiedene Algorithmen
+ * [www.face-rec.org/algorithms face-rec.org] Erklärung zu die verschiedene Algorithmen
 
 *Repositories*
  * [http://code.google.com/p/visual-control/ visual-control C++]
