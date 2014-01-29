@@ -3,7 +3,6 @@
 PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
 Video-Bild-Konvertierungen für PyQt Support.
  
-
 '''
 from PyQt4 import Qt, QtCore, QtGui
 import cv2
