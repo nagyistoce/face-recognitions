@@ -8,7 +8,7 @@ import os
 import errno
 import sys
 import datetime
-
+import pprint as pp
 import cv2, numpy as np
 
 class TrainingSets(object):
@@ -60,35 +60,36 @@ class TrainingSets(object):
             
             
                 
-    def get_faces(self, id_path):
+    def get_faces(self, id_path, face_images):
         """Liest alle Bilder einer bestimmten ID ein"""
         id_path = os.path.join(self.path, id_path)
-        face_images = []
+        num_imgs = 0
         for img in os.listdir(id_path):
             try:
                 img_path = os.path.join(id_path, img)
                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 face_images.append(np.asarray(im, dtype = np.uint8))
+                num_imgs +=1
             except IOError,(errno,strerror):
                 print "I/O error{0}: {1}".format(errno, strerror)
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
                 raise
-        print 'Ich habe %s Bilder eingelesen' % len(face_images)
-        return face_images, len(face_images)
+        print 'Ich habe %s Bilder eingelesen' % num_imgs
+        return face_images, num_imgs
             
     def get_all_faces(self):
         """Einlesen der Gesichtsbilder von Platte mit zuordnung der jeweiligen ID durch 2 Listen."""
         face_images, face_ids = [], []
         for dirname, dirnames, filenames in os.walk(self.path):
-            for subdirname in dirnames:
+            for subdirname in sorted(dirnames):
                 if subdirname != 'ID':
                     id_path = os.path.join(dirname, subdirname)
-                    images, number = self.get_faces(id_path)
-                    face_images.extend(images)
+                    face_images, number = self.get_faces(id_path, face_images)
                     face_ids.extend([int(subdirname)] * number)
-        return [face_images, face_ids]
+                    print subdirname
+        return face_images, face_ids
     
 if __name__ == '__main__':
     ts = TrainingSets()
-    print ts.get_image_name('ID')
+    
