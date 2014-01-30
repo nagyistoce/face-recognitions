@@ -4,7 +4,7 @@ import cv2, math, numpy as np
 import os
 import haarcascades
 from datetime import datetime
-import model
+from facedetection.beta import database
 
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
@@ -29,7 +29,7 @@ class FaceDetector(object):
         self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
         self.classifier = cv2.CascadeClassifier(self.haarcascades.FRONTAL_FACE_ALT2)
         self.fpp = FacePreprocessor()
-        self.training_set = model.TrainingSets()
+        self.training_set = database.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
         
