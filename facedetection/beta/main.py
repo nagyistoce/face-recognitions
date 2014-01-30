@@ -13,7 +13,7 @@ import gui
 def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
     app = QtGui.QApplication(args)
-    win = gui.Gui()
+    win = gui.GUI()
     win.show()
     app.connect(app,                             # Sender-Widget
                 Qt.SIGNAL('lastWindowClosed()'), # Signal

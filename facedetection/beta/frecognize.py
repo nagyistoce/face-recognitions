@@ -3,7 +3,7 @@ Created on 27.01.2014
 
 @author: jjoch001
 '''
-import model as m
+from facedetection.beta import database as m
 import numpy as np
 import cv2
 
