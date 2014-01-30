@@ -7,6 +7,7 @@ Created on 24.01.2014
 import os
 import errno
 import sys
+import datetime
 
 import cv2, numpy as np
 
@@ -24,8 +25,8 @@ class TrainingSets(object):
     
     def get_image_name(self, face_id):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck"""
-        #.png damit die pixel values sich nicht ändern
-        return '%s_%s.png' % (str(face_id), self.counter)
+        now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')
+        return '%s_%s.png' % (str(face_id), now)
     
     def create_folder(self, path, face_id=''):
         """Legt einen neuen Ordner im Dateisystem an: path/name."""
@@ -85,24 +86,6 @@ class TrainingSets(object):
                     face_ids.extend([int(subdirname)] * number)
         return [face_images, face_ids]
     
-#     def get_faces(self):
-#         ids = 0
-#         face_images,face_ids = [],[]
-#         for dirname, dirnames,filenames in os.walk(self.path):
-#             for subdirname in dirnames:
-#                 id_path = os.path.join(dirname, subdirname)
-#                 for face_image in os.listdir(id_path):
-#                     try:
-#                         im = cv2.imread(os.path.join(id_path,face_image), cv2.IMREAD_GRAYSCALE)
-#                         face_images.append(np.asarray(im,dtype = np.uint8))
-#                         face_ids.append(ids)
-#                     except IOError,(errno,strerror):
-#                         print "I/O error{0}: {1}".format(errno,strerror)
-#                     except:
-#                         print "Unexpected error:", sys.exc_info()[0]
-#                         raise
-#                 ids = ids +1
-#         return [face_images,face_ids]
-            
-            
-        
+if __name__ == '__main__':
+    ts = TrainingSets()
+    print ts.get_image_name('ID')
