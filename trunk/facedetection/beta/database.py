@@ -16,7 +16,6 @@ class TrainingSets(object):
     
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):
         self.path = os.path.expanduser(path)
-        self.counter = 0
         self.name = name
         self.images = {}
         print ' path den ich bekomme ', self.path
@@ -54,9 +53,13 @@ class TrainingSets(object):
         
         if not os.path.exists(folder):
             self.create_folder(self.path, face_id)
-        cv2.imwrite(os.path.join(folder,self.get_image_name(face_id)), face)
-        self.counter += 1
-
+        try:
+            cv2.imwrite(os.path.join(folder,self.get_image_name(face_id), face))
+        except IOError as detail:
+            print "Fehler beim Abspeichern des Bildes", detail
+            
+            
+                
     def get_faces(self, id_path):
         """Liest alle Bilder einer bestimmten ID ein"""
         id_path = os.path.join(self.path, id_path)
