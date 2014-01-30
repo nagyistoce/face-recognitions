@@ -35,7 +35,7 @@ class FaceDetector(object):
                                         self.haarcascades.FRONTAL_FACE_ALT2 : self.classifier
                                         }.items():
             if cascade_classifier.empty():
-                raise NameError('Fehler beim Laden folgender XML Datei:\n{}.'.format(xml))
+                raise IOError('Fehler beim Laden folgender XML Datei:\n{}.'.format(xml))
         self.fpp = FacePreprocessor()
         self.training_set = database.TrainingSets()
         self.old_face = None
