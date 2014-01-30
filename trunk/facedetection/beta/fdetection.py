@@ -5,11 +5,13 @@ import os
 import haarcascades
 from datetime import datetime
 from facedetection.beta import database
+import sys
 
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
     def __init__(self):
-        assert(haarcascades.__file__)
+        #assert(haarcascades.__file__)
+
         self.haarcascades_xml_path = os.path.split(haarcascades.__file__)[0]
         self.FRONTAL_FACE_DEFAULT = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_default.xml')
         self.FRONTAL_FACE_ALT2 = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_alt2.xml')
@@ -28,10 +30,17 @@ class FaceDetector(object):
         self.lefteye_center = cv2.CascadeClassifier(self.haarcascades.LEFT_EYE_2SPLITS)
         self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
         self.classifier = cv2.CascadeClassifier(self.haarcascades.FRONTAL_FACE_ALT2)
+        for xml, cascade_classifier in {self.haarcascades.LEFT_EYE_2SPLITS : self.lefteye_center,
+                                        self.haarcascades.RIGHT_EYE_2SPLITS : self.righteye_center,
+                                        self.haarcascades.FRONTAL_FACE_ALT2 : self.classifier
+                                        }.items():
+            if cascade_classifier.empty():
+                raise NameError('Fehler beim Laden folgender XML Datei:\n{}.'.format(xml))
         self.fpp = FacePreprocessor()
         self.training_set = database.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
+
         
     def detectFace(self, frame,face_id,save_face):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
@@ -45,6 +54,7 @@ class FaceDetector(object):
         DETECTION_WIDTH = 320
         scale = self.img.shape[1] / float(DETECTION_WIDTH)
         # skaliert das Bild runter auf eine Breite von 320, falls bild groesser ist als 320
+
         if self.img.shape[1] > DETECTION_WIDTH:
             scaled_height = int(self.img.shape[0]/scale +0.5)
             small_g = cv2.resize(g_img, (DETECTION_WIDTH,scaled_height))
@@ -222,3 +232,5 @@ class FacePreprocessor(object):
                     0, 0,360, 255, cv2.cv.CV_FILLED)
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
     
+if __name__ == '__name__':
+    fd = FaceDetector()
