@@ -1,4 +1,12 @@
 #summary Historie der Teammeetings und wichtigste Ereignisse etc.
+
+== FR 31.01.2014 ==
+
+ * TrainingSet Sebbl angelegt 
+ * 34 Fotos waren zu wenig -> Falsch erkannt
+ * 90 Fotos OK
+
+
 == DI 21.01.2014 ==
  * TODO Wiki Seiter erweitert und Theorie gelesen
  * Button-Callback Methoden angelegt
