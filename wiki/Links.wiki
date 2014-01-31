@@ -1,8 +1,14 @@
 #summary Hilfreiche Links rund um das Projekt-Thema.
 
-== UML ==
+== Diagramme UML etc. ==
 
-  [https://www.draw.io/# draw.io]
+ * [https://www.dropbox.com/s/w2wz5r42sjkivzj/Aktivitaetsdiagramm_TrainingSet.Bild.Speichern_01.pdf Aktivitätsdiagramm Gesicht Abspeichern]
+
+ * [https://www.dropbox.com/s/wetrp1xqo7vuc6q/Klassendiagramm_01.pdf Klassendiagramm v01] v
+
+== Verschiedenes ==
+
+  [https://www.draw.io/# draw.io] UML Zeichenprogramm
 
 
 == Facerecognition ==
