@@ -125,13 +125,13 @@ class FaceRecognizer(object):
         q = np.asarray(q).flatten()
         return np.sqrt(np.sum(np.power((p-q),2)))
     
-if __name__ == "__main__":
-    ts = m.TrainingSets()
-    [face_images, face_ids] = ts.get_all_faces()
-#     uf = face_images[94]
-#     i_f = face_ids[94]
-#     face_images[:] = face_images[:94]+face_images[94:]
-#     face_ids[:] = face_ids[:94]+face_ids[95:]
-    fr = FaceRecognizer(face_images[:-1], face_ids[:-1])
-    i = fr.predict(face_images[-1])
-    print "Expected ID:", face_ids[-1],"It predicts the id:", i
+# if __name__ == "__main__":
+#     ts = m.TrainingSets()
+#     [face_images, face_ids] = ts.get_all_faces()
+# #     uf = face_images[94]
+# #     i_f = face_ids[94]
+# #     face_images[:] = face_images[:94]+face_images[94:]
+# #     face_ids[:] = face_ids[:94]+face_ids[95:]
+#     fr = FaceRecognizer(face_images[:-1], face_ids[:-1])
+#     i = fr.predict(face_images[-1])
+#     print "Expected ID:", face_ids[-1],"It predicts the id:", i

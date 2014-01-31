@@ -4,7 +4,7 @@ import cv2, math, numpy as np
 import os
 import haarcascades
 from datetime import datetime
-from facedetection.beta import database
+import database
 import sys
 
 class Haarcascades(object):    
@@ -21,8 +21,7 @@ class Haarcascades(object):
         self.MCS_LEFT_EYE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_lefteye.xml')         # 80% 18ms
         self.RIGHT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_righteye_2splits.xml')
         self.MCS_MOUTH = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_mouth.xml')
-        self.MCS_NOSE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_nose.xml')
-        
+        self.MCS_NOSE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_nose.xml')        
 class FaceDetector(object):
     def __init__(self):        
         """Greift auf Haar-Cascade XML Dateien zu."""
@@ -40,13 +39,11 @@ class FaceDetector(object):
         self.training_set = database.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
-
         
-    def detectFace(self, frame,face_id,save_face):
+        
+    def detectFace(self, frame):
         """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
         self.img = frame.copy()
-        self.face_id = face_id
-        self.save_face = save_face
         assert(self.img.shape[2] == 3)
         # bereitet Bild fuer Gesichtserkennung vor
         # Konvertiert Bild zu ein Grauwertbild
@@ -85,10 +82,8 @@ class FaceDetector(object):
             # Nur wenn beide Augen gefunden werden, wird dieses Gesicht weiter an ein FacePreprocessor weiter gegeben
             if success:
                 self.pp_face = self.fpp.doPreprocess(lefteye_center, righteye_center, o_face)
-                #print self.save_face
-                if self.save_face:
-                    self.acceptNewFace(self.pp_face)
-        return self.img
+                return self.img, self.pp_face
+        return self.img, None
     
     def detectEyes(self, face):
         """Erkennung von rechtem und linken Auge und berrechnung der Augenmittelpunkte."""
@@ -128,7 +123,7 @@ class FaceDetector(object):
             return True, lefteye_center, righteye_center
         return False, lefteye_center, righteye_center
     
-    def acceptNewFace(self, new_face):
+    def acceptNewFace(self, new_face,face_id):
         # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
         current_time = datetime.now()
         simular = 1.0
@@ -138,8 +133,8 @@ class FaceDetector(object):
         if result.seconds >= 1 and simular >= 0.3:
             #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
-            self.training_set.save_face(new_face, self.face_id)
-            self.training_set.save_face(mirror_face, self.face_id)
+            self.training_set.save_face(new_face, face_id)
+            self.training_set.save_face(mirror_face, face_id)
             print "saved a new face"
             
 #             cv2.namedWindow("Face")
@@ -232,5 +227,5 @@ class FacePreprocessor(object):
                     0, 0,360, 255, cv2.cv.CV_FILLED)
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
     
-if __name__ == '__name__':
-    fd = FaceDetector()
+# if __name__ == '__name__':
+#     fd = FaceDetector()
