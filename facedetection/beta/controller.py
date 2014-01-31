@@ -16,8 +16,9 @@ class Controller(object):
         '''
         Constructor
         '''
-                # Facedetekor-Objekt
+        # Facedetekor-Objekt
         self.detect = fd()
+        self.fr = fr.FaceRecognizer()
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
@@ -25,7 +26,7 @@ class Controller(object):
                 self.detect.acceptNewFace(self.face, face_id)
                    
             if recognize_face:
-                self.fr = fr.FaceRecognizer()
+                
                 i = self.fr.predict(self.face)
                 print "Expects:", face_id
                 print "It predicts the id:", i
