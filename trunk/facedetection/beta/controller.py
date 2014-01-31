@@ -19,12 +19,13 @@ class Controller(object):
         # Facedetekor-Objekt
         self.detect = fd()
         self.fr = fr.FaceRecognizer()
+        
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
+        """Verarbeitet Informationen der gedrueckten Buttons"""
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
             if save_face:
                 self.detect.acceptNewFace(self.face, face_id)
-                   
             if recognize_face:
                 
                 i = self.fr.predict(self.face)
