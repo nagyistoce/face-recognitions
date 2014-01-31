@@ -7,44 +7,48 @@ Created on 27.01.2014
 import database as m
 import numpy as np
 import numpy.linalg as la
-import cv2
-import pprint as pp
 class FaceRecognizer(object):
     '''
     classdocs
     '''
 
 
-    def __init__(self, face_images, face_ids, num_comp = 0):
+    def __init__(self, face_images=None, face_ids=None, num_comp = 0):
         '''
         Constructor
         '''
-        #self.ts = m.TrainingSets()
         self.projections = []
         self.num_comp = 0
         self.W = []
         self.mu = None
-        #if face_images is None and face_ids is None:
-            #[face_images, face_ids] = self.ts.get_all_faces()
+        if face_images is None and face_ids is None:
+            self.ts = m.TrainingSets()
+            [face_images, face_ids] = self.ts.get_all_faces()
         self.trainFisherFaces(face_ids, face_images)
     
     def trainFisherFaces(self, face_ids, face_images):
-        self.face_ids = np.asarray(face_ids, dtype=np.int32)
-        face_images = np.asarray(face_images, dtype=np.uint8)
+        #self.face_ids = np.asarray(face_ids, dtype=np.int32)
+        #face_images = np.asarray(face_images, dtype=np.uint8)
+        self.face_ids = face_ids
         face_images = self.face_images_as_rows(face_images)
-        n = face_images.shape[0]
-        c = len(np.unique(self.face_ids))
-        [eigenvectors_pca, self.mu] = self.pca(face_images, (n-c))
-        eigenvectors_lda = self.lda(self.project(face_images,eigenvectors_pca, self.mu), self.face_ids, self.num_comp)
-        self.W = np.dot(eigenvectors_pca, eigenvectors_lda)
+        #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
+        [eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
+        #Berechne Eigenvektoren eig_vec_lda mit LDA
+        eig_vec_lda = self.lda(self.project(face_images,eig_vec_pca.T, self.mu), self.face_ids, self.num_comp)
+        #Tranformations Matrix W, der ein Image Sample in ein (c-1) Dimensionen Space projeziert wird berechnet
+        self.W = np.dot(eig_vec_pca, eig_vec_lda)
+        #Jedes Bild wird projeziert und die Projektion wird zu eine Liste Projectionen hinzugefügt
         for fi in face_images:
-            self.projections.append(self.project(fi.reshape(1,-1),self.W.T,self.mu))
+            self.projections.append(self.project(fi.reshape(1,-1),self.W,self.mu))
         
-    #der am nähesten Nachbar basiert auf den euklidischen Distanz wird berechnet
+    #der am nähesten Nachbar, wird berechnet, 
+    #in dem die kurzeste Distanz aus die Projektionen,basiert auf den euklidischen Distanz, berechnet wird
     def predict(self,unknown_face):
+        #TODO: Initial Wert von min_dist verfeinern
         min_dist = np.finfo('float').max
         min_class = -1
-        unknown_face=self.project(unknown_face.reshape(1,-1), self.W.T, self.mu)
+        #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
+        unknown_face=self.project(unknown_face.reshape(1,-1), self.W, self.mu)
         for p in range(len(self.projections)):
             d = self.euclidean_distance(self.projections[p], unknown_face)
             if d < min_dist:
@@ -52,11 +56,12 @@ class FaceRecognizer(object):
                 min_class = self.face_ids[p]
         return min_class
     
-    #y = W^T(X-u)
+    #y = W^T(X-u) schauen ob W.T korrekt ist. 
+    #Vorher: nur W aber jedes self.W musste als self.W.T als parameter geben
     def project(self, face, W, u = None):
         if u is None:
-            return np.dot(face,W)
-        return np.dot(face-u,W)
+            return np.dot(face,W.T)
+        return np.dot(face-u,W.T)
     
     #Jede Reihe is ein flache image matrix
     def face_images_as_rows(self,face_images):
@@ -71,40 +76,50 @@ class FaceRecognizer(object):
         n = face_images.shape[0]
         if num_comp<=0 or num_comp > n:
             num_comp = n
+        #Errechne der Mittelwert von alle Klassen und ihre Samples(Images)
         mean = face_images.mean(axis=0)
         face_images = face_images - mean
-        [eigenvectors, eigenvalues, v] = la.svd(face_images.T, full_matrices = False)
-        #Sortiere eigenwerte und eigenvektoren absteigend von eigenwerte abhängig
+        [eigenvectors, eigenvalues, var] = la.svd(face_images.T, full_matrices = False)
+        #Sortiere von eigenwerte abhängig die eigenwerte und eigenvektoren absteigend 
         sort_eigen = np.argsort(-eigenvalues)
         eigenvectors = eigenvectors[:,sort_eigen]
         #eigenvalues = eigenvalues[sort_eigen].copy()
+        #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         #eigenvalues = eigenvalues[:num_comp].copy()
-        #Schneide Eigenvektoren ab Anzahl von Komponenten ab
         eigenvectors = eigenvectors[:,:num_comp].copy()
         return eigenvectors, mean
     #Lineare Discriminant Analysis
     def lda(self, face_images, face_ids, num_comp = 0):
+        #Die verschieden Klassen an sich
         c = np.unique(face_ids)
         [n,d] = face_images.shape
         if num_comp<=0 or num_comp>(len(c)-1):
             num_comp = len(c)-1
+        #Mittelwert aus alle Klassen
         total_mean = face_images.mean(axis=0)
         sb = np.zeros((d,d), dtype = np.float32)
         sw = np.zeros((d,d), dtype = np.float32)
-        print 'lda:', c, face_images.shape, face_ids.shape
+        #print 'lda:', c, face_images.shape, len(face_ids)
         for i in c:
+            #Images (Samples) einer Klasse
             face_i = face_images[np.where(face_ids==i)[0],:]
+            #Mittelwert einer Klasse
             mean_i = face_i.mean(axis=0)
+            #Zwischen-Klassen Verteilung
             sb += n * np.dot((mean_i-total_mean).T, (mean_i-total_mean))
+            #Innerhalb-Klassen Verteilung
             sw += np.dot((face_i-mean_i).T,(face_i-mean_i))
+        #np.svd kann nicht verwendet werden weil sw und sw nicht umbedingt symmetrische matrixen ergeben 
         [eigenvalues, eigenvectors] = la.eig(la.inv(sw)*sb)
+        #Sortiere von eigenwerte abhängig die eigenwerte und eigenvektoren absteigend 
         sort_eigen = np.argsort(-eigenvalues.real)
         eigenvectors = eigenvectors[:,sort_eigen]
-        eigenvalues= eigenvalues[sort_eigen]
-        eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
+        #eigenvalues= eigenvalues[sort_eigen]
+        #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
+        #eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
         eigenvectors = np.array(eigenvectors[:,num_comp].real, dtype=np.float32, copy = True)
         return eigenvectors
-    
+    #Euklidischen Distanz zweier Projektion Matrizen
     def euclidean_distance(self,p,q):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
@@ -113,7 +128,7 @@ class FaceRecognizer(object):
 if __name__ == "__main__":
     ts = m.TrainingSets()
     [face_images, face_ids] = ts.get_all_faces()
-    uf = face_images[94]
+#     uf = face_images[94]
 #     i_f = face_ids[94]
 #     face_images[:] = face_images[:94]+face_images[94:]
 #     face_ids[:] = face_ids[:94]+face_ids[95:]

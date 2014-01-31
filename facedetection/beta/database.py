@@ -54,7 +54,7 @@ class TrainingSets(object):
         if not os.path.exists(folder):
             self.create_folder(self.path, face_id)
         try:
-            cv2.imwrite(os.path.join(folder,self.get_image_name(face_id), face))
+            cv2.imwrite(os.path.join(folder,self.get_image_name(face_id)), face)
         except IOError as detail:
             print "Fehler beim Abspeichern des Bildes", detail
             
