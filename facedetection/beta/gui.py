@@ -8,27 +8,28 @@ from PyQt4 import Qt, QtCore, QtGui
 import cv2
 import sys
 
-import fdetection as fd
+import controller as c
 import numpy as np
 
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
-    def __init__(self, webcam, face_id=None, save_face=False):
+    def __init__(self, webcam, face_id=None, save_face=False, recognize_face = False):
         self.webcam = webcam
         self.face_id = face_id
         self.save_face = save_face
+        self.recognize_face = recognize_face
         self.current_frame=np.ndarray([])
+        self.controller = c.Controller()
         
-        # Facedetekor-Objekt
-        self.detect = fd.FaceDetector()
+
  
     def capture_next_frame(self):
         """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
         if success:              
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
-            self.current_frame = self.detect.detectFace(read_frame, self.face_id,self.save_face)
+            self.current_frame = self.controller.frame_to_face(read_frame,self.face_id,self.save_face, self.recognize_face)
             
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
@@ -77,8 +78,10 @@ class GUI(QtGui.QMainWindow):
                         
         # Wer-Bin-Ich-Button
         self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
+        self.who_am_i_button.setCheckable(True)
         boxLayout.addWidget(self.who_am_i_button)
-        self.who_am_i_button.clicked.connect(self.who_i_clicked)
+        Qt.QObject.connect(self.who_am_i_button, Qt.SIGNAL('clicked()'), self.who_i_clicked)
+        #self.who_am_i_button.clicked.connect(self.who_i_clicked)
         
         # Beenden-Button
         self.quit_button = QtGui.QPushButton("Ende", self)
@@ -127,3 +130,10 @@ class GUI(QtGui.QMainWindow):
         
     def who_i_clicked(self):
         print "Who i am"
+        if self.who_am_i_button.isChecked():
+            self.who_am_i_button.setText("Anhalten")
+            self.video.recognize_face = True
+            self.video.face_id = self.id_text.text()
+        else: # not button.isChecked()
+            self.who_am_i_button.setText("Who I am")
+            self.video.recognize_face = False
