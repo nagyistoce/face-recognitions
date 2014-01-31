@@ -10,6 +10,8 @@
 
 *Basis Artikel*
 
+ * [http://www.shervinemami.info/faceRecognition.html] Face Recognize beschrieben
+
  * [http://books.google.de/books?id=cIM7xK5j8fYC&pg=PA17&lpg=PA17&dq=fisherfaces&source=bl&ots=c5_HOuC7He&sig=k2nefolXG90zX9n-ve7JuJsM3PM&hl=de&sa=X&ei=xwvqUsLJLMnRsgbb0IDYBA&ved=0CEgQ6AEwBA#v=onepage&q=fisherfaces&f=false Digitale Gesichtserkennung] google books
 
  * [http://eliteinformatiker.de/2013/08/28/eine-einfache-gesichtserkennung-mit-opencv-und-scikit-learn/ eliteinformatiker.de]
