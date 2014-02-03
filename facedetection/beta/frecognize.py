@@ -7,6 +7,9 @@ Created on 27.01.2014
 import database as m
 import numpy as np
 import numpy.linalg as la
+
+import log as l
+
 class FaceRecognizer(object):
     '''
     classdocs
@@ -17,6 +20,7 @@ class FaceRecognizer(object):
         '''
         Constructor
         '''
+        self.possible_ids = {}
         self.projections = []
         self.num_comp = 0
         self.W = []
@@ -45,7 +49,7 @@ class FaceRecognizer(object):
     #in dem die kurzeste Distanz aus die Projektionen,basiert auf den euklidischen Distanz, berechnet wird
     def predict(self,unknown_face):
         #TODO: Initial Wert von min_dist verfeinern
-        min_dist = np.finfo('float').max
+        min_dist = 113. #np.finfo('float').max
         min_class = -1
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
         unknown_face=self.project(unknown_face.reshape(1,-1), self.W, self.mu)
@@ -54,6 +58,8 @@ class FaceRecognizer(object):
             if d < min_dist:
                 min_dist = d
                 min_class = self.face_ids[p]
+#                 l.log('min_dist: %s id: %s ' % (min_dist, min_class))
+
         return min_class
     
     #y = W^T(X-u) schauen ob W.T korrekt ist. 

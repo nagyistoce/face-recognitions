@@ -15,6 +15,8 @@ class TrainingSets(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
     
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):
+        # dictionary d{'id':[#_imgs, #_predicts]
+        self.ids = {} 
         self.path = os.path.expanduser(path)
         self.name = name
         self.images = {}
@@ -62,7 +64,7 @@ class TrainingSets(object):
                 
     def get_faces(self, id_path, face_images):
         """Liest alle Bilder einer bestimmten ID ein"""
-        id_path = os.path.join(self.path, id_path)
+        id = id_path.split(os.sep)[-1]
         num_imgs = 0
         for img in os.listdir(id_path):
             try:
@@ -75,7 +77,8 @@ class TrainingSets(object):
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
                 raise
-        print '%s Bilder eingelesen\n' % num_imgs
+        print 'ID: %s %s Bilder eingelesen\n' % (id, num_imgs)
+        self.ids[str(id)] = [num_imgs, []]
         return face_images, num_imgs
             
     def get_all_faces(self):
@@ -87,7 +90,6 @@ class TrainingSets(object):
                     id_path = os.path.join(dirname, subdirname)
                     face_images, number = self.get_faces(id_path, face_images)
                     face_ids.extend([int(subdirname)] * number)
-                    print 'ID ', subdirname,
         return face_images, face_ids
     
 if __name__ == '__main__':

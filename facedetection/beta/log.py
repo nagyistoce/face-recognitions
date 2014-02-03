@@ -15,7 +15,10 @@ ch.setFormatter(formatter)
 root.addHandler(ch)
 root.setLevel(logging.DEBUG)
   
+
 def log(msg):
+    """Gibt msg auf Konsole aus, sind keine Ausgaben erwuenscht pass einkommentieren"""
+#     pass
     root.info(msg)
 
 if __name__ == '__main__':
