@@ -127,6 +127,7 @@ warpAffine()
 
 
 == Fragen an Dr. Schwanecke ==
+ * Können wir unsere 3 Gesichter live vor der Präsentation anlernen (um beste Lichtverhältnisse etc. zu haben?
 
  * Müssen/sollten wir Webcam Fotos direkt neu erstellen oder einladen von DB?
   * A: Bilddatenbankd können wir vorher anlegen und trainieren
