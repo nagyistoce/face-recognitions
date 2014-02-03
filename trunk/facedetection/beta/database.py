@@ -75,7 +75,7 @@ class TrainingSets(object):
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
                 raise
-        print 'Ich habe %s Bilder eingelesen' % num_imgs
+        print '%s Bilder eingelesen\n' % num_imgs
         return face_images, num_imgs
             
     def get_all_faces(self):
@@ -87,7 +87,7 @@ class TrainingSets(object):
                     id_path = os.path.join(dirname, subdirname)
                     face_images, number = self.get_faces(id_path, face_images)
                     face_ids.extend([int(subdirname)] * number)
-                    print subdirname
+                    print 'ID ', subdirname,
         return face_images, face_ids
     
 if __name__ == '__main__':

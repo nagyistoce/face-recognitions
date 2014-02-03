@@ -1,21 +1,15 @@
+# -*- coding: utf-8 -*-
 '''
-Created on 31.01.2014
-
-@author: jjoch001
+Modul um GUI Eingaben korrekt an Controller-Objekte weiter zu geben.
 '''
 from fdetection import FaceDetector as fd
 import frecognize as fr
 
 class Controller(object):
-    '''
-    classdocs
-    '''
-
+    """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI."""
 
     def __init__(self):
-        '''
-        Constructor
-        '''
+        """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
         # Facedetekor-Objekt
         self.detect = fd()
         self.fr = fr.FaceRecognizer()
@@ -27,9 +21,8 @@ class Controller(object):
             if save_face:
                 self.detect.acceptNewFace(self.face, face_id)
             if recognize_face:
-                
                 i = self.fr.predict(self.face)
-                print "Expects:", face_id
+                print "Expects:", face_id,
                 print "It predicts the id:", i
         return self.frame
     

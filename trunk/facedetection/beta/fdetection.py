@@ -5,13 +5,11 @@ import os
 import haarcascades
 from datetime import datetime
 import database
-import sys
 
 class Haarcascades(object):    
     """Stellt die Haarcascade-XML Dateien bereit."""
     def __init__(self):
-        #assert(haarcascades.__file__)
-
+        assert(haarcascades.__file__)
         self.haarcascades_xml_path = os.path.split(haarcascades.__file__)[0]
         self.FRONTAL_FACE_DEFAULT = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_default.xml')
         self.FRONTAL_FACE_ALT2 = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_alt2.xml')
@@ -22,6 +20,7 @@ class Haarcascades(object):
         self.RIGHT_EYE_2SPLITS = os.path.join(self.haarcascades_xml_path, 'haarcascade_righteye_2splits.xml')
         self.MCS_MOUTH = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_mouth.xml')
         self.MCS_NOSE = os.path.join(self.haarcascades_xml_path, 'haarcascade_mcs_nose.xml')        
+
 class FaceDetector(object):
     def __init__(self):        
         """Greift auf Haar-Cascade XML Dateien zu."""
@@ -124,6 +123,10 @@ class FaceDetector(object):
         return False, lefteye_center, righteye_center
     
     def acceptNewFace(self, new_face,face_id):
+        """Prueft ob neues Gesichtsbild gut vom vorigen unterscheidbar ist, wenn ja
+        wird das neue Bild normal und gespiegelt auf Platte gespeichert.
+        
+        """
         # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
         current_time = datetime.now()
         simular = 1.0
@@ -137,10 +140,6 @@ class FaceDetector(object):
             self.training_set.save_face(mirror_face, face_id)
             print "saved a new face"
             
-#             cv2.namedWindow("Face")
-#             cv2.imshow("Face", new_face)
-#             cv2.namedWindow("Mirror")
-#             cv2.imshow("Mirror", mirror_face)
             self.old_time = current_time
             self.old_face = new_face.copy()
         
@@ -228,4 +227,8 @@ class FacePreprocessor(object):
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
     
 # if __name__ == '__name__':
+#             cv2.namedWindow("Face")
+#             cv2.imshow("Face", new_face)
+#             cv2.namedWindow("Mirror")
+#             cv2.imshow("Mirror", mirror_face)
 #     fd = FaceDetector()
