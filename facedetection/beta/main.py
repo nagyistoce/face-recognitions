@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Bootstrap Modul zum Starten der Anwendung.
+Bootstrap-Modul zum Starten der Anwendung.
 
 """
 import sys
@@ -15,7 +15,7 @@ def main(args):
     app = QtGui.QApplication(args)
     win = gui.GUI()
     win.show()
-    app.connect(app,                             # Sender-Widget
+    app.connect(app,                             # Sender
                 Qt.SIGNAL('lastWindowClosed()'), # Signal
                 app,                             # Empfaenger
                 Qt.SLOT('quit()')                # aktivierter Slot
@@ -23,5 +23,5 @@ def main(args):
     return app.exec_()
     
 if __name__ == '__main__':
-    # Endlosschleifen aufruf app.exec_ als returnwert
+    # Endlosschleifen aufruf, app.exec_ als returnwert
     sys.exit(main(sys.argv))
