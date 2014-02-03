@@ -1,0 +1,12 @@
+#summary Alles was schön wäre wenn wir mehr Zeit hätten / haben.
+
+ # User-Klasse, fuer gute Benutzerverwaltung
+ 
+ # Name-ID Zuordnung, solange es noch keine User-Klasse gibt
+
+ # Abfrage nach eingabe der ID: 'Bist Du tatsächlich <Name> mit ID <ID>?'
+ 
+ # Training starten nachdem 'disable' Klick auf den Trainig-Button
+
+ # Fehler Abfangen, wenn Programm noch läuft und man es nochmal startet -> schöne Fehlermeldung
+ 
