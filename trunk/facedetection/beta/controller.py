@@ -17,14 +17,18 @@ class Controller(object):
         self.fr = fr.FaceRecognizer()
         self.trigger_rec = False
         self.trigger_save = False
-        
+    
+    def get_percentage(self, sum, part):
+        """Berrechnung des Prozentualen Anteils"""
+        return 100 * part/float(sum)
+    
     # TODO: ggf raus vor abgabe
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
         s = ['\n----------------------------------------------']
-        for k, v in self.fr.ts.ids.items():                    
-            s.append('Predicts: ID: %s    %sx' % (k, len(v[1])))
-        s.append('\n----------------------------------------------')
+        for k, v in self.fr.ts.ids.items():            
+            s.append('Predicts: ID: %s    %sx => ' % (k, len(v[1])), )
+        s.append('----------------------------------------------\n')
         l.log('\n'.join(s))
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
@@ -50,5 +54,8 @@ class Controller(object):
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
                 self.trigger_rec = False
                 self.print_stat()
+                # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
+                for k, v in self.fr.ts.ids.items():
+                    v[1] = []
         return self.frame
     
