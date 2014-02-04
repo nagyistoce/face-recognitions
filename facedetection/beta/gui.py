@@ -4,7 +4,6 @@ PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
 Video-Bild-Konvertierungen für PyQt Support.
  
 """
-import sys
 import logging as log
 
 from PyQt4 import Qt, QtCore, QtGui
@@ -30,6 +29,7 @@ class Video():
         if success:              
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
             self.current_frame = self.controller.frame_to_face(read_frame,self.face_id,self.save_face, self.recognize_face)            
+    
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
         try:            
@@ -40,12 +40,11 @@ class Video():
             #self.previous_frame = self.current_frame
             return image
         except:
-            print "Fehler beim konvertieren des Kamerabildes: ", sys.exc_info()[0]
+            log.exception("Fehler beim konvertieren des Kamerabildes")
             raise
         
 class GUI(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
-    
     def __init__(self, *args):
         """Buttons und ein Label fuer das Videobild sowie ein Timer zum 
         periodischen Ausfuehren der play() Methode
@@ -70,17 +69,17 @@ class GUI(QtGui.QMainWindow):
         boxLayout.addWidget(self.id_text)
         
         # Training-Set-Aufnehmen-Button
-        self.training_set_button = QtGui.QPushButton("Training-Set", self)
-        self.training_set_button.setCheckable(True)
-        boxLayout.addWidget(self.training_set_button)
-        Qt.QObject.connect(self.training_set_button, Qt.SIGNAL('clicked()'), self.training_set_clicked)
+        self.button_do_train = QtGui.QPushButton("Training-Set", self)
+        self.button_do_train.setCheckable(True)
+        boxLayout.addWidget(self.button_do_train)
+        Qt.QObject.connect(self.button_do_train, Qt.SIGNAL('clicked()'), self.clicked_do_train)
                         
         # Wer-Bin-Ich-Button
-        self.who_am_i_button = QtGui.QPushButton("Wer-Bin-Ich?", self)
-        self.who_am_i_button.setCheckable(True)
-        boxLayout.addWidget(self.who_am_i_button)
-        Qt.QObject.connect(self.who_am_i_button, Qt.SIGNAL('clicked()'), self.who_i_clicked)
-        #self.who_am_i_button.clicked.connect(self.who_i_clicked)
+        self.button_who_i_am = QtGui.QPushButton("Wer-Bin-Ich?", self)
+        self.button_who_i_am.setCheckable(True)
+        boxLayout.addWidget(self.button_who_i_am)
+        Qt.QObject.connect(self.button_who_i_am, Qt.SIGNAL('clicked()'), self.clicked_who_i_am)
+        #self.button_who_i_am.clicked.connect(self.clicked_who_i_am)
         
         # Beenden-Button
         self.quit_button = QtGui.QPushButton("Ende", self)
@@ -100,10 +99,9 @@ class GUI(QtGui.QMainWindow):
             # timeout-SIGNAL an play-SLOT binden
             self._timer.timeout.connect(self.play)
             self._timer.start(27)
-
         else:
             self.test = False
-            print "Web-Cam nicht angeschlossen oder die Anwendung laeuft noch!?"
+            log.critical("Web-Cam nicht angeschlossen oder die Anwendung laeuft noch!?")
 
     def on_input_id(self, text):
         """Wird automatisch bei Eingabe ins Textfeld aufgerufen"""
@@ -115,29 +113,35 @@ class GUI(QtGui.QMainWindow):
             # naechsten Frame holen und diesen konvertiert als Pixmap in GUI anzeigen
             self.video.capture_next_frame()            
             self.video_label.setPixmap(self.video.convert_frame())            
-        except TypeError:
-            print "GUI.play(): Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
+        except Exception:
+            log.exception("GUI.play(): Kein Bild von Kamera oder Konvertierungsproblem beim Wandeln zum QPixmap!")
     
     # Button-Callback-Funktionen
-    def training_set_clicked(self):
-        log.info('Training-Set: %s', self.training_set_button.isChecked())
-        if self.training_set_button.isChecked():
-            self.training_set_button.setText("Anhalten")
+    def clicked_do_train(self):
+        log.info('Training-Set: %s', self.button_do_train.isChecked())
+        if self.button_who_i_am.isChecked():
+            self.button_do_train.setChecked(False)
+            log.error('Bitte erst Gesichtserkennung beenden!')
+            return
+        if self.button_do_train.isChecked():
+            self.button_do_train.setText("Anhalten")
             self.video.save_face = True
             self.video.face_id = self.id_text.text()
         else: # not button.isChecked()
-            self.training_set_button.setText("Training-Set")
+            self.button_do_train.setText("Training-Set")
             self.video.save_face = False
         
-    def who_i_clicked(self):
-        log.info('wer bin ich geklickt: %s', self.who_am_i_button.isChecked())
-        if self.who_am_i_button.isChecked():
-            self.who_am_i_button.setText("Anhalten")
+    def clicked_who_i_am(self):
+        log.info('wer bin ich geklickt: %s', self.button_who_i_am.isChecked())
+        if self.button_do_train.isChecked():                            
+            self.button_who_i_am.setChecked(False)
+            log.error('Bitte erst Trainings-Modus beenden!')
+            return
+        if self.button_who_i_am.isChecked():
+            self.button_who_i_am.setText("Anhalten")
             self.video.recognize_face = True
             self.video.face_id = self.id_text.text()
         else: # not button.isChecked()
-            self.who_am_i_button.setText("Who I am")
+            self.button_who_i_am.setText("Who I am")
             self.video.recognize_face = False
             self.video.stop = True
-
-            

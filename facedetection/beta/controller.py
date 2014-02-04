@@ -37,18 +37,18 @@ class Controller(object):
         log.info('\n'.join(s))
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
-        """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame."""
+        """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
             if save_face:
-                self.trigger_save = True
                 # Training-Set erstellung
+                self.trigger_save = True
                 self.detect.acceptNewFace(self.face, face_id)
             elif self.trigger_save: # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False
                 log.info('Habe Training-Set beendet!')
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
-            if recognize_face:
+            elif recognize_face:
                 self.trigger_rec = True
                 # Facedetection
                 predicted = self.fr.predict(self.face)                

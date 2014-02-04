@@ -15,7 +15,7 @@ def main(args):
     """Hauptfenster, Hauptanwendung Initialisierung und Schliessen Signal anbinden""" 
     # logger der gesamten Anwendung, DEGUB->Details, INFO->nur infos, CRITICAL->nur Errors
     log.basicConfig(format='%(levelname)s: %(message)s', level=log.DEBUG)
-    log.info('START')
+    log.info('START der Anwendung')
 
     app = QtGui.QApplication(args)
     win = gui.GUI()
