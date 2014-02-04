@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-'''
-Created on 24.01.2014
+"""
+Modul zur Verwaltung der Persistenten Daten.
+Jedes Training-Set gehoert zu einer Person und der Ordnername entspricht der ID.
 
-@author: ptreb001
-'''
+
+"""
 import os
 import errno
 import sys
@@ -13,7 +14,16 @@ import cv2, numpy as np
 import logging as log
 
 class TrainingSets(object):
-    """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
+    """Klasse zur Verwaltung der Training-Sets.
+    Das Dictionary ids hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
+    
+    ids {'id':[#_imgs, 'username', counter_predicted], ... }
+    values-Liste enthaelt: 
+    - Anzahl eingelesener Bilder,
+    - Benutzername
+    - Counter wie oft diese ID predicted wurde im aktuellen Suchvorgang
+     
+    """
     
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):
         # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
