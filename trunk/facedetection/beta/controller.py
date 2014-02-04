@@ -16,17 +16,19 @@ class Controller(object):
         self.fr = fr.FaceRecognizer()
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
-        """Verarbeitet Informationen der gedrueckten Buttons und gibt bearbeiteten  Frame zureuck der angezeigt werden soll."""
+        """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame."""
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
             if save_face:
+                # Training-Set erstellung
                 self.detect.acceptNewFace(self.face, face_id)
             if recognize_face:
-                i = self.fr.predict(self.face)
-                self.fr.ts.ids[str(i)][1].append(self.fr.predict(self.face))
+                # Facedetection
+                face_id = self.fr.predict(self.face)
+                self.fr.ts.ids[str(face_id)][1].append(self.fr.predict(self.face))
                 print "\nExpects:", face_id
-                # TODO: hier statt i (letzte id) die korrrekt ermittelte ID ausgeben!!
-                print "It predicts the id:",  i
+                # TODO: hier statt face_id (letzte id) die korrrekt ermittelte ID ausgeben!!
+                print "It predicts the id:",  face_id
                 for k, v in self.fr.ts.ids.items():                    
                     print 'It predicts: ID: %s\t%sx' %(k, len(v[1]))
         return self.frame

@@ -41,7 +41,12 @@ class FaceDetector(object):
         
         
     def detectFace(self, frame):
-        """Sucht nach Gesichtern und Augen im Frame und bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt."""        
+        """Sucht nach Gesichtern im Frame (Facedetection), wobei Gesicht und Augen erkannt werden muessen sonst ist 
+        das Gesichtsbild == None.
+        Bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt.
+        return -> (Bearbeiteter Kamera-Frame, Gesichtsbild) 
+        
+        """        
         self.img = frame.copy()
         assert(self.img.shape[2] == 3)
         # bereitet Bild fuer Gesichtserkennung vor
@@ -71,6 +76,7 @@ class FaceDetector(object):
                 y = int(y * scale + 0.5)
                 w = int(w * scale + 0.5)
                 h = int(h * scale + 0.5)
+            # TODO: rausnehmen fuer Abgabe. 
             # Gesicht Bereich wird eingezeichnet
             cv2.rectangle(self.img,(x,y),(x+w,y+h),(255,0,0),2)
             # TODO: sind diese zweischritte noetig?
