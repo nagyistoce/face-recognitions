@@ -97,9 +97,10 @@ class GUI(QtGui.QMainWindow):
         if self.webcam.isOpened(): 
             self.video = Video(self.webcam)
             self._timer = QtCore.QTimer(self)
+            # timeout-SIGNAL an play-SLOT binden
             self._timer.timeout.connect(self.play)
             self._timer.start(27)
-            self.update()
+
         else:
             self.test = False
             print "Web-Cam nicht angeschlossen oder die Anwendung laeuft noch!?"
@@ -119,7 +120,7 @@ class GUI(QtGui.QMainWindow):
     
     # Button-Callback-Funktionen
     def training_set_clicked(self):
-        log.info('Training-Set: %s' % self.training_set_button.isChecked())
+        log.info('Training-Set: %s', self.training_set_button.isChecked())
         if self.training_set_button.isChecked():
             self.training_set_button.setText("Anhalten")
             self.video.save_face = True
@@ -129,6 +130,7 @@ class GUI(QtGui.QMainWindow):
             self.video.save_face = False
         
     def who_i_clicked(self):
+        log.info('wer bin ich geklickt: %s', self.who_am_i_button.isChecked())
         if self.who_am_i_button.isChecked():
             self.who_am_i_button.setText("Anhalten")
             self.video.recognize_face = True
