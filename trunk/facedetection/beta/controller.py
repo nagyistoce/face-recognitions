@@ -18,23 +18,26 @@ class Controller(object):
         self.trigger_rec = False
         self.trigger_save = False
     
-    def get_percentage(self, sum, part):
-        """Berrechnung des Prozentualen Anteils"""
-        return 100 * part/float(sum)
+    def get_percentage(self, total, part):
+        """Berrechnung des Prozentualen Anteils von part an total."""
+        return 100 * part/float(total)
     
     # TODO: ggf raus vor abgabe
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
+        total = sum([len(v[1]) for v in self.fr.ts.ids.values()])
         s = ['\n----------------------------------------------']
-        for k, v in self.fr.ts.ids.items():            
-            s.append('Predicts: ID: %s    %sx => ' % (k, len(v[1])), )
+        for k, v in self.fr.ts.ids.items():  
+            length = len(v[1])
+            #percentage = 100 * length/float(total)
+            s.append('Predicts: ID: %s    %sx => %s%%' % (k, length, self.get_percentage(total, length)))
         s.append('----------------------------------------------\n')
-        l.log('\n'.join(s))
+        print '\n'.join(s)
+        print 'total ', total
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame."""
         self.frame, self.face = self.detect.detectFace(frame)
-        
         if self.face is not None:
             if save_face:
                 self.trigger_save = True
@@ -42,16 +45,16 @@ class Controller(object):
                 self.detect.acceptNewFace(self.face, face_id)
             elif self.trigger_save: # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False
-                l.log('Habe Training-Set beendet!!!!!!!!!')
+                print 'Habe Training-Set beendet!!!!!!!!!'
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
             if recognize_face:
                 self.trigger_rec = True
                 # Facedetection
-                predicted = self.fr.predict(self.face)
+                predicted = self.fr.predict(self.face)                
                 self.fr.ts.ids[str(predicted)][1].append(predicted)
-                print "\nExpects:", face_id
-                print "It predicts the id:",  predicted
+#                 print "Expects: %s It predicts the id: %s" % (face_id, predicted)
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
+                print 'Beende Gesichtserkennung...'
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist

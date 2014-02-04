@@ -16,7 +16,8 @@ class TrainingSets(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
     
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):
-        # dictionary d{'id':[#_imgs, #_predicts]
+        # dictionary d{'id':[#_imgs, [predict, predict, ...], ...}
+        # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
         self.ids = {} 
         self.path = os.path.expanduser(path)
         self.name = name
