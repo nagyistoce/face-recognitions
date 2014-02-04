@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-
-import cv2, math, numpy as np
 import os
-import haarcascades
+import math
+import logging as log
 from datetime import datetime
+
+import cv2, numpy as np
+
+import haarcascades
 import database
 
 class Haarcascades(object):    
