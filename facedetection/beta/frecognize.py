@@ -48,19 +48,24 @@ class FaceRecognizer(object):
     #der am nähesten Nachbar, wird berechnet, 
     #in dem die kurzeste Distanz aus die Projektionen,basiert auf den euklidischen Distanz, berechnet wird
     def predict(self,unknown_face):
+        """Bekommt das zu testende vorbearbeitete Gesichtsbild und gleicht es mit der Datenbank ab.
+        return -> face_id
+        Die ID der Person der dieses Gesichtsbild am aehnlichsten ist.
+        
+        """
         #TODO: Initial Wert von min_dist verfeinern
         min_dist = 113. #np.finfo('float').max
-        min_class = -1
+        face_id = -1
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
         unknown_face=self.project(unknown_face.reshape(1,-1), self.W, self.mu)
         for p in range(len(self.projections)):
             d = self.euclidean_distance(self.projections[p], unknown_face)
             if d < min_dist:
                 min_dist = d
-                min_class = self.face_ids[p]
-#                 l.log('min_dist: %s id: %s ' % (min_dist, min_class))
+                face_id = self.face_ids[p]
+#                 l.log('min_dist: %s id: %s ' % (min_dist, face_id))
 
-        return min_class
+        return face_id
     
     #y = W^T(X-u) schauen ob W.T korrekt ist. 
     #Vorher: nur W aber jedes self.W musste als self.W.T als parameter geben
