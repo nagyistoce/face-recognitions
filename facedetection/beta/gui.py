@@ -1,36 +1,35 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 PyQt-GUI-Modul, Benutzeroberflaeche der gesamten Anwendung sowie noetige
 Video-Bild-Konvertierungen für PyQt Support.
  
-'''
-from PyQt4 import Qt, QtCore, QtGui
-import cv2
+"""
 import sys
 
-import controller as c
+from PyQt4 import Qt, QtCore, QtGui
 import numpy as np
+import cv2
 
+import controller as c
+import log as l
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
-    def __init__(self, webcam, face_id=None, save_face=False, recognize_face = False):
+    def __init__(self, webcam, face_id=None, save_face=False, recognize_face=False, recognize_face_stopped=False):
         self.webcam = webcam
         self.face_id = face_id
         self.save_face = save_face
         self.recognize_face = recognize_face
+        self.stop = recognize_face_stopped
         self.current_frame=np.ndarray([])
         self.controller = c.Controller()
-        
 
- 
     def capture_next_frame(self):
         """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
         if success:              
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
-            self.current_frame = self.controller.frame_to_face(read_frame,self.face_id,self.save_face, self.recognize_face)
-            
+            self.current_frame = self.controller.frame_to_face(read_frame,self.face_id,self.save_face, self.recognize_face)            
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
         try:            
@@ -67,7 +66,7 @@ class GUI(QtGui.QMainWindow):
 
         # ID Textfeld
         self.id_text = QtGui.QLineEdit("ID", self)
-        Qt.QObject.connect(self.id_text, Qt.SIGNAL('textChanged(const QString&)'), self.do_training_set)
+        Qt.QObject.connect(self.id_text, Qt.SIGNAL('textChanged(const QString&)'), self.on_input_id)
         boxLayout.addWidget(self.id_text)
         
         # Training-Set-Aufnehmen-Button
@@ -105,8 +104,9 @@ class GUI(QtGui.QMainWindow):
             self.test = False
             print "Web-Cam nicht angeschlossen"
 
-    def do_training_set(self, text):
-        print 'do_training_set(): ', text
+    def on_input_id(self, text):
+        """Wird automatisch bei Eingabe ins Textfeld aufgerufen"""
+        pass
         
     def play(self):
         """Zum stetig wiederholtem Aufrufen um Kamerabild zu aktualisieren"""
@@ -115,11 +115,11 @@ class GUI(QtGui.QMainWindow):
             self.video.capture_next_frame()            
             self.video_label.setPixmap(self.video.convert_frame())            
         except TypeError:
-            print "GUI.play(): Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
+            print "GUI.play(): Kein Bild von Kamera oder Bild-Konvertierungsproblem! Eventuell Laeuft die Anwendung noch!?"
     
     # Button-Callback-Funktionen
     def training_set_clicked(self):
-        print 'training_set_clicked() und button-status: ', self.training_set_button.isChecked()
+        l.log('Training-Set: %s' % self.training_set_button.isChecked())
         if self.training_set_button.isChecked():
             self.training_set_button.setText("Anhalten")
             self.video.save_face = True
@@ -129,7 +129,6 @@ class GUI(QtGui.QMainWindow):
             self.video.save_face = False
         
     def who_i_clicked(self):
-        print "Who i am"
         if self.who_am_i_button.isChecked():
             self.who_am_i_button.setText("Anhalten")
             self.video.recognize_face = True
@@ -137,3 +136,6 @@ class GUI(QtGui.QMainWindow):
         else: # not button.isChecked()
             self.who_am_i_button.setText("Who I am")
             self.video.recognize_face = False
+            self.video.stop = True
+
+            

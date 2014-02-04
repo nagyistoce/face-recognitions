@@ -8,8 +8,9 @@ import os
 import errno
 import sys
 import datetime
-import pprint as pp
+
 import cv2, numpy as np
+import log as l
 
 class TrainingSets(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
@@ -20,7 +21,6 @@ class TrainingSets(object):
         self.path = os.path.expanduser(path)
         self.name = name
         self.images = {}
-        print ' path den ich bekomme ', self.path
         # TOD0: automatisch Ordnerstruktur anlegen falls sie noch nicht existiert
         self.init_folder_structure()
     
@@ -40,10 +40,8 @@ class TrainingSets(object):
             except OSError, e:
                 if e.errno == errno.EEXIST:
                     print 'ignoriere os.error'
-        else:
-            print path, ' bereits vorhannden'        
     
-    # todo raus
+    # TODO: aufraeumen, einzeiler Funktion raus
     def init_folder_structure(self):
         """Legt Ordnerstrukur an"""
         self.create_folder(self.path)
@@ -77,7 +75,7 @@ class TrainingSets(object):
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
                 raise
-        print 'ID: %s %s Bilder eingelesen\n' % (id, num_imgs)
+        l.log('ID: %s %s Bilder eingelesen' % (id, num_imgs))
         self.ids[str(id)] = [num_imgs, []]
         return face_images, num_imgs
             
