@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-'''
-Modul um GUI Eingaben korrekt an Controller-Objekte weiter zu geben.
-'''
+"""
+Modul um GUI Eingaben korrekt zu verarbeiten und entsprechende Prozeduren anzustossen.
+
+"""
 from fdetection import FaceDetector as fd
 import frecognize as fr
 import log as l
@@ -14,22 +15,40 @@ class Controller(object):
         # Facedetekor-Objekt
         self.detect = fd()
         self.fr = fr.FaceRecognizer()
+        self.trigger_rec = False
+        self.trigger_save = False
+        
+    # TODO: ggf raus vor abgabe
+    def print_stat(self):
+        """Erkennungs-Statistik-Ausgabe auf Konsole"""
+        s = ['\n----------------------------------------------']
+        for k, v in self.fr.ts.ids.items():                    
+            s.append('Predicts: ID: %s    %sx' % (k, len(v[1])))
+        s.append('\n----------------------------------------------')
+        l.log('\n'.join(s))
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame."""
         self.frame, self.face = self.detect.detectFace(frame)
+        
         if self.face is not None:
             if save_face:
+                self.trigger_save = True
                 # Training-Set erstellung
                 self.detect.acceptNewFace(self.face, face_id)
+            elif self.trigger_save: # Nur einmal nach Beenden der Training-Set Aufnahme
+                self.trigger_save = False
+                l.log('Habe Training-Set beendet!!!!!!!!!')
+                # TODO: Lernen der neu aufgenommenen Bilder hier starten
             if recognize_face:
+                self.trigger_rec = True
                 # Facedetection
-                face_id = self.fr.predict(self.face)
-                self.fr.ts.ids[str(face_id)][1].append(self.fr.predict(self.face))
+                predicted = self.fr.predict(self.face)
+                self.fr.ts.ids[str(predicted)][1].append(predicted)
                 print "\nExpects:", face_id
-                # TODO: hier statt face_id (letzte id) die korrrekt ermittelte ID ausgeben!!
-                print "It predicts the id:",  face_id
-                for k, v in self.fr.ts.ids.items():                    
-                    print 'It predicts: ID: %s\t%sx' %(k, len(v[1]))
+                print "It predicts the id:",  predicted
+            elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
+                self.trigger_rec = False
+                self.print_stat()
         return self.frame
     
