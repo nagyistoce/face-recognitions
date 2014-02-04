@@ -10,7 +10,7 @@ import sys
 import datetime
 
 import cv2, numpy as np
-import log as l
+import logging as log
 
 class TrainingSets(object):
     """Ein Trainings-Set d.h. eine Person mit ihren Gesichtern und ID."""
@@ -76,7 +76,7 @@ class TrainingSets(object):
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
                 raise
-        l.log('ID: %s %s Bilder eingelesen' % (id, num_imgs))
+        log.info('ID: %s %s Bilder eingelesen', id, num_imgs)
         self.ids[str(id)] = [num_imgs, []]
         return face_images, num_imgs
             

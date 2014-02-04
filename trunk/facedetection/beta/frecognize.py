@@ -8,7 +8,7 @@ import database as m
 import numpy as np
 import numpy.linalg as la
 
-import log as l
+import logging as log
 
 class FaceRecognizer(object):
     '''
@@ -63,7 +63,7 @@ class FaceRecognizer(object):
             if d < min_dist:
                 min_dist = d
                 face_id = self.face_ids[p]
-#                 l.log('min_dist: %s id: %s ' % (min_dist, face_id))
+#                 log.info('min_dist: %s id: %s ' % (min_dist, face_id))
 
         return face_id
     

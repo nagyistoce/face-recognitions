@@ -3,9 +3,10 @@
 Modul um GUI Eingaben korrekt zu verarbeiten und entsprechende Prozeduren anzustossen.
 
 """
+import logging as log
+
 from fdetection import FaceDetector as fd
 import frecognize as fr
-import log as l
 
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI."""
@@ -31,9 +32,9 @@ class Controller(object):
             length = len(v[1])
             #percentage = 100 * length/float(total)
             s.append('Predicts: ID: %s    %sx => %s%%' % (k, length, self.get_percentage(total, length)))
+        s.append('total: %s' %total)
         s.append('----------------------------------------------\n')
-        print '\n'.join(s)
-        print 'total ', total
+        log.info('\n'.join(s))
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame."""
@@ -45,7 +46,7 @@ class Controller(object):
                 self.detect.acceptNewFace(self.face, face_id)
             elif self.trigger_save: # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False
-                print 'Habe Training-Set beendet!!!!!!!!!'
+                log.info('Habe Training-Set beendet!')
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
             if recognize_face:
                 self.trigger_rec = True
@@ -54,7 +55,7 @@ class Controller(object):
                 self.fr.ts.ids[str(predicted)][1].append(predicted)
 #                 print "Expects: %s It predicts the id: %s" % (face_id, predicted)
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
-                print 'Beende Gesichtserkennung...'
+                log.info('Beende Gesichtserkennung...')
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist

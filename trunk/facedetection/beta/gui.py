@@ -5,13 +5,13 @@ Video-Bild-Konvertierungen für PyQt Support.
  
 """
 import sys
+import logging as log
 
 from PyQt4 import Qt, QtCore, QtGui
 import numpy as np
 import cv2
 
 import controller as c
-import log as l
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -119,7 +119,7 @@ class GUI(QtGui.QMainWindow):
     
     # Button-Callback-Funktionen
     def training_set_clicked(self):
-        l.log('Training-Set: %s' % self.training_set_button.isChecked())
+        log.info('Training-Set: %s' % self.training_set_button.isChecked())
         if self.training_set_button.isChecked():
             self.training_set_button.setText("Anhalten")
             self.video.save_face = True
