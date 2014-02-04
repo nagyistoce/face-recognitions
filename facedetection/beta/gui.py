@@ -102,7 +102,7 @@ class GUI(QtGui.QMainWindow):
             self.update()
         else:
             self.test = False
-            print "Web-Cam nicht angeschlossen"
+            print "Web-Cam nicht angeschlossen oder die Anwendung laeuft noch!?"
 
     def on_input_id(self, text):
         """Wird automatisch bei Eingabe ins Textfeld aufgerufen"""
@@ -115,7 +115,7 @@ class GUI(QtGui.QMainWindow):
             self.video.capture_next_frame()            
             self.video_label.setPixmap(self.video.convert_frame())            
         except TypeError:
-            print "GUI.play(): Kein Bild von Kamera oder Bild-Konvertierungsproblem! Eventuell Laeuft die Anwendung noch!?"
+            print "GUI.play(): Kein Bild von Kamera oder Bild-Konvertierungsproblem!"
     
     # Button-Callback-Funktionen
     def training_set_clicked(self):
