@@ -29,6 +29,7 @@ class FaceRecognizer(object):
             self.ts = m.TrainingSets()
             [face_images, face_ids] = self.ts.get_all_faces()
         self.trainFisherFaces(face_ids, face_images)
+        self.threshold = np.finfo('float').max
     
     def trainFisherFaces(self, face_ids, face_images):
         #self.face_ids = np.asarray(face_ids, dtype=np.int32)
@@ -136,7 +137,11 @@ class FaceRecognizer(object):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
         return np.sqrt(np.sum(np.power((p-q),2)))
-    
+    def cosine_distance(self, p, q):
+        p = np.asarray(p).flatten()
+        q = np.asarray(q).flatten()
+        #return (np.dot(p,q)/(np.sqrt(la.norm(p))*np.sqrt(la.norm(q))))
+        return 1-np.dot(p.T,q) / (np.sqrt(np.dot(p,p.T)*np.dot(q,q.T)))
 # if __name__ == "__main__":
 #     ts = m.TrainingSets()
 #     [face_images, face_ids] = ts.get_all_faces()
