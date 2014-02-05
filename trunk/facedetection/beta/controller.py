@@ -4,13 +4,24 @@ Modul um GUI Eingaben korrekt zu verarbeiten und entsprechende Prozeduren anzust
 
 """
 import logging as log
-
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle    
 from fdetection import FaceDetector as fd
 import frecognize as fr
 import database as db
 
 class Controller(object):
-    """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI."""
+    """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
+    Das Dictionary id_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
+    
+    id_dict {'id':['username', counter_predicted], ... }
+    values-Liste enthaelt: 
+    - Benutzername
+    - Counter wie oft diese ID predicted wurde im aktuellen Suchvorgang
+    
+    """
 
     def __init__(self):
         """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
@@ -20,20 +31,28 @@ class Controller(object):
         self.t_sets = db.TrainingSets()
         self.trigger_rec = False
         self.trigger_save = False
-    
+        # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
+        # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
+        self.id_dict = self.t_sets.get_id_dict()
+        
     def get_percentage(self, total, part):
         """Berrechnung des Prozentualen Anteils von part an total."""
-        return 100 * part/float(total)
+        try:
+            percent = 100 * part/float(total)
+        except ZeroDivisionError, e:
+            log.debug('Durch Null geteilt. Wenn kein Gesicht erkannt wurde kann es passieren. total = %s', total)
+        except:
+            log.exception('Unerwarteter Fehler beim Berrechnen des Prozentanteils.')
+        return percent
     
-    # TODO: ggf raus vor abgabe
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
-        total = sum([len(v[1]) for v in self.t_sets.ids.values()])
+        total = sum([n[1] for n in self.id_dict.values()])
         s = ['\n----------------------------------------------']
-        for k, v in self.t_sets.ids.items():  
-            length = len(v[1])
-            #percentage = 100 * length/float(total)
-            s.append('Predicts: ID: %s    %sx => %s%%' % (k, length, self.get_percentage(total, length)))
+        for k, v in sorted(self.id_dict.items()):  
+            count = v[1]
+            #percentage = 100 * count/float(total)
+            s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, self.get_percentage(total, count)))
         s.append('total: %s' %total)
         s.append('----------------------------------------------\n')
         log.info('\n'.join(s))
@@ -50,20 +69,19 @@ class Controller(object):
                 self.trigger_save = False
                 log.info('Habe Training-Set beendet!')
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
-            elif recognize_face:
+            elif recognize_face:                
                 self.trigger_rec = True
                 # Facedetection
-                predicted = self.fr.predict(self.face)  
-                log.debug('predicted: %s', predicted)
-                log.debug('das dict: %s', self.t_sets.ids)          
-                self.t_sets.ids[str(predicted)][1].append(predicted)
-#                 print "Expects: %s It predicts the id: %s" % (face_id, predicted)
+                predicted = self.fr.predict(self.face)
+                print 'it predicts: %s' % predicted
+                if predicted > 0:
+                    self.id_dict[str(predicted)][1] += 1
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
                 log.info('Beende Gesichtserkennung...')
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
-                for k, v in self.t_sets.ids.items():
-                    v[1] = []
+                for k, v in self.id_dict.items():
+                    v[1] = 0
         return self.frame
     

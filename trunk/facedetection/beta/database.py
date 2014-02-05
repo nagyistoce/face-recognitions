@@ -15,33 +15,27 @@ import logging as log
 class TrainingSets(object):
     """Klasse die IO-Methoden bereit stellt fuer die Training-Sets.
     Sie haelt selbst keine Daten und dient nur als Werkzeug.
-    Das Dictionary ids hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
-    
-    ids {'id':[#_imgs, 'username', counter_predicted], ... }
-    values-Liste enthaelt: 
-    - Anzahl eingelesener Bilder,
-    - Benutzername
-    - Counter wie oft diese ID predicted wurde im aktuellen Suchvorgang
      
     """
     
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):
-        # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
-        # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
-        self.ids = {} 
+
         
         self.path = os.path.expanduser(path)
         self.name = name
         self.images = {}
         self.init_folder_structure()
 
-    def get_all_ids(self):
-        """Gibt alle IDs in einer sortierten Liste zurueck"""
+    def get_id_dict(self):
+        """Gibt alle IDs als Dictionary mit ID als Key zurueck"""
         join = os.path.join
+        dic = {}
         lis = sorted([f for f in os.listdir(self.path) 
                       if os.path.isdir(join(self.path,f)) and f.isdigit()])
-        log.debug('Alle IDs %s', lis)
-        return map(int, lis)
+        for i in lis:
+            dic[i] = ['name', 0]
+        log.debug('Alle IDs %s', map(int,lis))
+        return dic
 
     def get_image_name(self, face_id):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck"""
@@ -96,7 +90,6 @@ class TrainingSets(object):
                 raise
         log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
 #         self.ids[str(face_id)] = [num_imgs, []]
-        log.debug('das dict ist jetzt %s', self.ids)
         return face_images, num_imgs
             
     def get_all_faces(self):
@@ -115,5 +108,5 @@ class TrainingSets(object):
     
 if __name__ == '__main__':
     ts = TrainingSets()
-    ts.get_all_ids()
+    
     
