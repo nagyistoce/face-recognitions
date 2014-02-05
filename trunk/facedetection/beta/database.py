@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 Modul zur Verwaltung der Persistenten Daten.
-Jedes Training-Set gehoert zu einer Person und der Ordnername entspricht der ID.
+Die Klasse TrainingSets stelt Werkzeug-Methoden bereit, sie ist kein Singleton und kann ueberall wo sie benoetigt wird neu instanziiert werden.
 
 """
 import os
 import errno
 import sys
 import datetime
+import logging as log
 
 import cv2, numpy as np
-import logging as log
 
 
 class TrainingSets(object):
@@ -18,7 +18,6 @@ class TrainingSets(object):
     Sie haelt selbst keine Daten und dient nur als Werkzeug.
      
     """
-    
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_', name=''):
 
         
@@ -26,8 +25,6 @@ class TrainingSets(object):
         self.name = name
         self.images = {}
         self.init_folder_structure()
-
-   
 
     def get_id_dict(self):
         """Gibt alle IDs als Dictionary mit ID als Key zurueck"""
@@ -39,7 +36,6 @@ class TrainingSets(object):
         return -> id_infos_dict {id : ['username', predict_counter], ... }
         
         """
-
         join = os.path.join
         dic = {}
         lis = sorted([f for f in os.listdir(self.path) 
@@ -74,34 +70,32 @@ class TrainingSets(object):
         self.create_folder(self.path)
     
     def bilder_is_empty(self):
-        self.bild = True
-        
-        for folder in os.listdir(self.path):
+        """Return -> True wenn in keinem der ID-Ordner ein Bild liegt"""
+#         self.bild = True   
+        log.debug('in bilder_is_empty()')
+        join = os.path.join
+        lis = ['.jpg', '.JPG', '.png', '.PNG']
+        for folder in [f for f in os.listdir(self.path) if os.path.isdir(join(self.path,f))]:
             folder = os.path.join(self.path, folder)
             for dat in os.listdir(folder):
-                dat_endung = os.path.join(folder, dat)
-#                 list = ['.jpg', '.JPG', '.png', '.PNG']
-#                 endung = dat_endung[:-4]
-#                 print 'enddung ', endung
-#                 if endung in list:
-#                     print 'jo '
-                if dat_endung.endswith('.jpg') or dat.endswith('.JPG') or dat_endung.endswith('.png') or dat.endswith('.PNG'):
-                    self.bild = False
-                
-        
-        return self.bild
+                if dat[-4:] in lis:
+                    return False
+#                 print 'datei ', dat
+#                 if dat_endung.endswith('.jpg') or dat.endswith('.JPG') or dat_endung.endswith('.png') or dat.endswith('.PNG'):
+#                     self.bild = False
+        return True
     
     def trainings_set_is_empty(self):
+        """Return -> True wenn der Wurzelordner KEIN Verzeichnis enthaelt"""
+        log.debug('in trainingsset_is_empty()')     
         dirs = [d for d in os.listdir(self.path) if os.path.isdir(os.path.join(self.path,d))]
-        is_empty = [] == dirs
-        
+        is_empty = [] == dirs        
         return is_empty
         #for d in dirs:
             #path = os.path.join(self.path, d)
             #print '%s isdir: %s' % (path, os.path.isdir(path))
             
-    def save_face(self, face, face_id):
-                
+    def save_face(self, face, face_id):                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""     
         assert(isinstance(face, np.ndarray))
         folder = os.path.join(self.path, str(face_id))
@@ -118,11 +112,9 @@ class TrainingSets(object):
         """Liest alle Bilder einer bestimmten ID ein"""
         face_id = id_path.split(os.sep)[-1]
         num_imgs = 0
-#         for img in [f for f in os.listdir(id_path) if os.path.isfile(id_path)]:
         join = os.path.join
         for img in [f for f in os.listdir(id_path) if os.path.isfile(join(id_path, f))]:
             img_path = os.path.join(id_path, img)
-#             log.debug('idpath: %s img_path: %s', id_path, img_path)
             try:                
                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 face_images.append(np.asarray(im, dtype = np.uint8))
@@ -133,7 +125,6 @@ class TrainingSets(object):
                 log.exception("Nichterwarteter Fehler: %s", sys.exc_info()[0])
                 raise
         log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
-#         self.ids[str(face_id)] = [num_imgs, []]
         return face_images, num_imgs
             
     def get_all_faces(self):
@@ -151,7 +142,8 @@ class TrainingSets(object):
         return face_images, face_ids
     
 if __name__ == '__main__':
+    log.basicConfig(format='%(levelname)s: %(message)s', level=log.DEBUG)
     ts = TrainingSets()
-    ts.trainings_set_is_empty()
     ts.bilder_is_empty()
+#     ts.trainings_set_is_empty()
     
