@@ -12,7 +12,6 @@ from fdetection import FaceDetector as fd
 import frecognize as fr
 import database as db
 
-import gui as gui
 
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
@@ -29,9 +28,9 @@ class Controller(object):
         """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
         # Facedetekor-Objekt
         self.detect = fd()
-        print "DB Anfang"
+        
         self.t_sets = db.TrainingSets()
-        print "DB Ende"
+        
         print "FaceRecognition Anfang"
         self.fr = fr.FaceRecognizer()
         try:
@@ -66,6 +65,7 @@ class Controller(object):
             
     def get_percentage(self, total, part):
         """Berrechnung des Prozentualen Anteils von part an total."""
+        percent = 0.0
         try:
             percent = 100 * part/float(total)
         except ZeroDivisionError, e:
@@ -87,7 +87,7 @@ class Controller(object):
         log.info('\n'.join(s))
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
-
+        
         
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
         self.frame, self.face = self.detect.detectFace(frame)
