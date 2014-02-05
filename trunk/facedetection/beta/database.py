@@ -58,7 +58,8 @@ class TrainingSets(object):
         """Legt Ordnerstrukur an"""
         self.create_folder(self.path)
 
-    def save_face(self, face, face_id):                
+    def save_face(self, face, face_id):
+                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""     
         assert(isinstance(face, np.ndarray))
         folder = os.path.join(self.path, str(face_id))
@@ -67,6 +68,7 @@ class TrainingSets(object):
             self.create_folder(self.path, face_id)
         try:
             cv2.imwrite(full_path, face)
+
         except (IOError, Exception):
             log.exception("Fehler beim Abspeichern des Bildes: %s", full_path)
                 

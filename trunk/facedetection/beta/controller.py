@@ -12,6 +12,8 @@ from fdetection import FaceDetector as fd
 import frecognize as fr
 import database as db
 
+import gui as gui
+
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
     Das Dictionary id_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
@@ -27,8 +29,21 @@ class Controller(object):
         """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
         # Facedetekor-Objekt
         self.detect = fd()
-        self.fr = fr.FaceRecognizer()
+        print "DB Anfang"
         self.t_sets = db.TrainingSets()
+        print "DB Ende"
+        print "FaceRecognition Anfang"
+        self.fr = fr.FaceRecognizer()
+        try:
+            [face_images, face_ids] = self.t_sets.get_all_faces()
+            
+        except:
+            print "Es konnten keine Bilder geladen werden"
+            raise
+        if len(face_images) != 0:
+            self.fr.trainFisherFaces(face_ids, face_images)
+        else:
+            print "FaceImage is None"
         self.trigger_rec = False
         self.trigger_save = False
         # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
@@ -58,6 +73,8 @@ class Controller(object):
         log.info('\n'.join(s))
         
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
+
+        
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:

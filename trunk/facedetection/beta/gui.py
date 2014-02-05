@@ -9,7 +9,6 @@ import logging as log
 from PyQt4 import Qt, QtCore, QtGui
 import numpy as np
 import cv2
-
 import controller as c
 
 class Video():
