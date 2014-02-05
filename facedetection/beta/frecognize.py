@@ -55,7 +55,7 @@ class FaceRecognizer(object):
         
         """
         #TODO: Initial Wert von min_dist verfeinern
-        min_dist = 15. #np.finfo('float').max
+        min_dist = 10.1 #np.finfo('float').max
         face_id = -1
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
         unknown_face=self.project(unknown_face.reshape(1,-1), self.W, self.mu)
@@ -140,8 +140,8 @@ class FaceRecognizer(object):
     def cosine_distance(self, p, q):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
-        #return (np.dot(p,q)/(np.sqrt(la.norm(p))*np.sqrt(la.norm(q))))
-        return 1-np.dot(p.T,q) / (np.sqrt(np.dot(p,p.T)*np.dot(q,q.T)))
+        return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
+        #return 1-np.dot(p.T,q) / (np.sqrt(np.dot(p,p.T)*np.dot(q,q.T)))
 # if __name__ == "__main__":
 #     ts = m.TrainingSets()
 #     [face_images, face_ids] = ts.get_all_faces()
