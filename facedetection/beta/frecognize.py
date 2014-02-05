@@ -69,7 +69,7 @@ class FaceRecognizer(object):
                 #print 'mindist: %s ID: %s' % (min_dist, min_class)
                 min_dist = d
                 face_id = self.face_ids[p]
-                log.debug('min_dist: %s id: %s ' % (min_dist, face_id))
+#                 log.debug('min_dist: %s id: %s ' % (min_dist, face_id))
         if min_dist > 10:
             min_dist = -1
         return face_id

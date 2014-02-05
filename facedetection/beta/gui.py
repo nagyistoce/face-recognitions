@@ -21,7 +21,22 @@ class Video():
         self.stop = recognize_face_stopped
         self.current_frame=np.ndarray([])
         self.controller = c.Controller()
-
+        self.controller.register_observer(self)
+        self.observer = []
+    
+    # Observer-Pattern
+    def register_observer(self, obj):
+        """Wird zum registrieren eines Observers verwendet"""
+        log.debug('registriere %s an Video', obj)
+        self.observer.append(obj)
+    def notify_observer(self, predict):
+        """Ruft update() aller zu benachritigen Objekte auf"""
+        for obj in self.observer:
+            obj.update(predict)
+    def update(self):
+        """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
+        self.notify_observer(self.controller.get_predict())
+        
     def capture_next_frame(self):
         """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
@@ -105,10 +120,11 @@ class GUI(QtGui.QMainWindow):
                            Qt.SLOT('quit()'))
         v_parent_layout.addWidget(self.button_quit)
 
-        # Video-Bild umwandeln und updaten
+        # Observer registrieren, Video-Bild umwandeln und updaten
         self.webcam = cv2.VideoCapture(0)
         if self.webcam.isOpened(): 
             self.video = Video(self.webcam)
+            self.video.register_observer(self)
             self._timer = QtCore.QTimer(self)
             # timeout-SIGNAL an play-SLOT binden
             self._timer.timeout.connect(self.play)
@@ -116,7 +132,11 @@ class GUI(QtGui.QMainWindow):
         else:
             self.test = False
             log.critical("Web-Cam nicht angeschlossen oder die Anwendung laeuft noch!?")
-
+    
+    def update(self, predict):
+        """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
+        self.text_output.setText(str(predict))
+        
     def on_input_output(self, text):
         """Wird automatisch bei Eingabe ins Output-Textfeld aufgerufen. Sollte Leer bleiben!"""
         pass

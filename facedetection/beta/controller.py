@@ -21,7 +21,7 @@ class Controller(object):
     id_infos_dict {'id':['username', counter_predicted], ... }
     values-Liste enthaelt: 
     - Benutzername
-    - Counter wie oft diese ID predicted wurde im aktuellen Suchvorgang
+    - Counter wie oft diese ID predict wurde im aktuellen Suchvorgang
     
     """
 
@@ -36,7 +36,6 @@ class Controller(object):
         self.fr = fr.FaceRecognizer()
         try:
             [face_images, face_ids] = self.t_sets.get_all_faces()
-            
         except:
             print "Es konnten keine Bilder geladen werden"
             raise
@@ -49,19 +48,20 @@ class Controller(object):
         # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
         # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
         self.id_infos_dict = self.t_sets.get_id_infos_dict()
-        self.predicted = None
+        self.observer = []
+        self.predict = None
         
-    def get_final_predict(self):
+    def get_predict(self):
         """Gibt ID der Erkannten Person zurueck"""
-        return self.final_predict
+        return self.predict
         
     def register_observer(self, obj):
         """Wird zum registrieren eines Observers verwendet"""
+        log.debug('registriere %s an Controller', obj)
         self.observer.append(obj)
     def notify_observer(self):
         """Ruft update() aller zu benachritigen Objekte auf"""
         for obj in self.observer:
-            assert(obj.update)
             obj.update()
             
     def get_percentage(self, total, part):
@@ -103,12 +103,14 @@ class Controller(object):
             elif recognize_face:                
                 self.trigger_rec = True
                 # Facedetection
-                self.predicted = self.fr.predict(self.face)
-                #print 'it predicts: %s' % predicted
-                if self.predicted >= 0:
-                    self.id_infos_dict[str(self.predicted)][1] += 1
+                self.predict = self.fr.predict(self.face)
+                #print 'it predicts: %s' % predict
+                if self.predict >= 0:
+                    self.notify_observer()
+                    self.id_infos_dict[str(self.predict)][1] += 1
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
                 log.info('Beende Gesichtserkennung...')
+                
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
