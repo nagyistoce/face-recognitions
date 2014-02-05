@@ -54,7 +54,7 @@ class FaceRecognizer(object):
         
         """
         #TODO: Initial Wert von min_dist verfeinern
-        min_dist = 113. #np.finfo('float').max
+        min_dist = 15. #np.finfo('float').max
         face_id = -1
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
         unknown_face=self.project(unknown_face.reshape(1,-1), self.W, self.mu)
@@ -63,8 +63,9 @@ class FaceRecognizer(object):
             if d < min_dist:
                 min_dist = d
                 face_id = self.face_ids[p]
-#                 log.info('min_dist: %s id: %s ' % (min_dist, face_id))
-
+                log.debug('min_dist: %s id: %s ' % (min_dist, face_id))
+        if min_dist > 10:
+            min_dist = -1
         return face_id
     
     #y = W^T(X-u) schauen ob W.T korrekt ist. 
