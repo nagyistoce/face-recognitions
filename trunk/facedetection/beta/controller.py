@@ -47,9 +47,7 @@ class Controller(object):
     
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
-        print self.id_dict
         total = sum([n[1] for n in self.id_dict.values()])
-        print total
         s = ['\n----------------------------------------------']
         for k, v in sorted(self.id_dict.items()):  
             count = v[1]
@@ -75,7 +73,7 @@ class Controller(object):
                 self.trigger_rec = True
                 # Facedetection
                 predicted = self.fr.predict(self.face)
-                print 'it predicts: %s' % predicted
+                #print 'it predicts: %s' % predicted
                 if predicted >= 0:
                     self.id_dict[str(predicted)][1] += 1
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
