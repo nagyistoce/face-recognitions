@@ -56,15 +56,20 @@ class GUI(QtGui.QMainWindow):
         widget = QtGui.QWidget(self)
         self.setCentralWidget(widget)
         # vertikales Layout setzen
-        v_box_layout = QtGui.QVBoxLayout()    
-        widget.setLayout(v_box_layout)
+        v_parent_layout = QtGui.QVBoxLayout()    
+        widget.setLayout(v_parent_layout)
         
         # QLabel als Videoframe Container
         self.video_label = QtGui.QLabel("Videobild")
-        v_box_layout.addWidget(self.video_label)
+        v_parent_layout.addWidget(self.video_label)
         
         # Bedienelemente
         palette = QtGui.QPalette()
+        # Ausgabe Textfeld
+        self.text_output = QtGui.QLineEdit("Hallo ich bin Deine neue Gesichtserkennungs-App =)", self)
+        Qt.QObject.connect(self.text_output, Qt.SIGNAL('textChanged(const QString&)'), self.on_input_name)
+        self.text_output.setMinimumHeight(40)
+        v_parent_layout.addWidget(self.text_output)
         # Wer-Bin-Ich-Button
         self.button_who_i_am = QtGui.QPushButton("Wer-Bin-Ich?", self)
         self.button_who_i_am.setCheckable(True)
@@ -74,10 +79,11 @@ class GUI(QtGui.QMainWindow):
         self.button_who_i_am.setPalette(palette)
         Qt.QObject.connect(self.button_who_i_am, Qt.SIGNAL('clicked()'), self.clicked_who_i_am)
         self.button_who_i_am.setMinimumHeight(60)
-        v_box_layout.addWidget(self.button_who_i_am)
+        v_parent_layout.addWidget(self.button_who_i_am)
+        
         # SubLayout fuer Textfelder nebeneinander
         h_line_layout_text = QtGui.QHBoxLayout()
-        v_box_layout.addLayout(h_line_layout_text)
+        v_parent_layout.addLayout(h_line_layout_text)
         # Namensfeld Textfeld
         self.text_name = QtGui.QLineEdit("Name", self)
         Qt.QObject.connect(self.text_name, Qt.SIGNAL('textChanged(const QString&)'), self.on_input_name)
@@ -89,16 +95,16 @@ class GUI(QtGui.QMainWindow):
         # Training-Set-Aufnehmen-Button
         self.button_do_train = QtGui.QPushButton("Training-Set", self)
         self.button_do_train.setCheckable(True)
-        v_box_layout.addWidget(self.button_do_train)
+        v_parent_layout.addWidget(self.button_do_train)
         Qt.QObject.connect(self.button_do_train, Qt.SIGNAL('clicked()'), self.clicked_do_train)
         # Beenden-Button
         self.button_quit = QtGui.QPushButton("Ende", self)
-        v_box_layout.addWidget(self.button_quit)
+        v_parent_layout.addWidget(self.button_quit)
         palette.setColor(self.button_quit.foregroundRole(),Qt.QColor("red"))
         self.button_quit.setPalette(palette)
         Qt.QObject.connect(self.button_quit, Qt.SIGNAL('clicked()'), Qt.qApp,
                            Qt.SLOT('quit()'))
-        v_box_layout.addWidget(self.button_quit)
+        v_parent_layout.addWidget(self.button_quit)
 
         # Video-Bild umwandeln und updaten
         self.webcam = cv2.VideoCapture(0)
@@ -112,8 +118,11 @@ class GUI(QtGui.QMainWindow):
             self.test = False
             log.critical("Web-Cam nicht angeschlossen oder die Anwendung laeuft noch!?")
 
+    def on_input_output(self, text):
+        """Wird automatisch bei Eingabe ins Output-Textfeld aufgerufen. Sollte Leer bleiben!"""
+        pass
     def on_input_name(self, text):
-        """Wird automatisch bei Eingabe ins Textfeld aufgerufen"""
+        """Wird automatisch bei Eingabe ins Name-Textfeld aufgerufen"""
         pass
     def on_input_id(self, text):
         """Wird automatisch bei Eingabe ins Textfeld aufgerufen"""
