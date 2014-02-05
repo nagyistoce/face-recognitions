@@ -44,7 +44,7 @@ class Video():
             print "Fehler beim konvertieren des Kamerabildes: ", sys.exc_info()[0]
             raise
         
-class Gui(QtGui.QMainWindow):
+class GUI(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
     
     def __init__(self, *args):

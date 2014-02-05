@@ -16,7 +16,7 @@ class FaceRecognizer(object):
     '''
 
 
-    def __init__(self, face_images=None, face_ids=None, num_comp = 0):
+    def __init__(self, num_comp = 0):
         '''
         Constructor
         '''
@@ -25,16 +25,13 @@ class FaceRecognizer(object):
         self.num_comp = 0
         self.W = []
         self.mu = None
-        if face_images is None and face_ids is None:
-            self.ts = m.TrainingSets()
-            [face_images, face_ids] = self.ts.get_all_faces()
-        self.trainFisherFaces(face_ids, face_images)
         self.threshold = np.finfo('float').max
     
     def trainFisherFaces(self, face_ids, face_images):
         #self.face_ids = np.asarray(face_ids, dtype=np.int32)
         #face_images = np.asarray(face_images, dtype=np.uint8)
         self.face_ids = face_ids
+        # Matrix von Bildern werden in eine Zeile gespeichert
         face_images = self.face_images_as_rows(face_images)
         #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
         [eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
@@ -55,13 +52,21 @@ class FaceRecognizer(object):
         
         """
         #TODO: Initial Wert von min_dist verfeinern
+
+        #min_dist = np.finfo('float').max
+        #min_dist = 113.728304447
+        #min_class = -1
+
+        min_dist = 15. #np.finfo('float').max
         min_dist = 10.1 #np.finfo('float').max
         face_id = -1
+
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
-        unknown_face=self.project(unknown_face.reshape(1,-1), self.W, self.mu)
+        unknown_face = self.project(unknown_face.reshape(1,-1), self.W, self.mu)
         for p in range(len(self.projections)):
             d = self.euclidean_distance(self.projections[p], unknown_face)
             if d < min_dist:
+                #print 'mindist: %s ID: %s' % (min_dist, min_class)
                 min_dist = d
                 face_id = self.face_ids[p]
                 log.debug('min_dist: %s id: %s ' % (min_dist, face_id))

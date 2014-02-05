@@ -16,9 +16,9 @@ class Test(unittest.TestCase):
     def setUp(self):
 #         self.training_set = model.TrainingSets()
 #         self.face_detector = fd.FaceDetector()
-#         self.gui = gui.Gui()
+#         self.gui = gui.GUI()
         app = QtGui.QApplication('')
-        win = gui.Gui()
+        win = gui.GUI()
         win.show()
         app.connect(app,                             # Sender-Widget
                     Qt.SIGNAL('lastWindowClosed()'), # Signal
