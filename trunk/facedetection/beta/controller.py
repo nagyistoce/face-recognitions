@@ -16,9 +16,9 @@ import gui as gui
 
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
-    Das Dictionary id_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
+    Das Dictionary id_infos_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
     
-    id_dict {'id':['username', counter_predicted], ... }
+    id_infos_dict {'id':['username', counter_predicted], ... }
     values-Liste enthaelt: 
     - Benutzername
     - Counter wie oft diese ID predicted wurde im aktuellen Suchvorgang
@@ -48,8 +48,22 @@ class Controller(object):
         self.trigger_save = False
         # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
         # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
-        self.id_dict = self.t_sets.get_id_dict()
+        self.id_infos_dict = self.t_sets.get_id_infos_dict()
+        self.predicted = None
         
+    def get_final_predict(self):
+        """Gibt ID der Erkannten Person zurueck"""
+        return self.final_predict
+        
+    def register_observer(self, obj):
+        """Wird zum registrieren eines Observers verwendet"""
+        self.observer.append(obj)
+    def notify_observer(self):
+        """Ruft update() aller zu benachritigen Objekte auf"""
+        for obj in self.observer:
+            assert(obj.update)
+            obj.update()
+            
     def get_percentage(self, total, part):
         """Berrechnung des Prozentualen Anteils von part an total."""
         try:
@@ -62,9 +76,9 @@ class Controller(object):
     
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
-        total = sum([n[1] for n in self.id_dict.values()])
+        total = sum([n[1] for n in self.id_infos_dict.values()])
         s = ['\n----------------------------------------------']
-        for k, v in sorted(self.id_dict.items()):  
+        for k, v in sorted(self.id_infos_dict.items()):  
             count = v[1]
             #percentage = 100 * count/float(total)
             s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, self.get_percentage(total, count)))
@@ -89,16 +103,16 @@ class Controller(object):
             elif recognize_face:                
                 self.trigger_rec = True
                 # Facedetection
-                predicted = self.fr.predict(self.face)
+                self.predicted = self.fr.predict(self.face)
                 #print 'it predicts: %s' % predicted
-                if predicted >= 0:
-                    self.id_dict[str(predicted)][1] += 1
+                if self.predicted >= 0:
+                    self.id_infos_dict[str(self.predicted)][1] += 1
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
                 log.info('Beende Gesichtserkennung...')
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
-                for k, v in self.id_dict.items():
+                for k, v in self.id_infos_dict.items():
                     v[1] = 0
         return self.frame
     

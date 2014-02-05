@@ -25,16 +25,23 @@ class TrainingSets(object):
         self.name = name
         self.images = {}
         self.init_folder_structure()
-
-    def get_id_dict(self):
-        """Gibt alle IDs als Dictionary mit ID als Key zurueck"""
+    # TODO: testen ob das update() funktioniert
+    def get_id_infos_dict(self, **known_ids):
+        """Gibt Dictionary mit IDs als Key zurueck, known_ids werden hinzugefuegt. 
+        
+        return -> id_infos_dict {id : ['username', predict_counter], ... }
+        
+        """
         join = os.path.join
         dic = {}
         lis = sorted([f for f in os.listdir(self.path) 
                       if os.path.isdir(join(self.path,f)) and f.isdigit()])
         for i in lis:
             dic[i] = ['name', 0]
-        log.debug('Alle IDs %s', map(int,lis))
+        log.debug('Alle IDs auf Platte: %s', map(int,lis))
+        if known_ids:
+            dic.update(known_ids)
+            log.debug('Das id_infos_dict nach update(known_ids): %s ', dic)
         return dic
 
     def get_image_name(self, face_id):
