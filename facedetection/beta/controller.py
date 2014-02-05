@@ -15,8 +15,8 @@ import database as db
 
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
+
     Das Dictionary id_infos_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
-    
     id_infos_dict {'id':['username', counter_predicted], ... }
     values-Liste enthaelt: 
     - Benutzername
@@ -27,16 +27,13 @@ class Controller(object):
     def __init__(self):
         """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
         # Facedetekor-Objekt
-        self.detect = fd()
-        
+        self.detect = fd()        
         self.t_sets = db.TrainingSets()
-        
-        print "FaceRecognition Anfang"
         self.fr = fr.FaceRecognizer()
         try:
             [face_images, face_ids] = self.t_sets.get_all_faces()
         except:
-            print "Es konnten keine Bilder geladen werden"
+            log.exception("Es konnten keine Bilder geladen werden")
             raise
         if len(face_images) != 0:
             self.fr.trainFisherFaces(face_ids, face_images)
@@ -48,12 +45,12 @@ class Controller(object):
         # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
         self.id_infos_dict = self.t_sets.get_id_infos_dict()
         self.observer = []
-        self.predict = None
-        
+        self.predict = []
+    
+    # Observer Pattern        
     def get_predict(self):
         """Gibt ID der Erkannten Person zurueck"""
         return self.predict
-        
     def register_observer(self, obj):
         """Wird zum registrieren eines Observers verwendet"""
         log.debug('registriere %s an Controller', obj)
@@ -68,8 +65,8 @@ class Controller(object):
         percent = 0.0
         try:
             percent = 100 * part/float(total)
-        except ZeroDivisionError, e:
-            log.debug('Durch Null geteilt. Wenn kein Gesicht erkannt wurde kann es passieren. total = %s', total)
+        except ZeroDivisionError as e:
+            log.info('Es wurde in diesem Durchlauf KEIN Gesicht Erkannt!\nEventuell den Schwellwert ueberpruefen. total = %s', total)
         except:
             log.exception('Unerwarteter Fehler beim Berrechnen des Prozentanteils.')
         return percent
@@ -85,10 +82,9 @@ class Controller(object):
         s.append('total: %s' %total)
         s.append('----------------------------------------------\n')
         log.info('\n'.join(s))
-        
+
+    # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
     def frame_to_face(self, frame, face_id, save_face, recognize_face):
-        
-        
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
@@ -96,21 +92,23 @@ class Controller(object):
                 # Training-Set erstellung
                 self.trigger_save = True
                 self.detect.acceptNewFace(self.face, face_id)
-            elif self.trigger_save: # Nur einmal nach Beenden der Training-Set Aufnahme
+            elif self.trigger_save:
+                # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False
-                log.info('Habe Training-Set beendet!')
+                log.info('Beende Training-Set...')
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
             elif recognize_face:                
                 self.trigger_rec = True
                 # Facedetection
-                self.predict = self.fr.predict(self.face)
-                #print 'it predicts: %s' % predict
-                if self.predict >= 0:
+                predicted_face = self.fr.predict(self.face)
+                #print 'it predicts: %s' % predicted_face
+                if predicted_face >= 0:
+                    self.predict = [predicted_face]
+                    self.id_infos_dict[str(predicted_face)][1] += 1
                     self.notify_observer()
-                    self.id_infos_dict[str(self.predict)][1] += 1
-            elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
+            elif self.trigger_rec: 
+                # nur einmal bei Beenden der Gesichtserkennung
                 log.info('Beende Gesichtserkennung...')
-                
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
