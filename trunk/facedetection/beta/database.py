@@ -13,7 +13,8 @@ import cv2, numpy as np
 import logging as log
 
 class TrainingSets(object):
-    """Klasse zur Verwaltung der Training-Sets.
+    """Klasse die IO-Methoden bereit stellt fuer die Training-Sets.
+    Sie haelt selbst keine Daten und dient nur als Werkzeug.
     Das Dictionary ids hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
     
     ids {'id':[#_imgs, 'username', counter_predicted], ... }
@@ -28,16 +29,20 @@ class TrainingSets(object):
         # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
         # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
         self.ids = {} 
+        
         self.path = os.path.expanduser(path)
         self.name = name
         self.images = {}
-        # TOD0: automatisch Ordnerstruktur anlegen falls sie noch nicht existiert
         self.init_folder_structure()
-    
-#     def update_ids(self):
-#         """Aktualisiert das ids-Dictionary, damit mit aktuellen Daten gearbeitet wird"""
-#         
-        
+
+    def get_all_ids(self):
+        """Gibt alle IDs in einer sortierten Liste zurueck"""
+        join = os.path.join
+        lis = sorted([f for f in os.listdir(self.path) 
+                      if os.path.isdir(join(self.path,f)) and f.isdigit()])
+        log.debug('Alle IDs %s', lis)
+        return map(int, lis)
+
     def get_image_name(self, face_id):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck"""
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')
@@ -75,9 +80,12 @@ class TrainingSets(object):
         """Liest alle Bilder einer bestimmten ID ein"""
         face_id = id_path.split(os.sep)[-1]
         num_imgs = 0
-        for img in os.listdir(id_path):
-            try:
-                img_path = os.path.join(id_path, img)
+#         for img in [f for f in os.listdir(id_path) if os.path.isfile(id_path)]:
+        join = os.path.join
+        for img in [f for f in os.listdir(id_path) if os.path.isfile(join(id_path, f))]:
+            img_path = os.path.join(id_path, img)
+#             log.debug('idpath: %s img_path: %s', id_path, img_path)
+            try:                
                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 face_images.append(np.asarray(im, dtype = np.uint8))
                 num_imgs +=1
@@ -86,8 +94,9 @@ class TrainingSets(object):
             except:
                 log.exception("Nichterwarteter Fehler: %s", sys.exc_info()[0])
                 raise
-        log.info('ID: %s %s Bilder eingelesen', face_id, num_imgs)
-        self.ids[str(face_id)] = [num_imgs, []]
+        log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
+#         self.ids[str(face_id)] = [num_imgs, []]
+        log.debug('das dict ist jetzt %s', self.ids)
         return face_images, num_imgs
             
     def get_all_faces(self):
@@ -95,15 +104,16 @@ class TrainingSets(object):
         face_images, face_ids = [], []
         for dirname, dirnames, filenames in os.walk(self.path):
             for subdirname in sorted(dirnames):
-                try:
+                if subdirname.isdigit():
                     face_id = int(subdirname)
                     id_path = os.path.join(dirname, str(face_id))
                     face_images, number = self.get_faces(id_path, face_images)
                     face_ids.extend([face_id] * number)
-                except ValueError, e:
-                    log.info('Ueberspringe den Ordner %s da er keine gueltige ID darstellt.', subdirname)
+                else:
+                    log.info('Ueberspringe den Ordner: %s da er keine gueltige ID darstellt.', subdirname)
         return face_images, face_ids
     
 if __name__ == '__main__':
     ts = TrainingSets()
+    ts.get_all_ids()
     

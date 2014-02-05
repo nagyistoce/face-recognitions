@@ -7,6 +7,7 @@ import logging as log
 
 from fdetection import FaceDetector as fd
 import frecognize as fr
+import database as db
 
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI."""
@@ -16,6 +17,7 @@ class Controller(object):
         # Facedetekor-Objekt
         self.detect = fd()
         self.fr = fr.FaceRecognizer()
+        self.t_sets = db.TrainingSets()
         self.trigger_rec = False
         self.trigger_save = False
     
@@ -26,9 +28,9 @@ class Controller(object):
     # TODO: ggf raus vor abgabe
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
-        total = sum([len(v[1]) for v in self.fr.ts.ids.values()])
+        total = sum([len(v[1]) for v in self.t_sets.ids.values()])
         s = ['\n----------------------------------------------']
-        for k, v in self.fr.ts.ids.items():  
+        for k, v in self.t_sets.ids.items():  
             length = len(v[1])
             #percentage = 100 * length/float(total)
             s.append('Predicts: ID: %s    %sx => %s%%' % (k, length, self.get_percentage(total, length)))
@@ -51,15 +53,17 @@ class Controller(object):
             elif recognize_face:
                 self.trigger_rec = True
                 # Facedetection
-                predicted = self.fr.predict(self.face)                
-                self.fr.ts.ids[str(predicted)][1].append(predicted)
+                predicted = self.fr.predict(self.face)  
+                log.debug('predicted: %s', predicted)
+                log.debug('das dict: %s', self.t_sets.ids)          
+                self.t_sets.ids[str(predicted)][1].append(predicted)
 #                 print "Expects: %s It predicts the id: %s" % (face_id, predicted)
             elif self.trigger_rec: # nur einmal bei Beenden der Gesichtserkennung
                 log.info('Beende Gesichtserkennung...')
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
-                for k, v in self.fr.ts.ids.items():
+                for k, v in self.t_sets.ids.items():
                     v[1] = []
         return self.frame
     
