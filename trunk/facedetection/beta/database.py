@@ -12,6 +12,7 @@ import datetime
 import cv2, numpy as np
 import logging as log
 
+
 class TrainingSets(object):
     """Klasse die IO-Methoden bereit stellt fuer die Training-Sets.
     Sie haelt selbst keine Daten und dient nur als Werkzeug.
@@ -25,6 +26,12 @@ class TrainingSets(object):
         self.name = name
         self.images = {}
         self.init_folder_structure()
+
+   
+
+    def get_id_dict(self):
+        """Gibt alle IDs als Dictionary mit ID als Key zurueck"""
+
     # TODO: testen ob das update() funktioniert
     def get_id_infos_dict(self, **known_ids):
         """Gibt Dictionary mit IDs als Key zurueck, known_ids werden hinzugefuegt. 
@@ -32,6 +39,7 @@ class TrainingSets(object):
         return -> id_infos_dict {id : ['username', predict_counter], ... }
         
         """
+
         join = os.path.join
         dic = {}
         lis = sorted([f for f in os.listdir(self.path) 
@@ -64,7 +72,34 @@ class TrainingSets(object):
     def init_folder_structure(self):
         """Legt Ordnerstrukur an"""
         self.create_folder(self.path)
-
+    
+    def bilder_is_empty(self):
+        self.bild = True
+        
+        for folder in os.listdir(self.path):
+            folder = os.path.join(self.path, folder)
+            for dat in os.listdir(folder):
+                dat_endung = os.path.join(folder, dat)
+#                 list = ['.jpg', '.JPG', '.png', '.PNG']
+#                 endung = dat_endung[:-4]
+#                 print 'enddung ', endung
+#                 if endung in list:
+#                     print 'jo '
+                if dat_endung.endswith('.jpg') or dat.endswith('.JPG') or dat_endung.endswith('.png') or dat.endswith('.PNG'):
+                    self.bild = False
+                
+        
+        return self.bild
+    
+    def trainings_set_is_empty(self):
+        dirs = [d for d in os.listdir(self.path) if os.path.isdir(os.path.join(self.path,d))]
+        is_empty = [] == dirs
+        
+        return is_empty
+        #for d in dirs:
+            #path = os.path.join(self.path, d)
+            #print '%s isdir: %s' % (path, os.path.isdir(path))
+            
     def save_face(self, face, face_id):
                 
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""     
@@ -117,5 +152,6 @@ class TrainingSets(object):
     
 if __name__ == '__main__':
     ts = TrainingSets()
-    
+    ts.trainings_set_is_empty()
+    ts.bilder_is_empty()
     

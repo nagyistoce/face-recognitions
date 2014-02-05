@@ -5,11 +5,15 @@ Video-Bild-Konvertierungen für PyQt Support.
  
 """
 import logging as log
+import Tkinter
+import tkMessageBox
 
 from PyQt4 import Qt, QtCore, QtGui
 import numpy as np
 import cv2
 import controller as c
+import database as db
+
 
 class Video():
     """Klasse zum konvertieren des Videobilds"""
@@ -21,6 +25,7 @@ class Video():
         self.stop = recognize_face_stopped
         self.current_frame=np.ndarray([])
         self.controller = c.Controller()
+
         self.controller.register_observer(self)
         self.observer = []
     
@@ -37,6 +42,7 @@ class Video():
         """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
         self.notify_observer(self.controller.get_predict())
         
+
     def capture_next_frame(self):
         """Liest naechsten Frame der Kamera und wandelt es von BGR zu RGB und startet die Gesichtserkennung"""
         success, read_frame=self.webcam.read()
@@ -64,6 +70,8 @@ class GUI(QtGui.QMainWindow):
         periodischen Ausfuehren der play() Methode
         
         """
+        self.database = db.TrainingSets()
+        
         # Hauptlayout Vertikal-Boxlayout
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
@@ -177,11 +185,27 @@ class GUI(QtGui.QMainWindow):
             self.button_who_i_am.setChecked(False)
             log.error('Bitte erst Trainings-Modus beenden!')
             return
-        if self.button_who_i_am.isChecked():
-            self.button_who_i_am.setText("Anhalten")
-            self.video.recognize_face = True
-            self.video.face_id = self.text_id.text()
-        else: # not button.isChecked()
-            self.button_who_i_am.setText("Wer-Bin-Ich?")
-            self.video.recognize_face = False
-            self.video.stop = True
+        a = self.database.bilder_is_empty()
+        b = self.database.trainings_set_is_empty()
+        print "Test-Print A: ", a
+        print "Test-Print B:", b
+        if a == False and b == False:
+            print "Komm herein"
+            if self.button_who_i_am.isChecked():
+                self.button_who_i_am.setText("Anhalten")
+                self.video.recognize_face = True
+                self.video.face_id = self.text_id.text()
+            else: # not button.isChecked()
+                self.button_who_i_am.setText("Wer-Bin-Ich?")
+                self.video.recognize_face = False
+                self.video.stop = True
+        else:
+            print "Keine Bilder im Trainings-Set vorhanden"
+            window = Tkinter.Tk()   # main-window
+            window.wm_withdraw()    # hidden
+            tkMessageBox.showerror("Info", "Es konnten keine Bilder im Trainings-Set gefunden werden")
+            window.destroy()
+            self.button_who_i_am.setChecked(False)
+            
+
+
