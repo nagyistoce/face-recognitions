@@ -96,6 +96,10 @@ class Controller(object):
                 # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False
                 log.info('Beende Training-Set...')
+                log.info('Trainiere Fisher Faces mit neue Gesichter...')
+                [face_images, face_ids]=self.t_sets.get_all_faces()
+                if len(face_images)!=0:
+                    self.fr.trainFisherFaces(face_ids, face_images)
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
             elif recognize_face:                
                 self.trigger_rec = True
