@@ -7,6 +7,7 @@ Created on 27.01.2014
 import database as m
 import numpy as np
 import numpy.linalg as la
+np.set_printoptions(threshold=np.nan)
 
 import logging as log
 
@@ -147,5 +148,7 @@ class FaceRecognizer(object):
     def cosine_distance(self, p, q):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
+        print 'p ', p
+        print 'q', q
         return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
         #return -np.dot(p.T,q) / (np.sqrt(np.dot(p,p.T)*np.dot(q,q.T)))
