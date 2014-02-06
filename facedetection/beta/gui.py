@@ -191,8 +191,10 @@ class GUI(QtGui.QMainWindow):
             self.button_who_i_am.setChecked(False)
             log.error('Bitte erst Trainings-Modus beenden!')
             return
+
         if not self.database.bilder_is_empty():
             log.info("Komm herein")
+
             if self.button_who_i_am.isChecked():
                 self.button_who_i_am.setText("Anhalten")
                 self.video.recognize_face = True

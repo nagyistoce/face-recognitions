@@ -70,20 +70,22 @@ class TrainingSets(object):
         self.create_folder(self.path)
     
     def bilder_is_empty(self):
-        """Return -> True wenn in keinem der ID-Ordner ein Bild liegt"""
-#         self.bild = True   
         log.debug('in bilder_is_empty()')
         join = os.path.join
         lis = ['.jpg', '.JPG', '.png', '.PNG']
-        for folder in [f for f in os.listdir(self.path) if os.path.isdir(join(self.path,f))]:
-            folder = os.path.join(self.path, folder)
-            for dat in os.listdir(folder):
-                if dat[-4:] in lis:
-                    return False
-#                 print 'datei ', dat
-#                 if dat_endung.endswith('.jpg') or dat.endswith('.JPG') or dat_endung.endswith('.png') or dat.endswith('.PNG'):
-#                     self.bild = False
+    
+        if self.trainings_set_is_empty()==False:
+            """Return -> True wenn in keinem der ID-Ordner ein Bild liegt"""
+    #         self.bild = True   
+
+            for folder in [f for f in os.listdir(self.path) if os.path.isdir(join(self.path,f))]:
+                folder = os.path.join(self.path, folder)
+                for dat in os.listdir(folder):
+                    if dat[-4:] in lis:
+                        return False
+
         return True
+
     
     def trainings_set_is_empty(self):
         """Return -> True wenn der Wurzelordner KEIN Verzeichnis enthaelt"""
