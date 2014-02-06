@@ -65,7 +65,7 @@ class Controller(object):
         percent = 0.0
         try:
             percent = 100 * part/float(total)
-        except ZeroDivisionError as e:
+        except ZeroDivisionError:
             log.info('Es wurde in diesem Durchlauf KEIN Gesicht Erkannt!\nEventuell den Schwellwert ueberpruefen. total = %s', total)
         except:
             log.exception('Unerwarteter Fehler beim Berrechnen des Prozentanteils.')
@@ -77,8 +77,8 @@ class Controller(object):
         s = ['\n----------------------------------------------']
         for k, v in sorted(self.id_infos_dict.items()):  
             count = v[1]
-            #percentage = 100 * count/float(total)
-            s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, self.get_percentage(total, count)))
+            percentage = self.get_percentage(total, count)
+            s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, percentage))
         s.append('total: %s' %total)
         s.append('----------------------------------------------\n')
         log.info('\n'.join(s))
@@ -105,10 +105,12 @@ class Controller(object):
                 self.trigger_rec = True
                 # Facedetection
                 predicted_face = self.fr.predict(self.face)
-                
                 if predicted_face >= 0:
                     self.predict = [predicted_face]
-                    #self.id_infos_dict[predicted_face][1] += 1
+                    try:
+                        self.id_infos_dict[str(predicted_face)][1] += 1
+                    except:
+                        log.exception('Fehler beim Erhoehen des predict-Zaehlers der ID: %s', str(predicted_face))
                     self.notify_observer()
             elif self.trigger_rec: 
                 # nur einmal bei Beenden der Gesichtserkennung
