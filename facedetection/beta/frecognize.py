@@ -7,7 +7,7 @@ Created on 27.01.2014
 import database as m
 import numpy as np
 import numpy.linalg as la
-np.set_printoptions(threshold=np.nan)
+#np.set_printoptions(threshold=np.nan)
 
 import logging as log
 
@@ -22,14 +22,15 @@ class FaceRecognizer(object):
         Constructor
         '''
         self.possible_ids = {}
-        self.projections = []
+        
         self.num_comp = 0
         self.W = []
         self.mu = None
         self.threshold = np.finfo('float').max
-    
+        self.projections = []
     def trainFisherFaces(self, face_ids, face_images):
         self.face_ids = face_ids
+        self.projections = []
         # Matrix von Bildern werden in eine Zeile gespeichert
         face_images = self.face_images_as_rows(face_images)
         #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
@@ -42,7 +43,7 @@ class FaceRecognizer(object):
         #Jedes Bild wird projeziert und die Projektion wird zu eine Liste Projectionen hinzugefügt
         for fi in face_images:
             self.projections.append(self.project(fi.reshape(1,-1),self.W,self.mu))
-        print 'projections size',len(self.projections)
+        
         
     #der am nähesten Nachbar, wird berechnet, 
     #in dem die kurzeste Distanz aus die Projektionen,basiert auf den euklidischen Distanz, berechnet wird
@@ -56,9 +57,13 @@ class FaceRecognizer(object):
         max_dist = 10.1 #np.finfo('float').max
         face_id = -1
         min_dist = max_dist
+        
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
         unknown_face = self.project(unknown_face.reshape(1,-1), self.W, self.mu)
+        
+        
         for p in range(len(self.projections)):
+            
             d = self.cosine_distance(self.projections[p], unknown_face)
             if d < min_dist and d <=1.0:
                 min_dist = d
@@ -118,7 +123,7 @@ class FaceRecognizer(object):
         total_mean = face_images.mean(axis=0)
         sb = np.zeros((d,d), dtype = np.float32)
         sw = np.zeros((d,d), dtype = np.float32)
-        #print 'lda:', c, face_images.shape, len(face_ids)
+        
         for i in c:
             #Images (Samples) einer Klasse
             face_i = face_images[np.where(face_ids==i)[0],:]
@@ -148,7 +153,5 @@ class FaceRecognizer(object):
     def cosine_distance(self, p, q):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
-        print 'p ', p
-        print 'q', q
         return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
         #return -np.dot(p.T,q) / (np.sqrt(np.dot(p,p.T)*np.dot(q,q.T)))

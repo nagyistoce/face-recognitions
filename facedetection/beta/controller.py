@@ -38,7 +38,7 @@ class Controller(object):
         if len(face_images) != 0:
             self.fr.trainFisherFaces(face_ids, face_images)
         else:
-            print "FaceImage is None"
+            log.info("Training Set ist leer oder Bilder können nicht geladen werden")
         self.trigger_rec = False
         self.trigger_save = False
         # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
@@ -105,10 +105,10 @@ class Controller(object):
                 self.trigger_rec = True
                 # Facedetection
                 predicted_face = self.fr.predict(self.face)
-                #print 'it predicts: %s' % predicted_face
+                
                 if predicted_face >= 0:
                     self.predict = [predicted_face]
-                    self.id_infos_dict[str(predicted_face)][1] += 1
+                    #self.id_infos_dict[predicted_face][1] += 1
                     self.notify_observer()
             elif self.trigger_rec: 
                 # nur einmal bei Beenden der Gesichtserkennung

@@ -234,10 +234,3 @@ class FacePreprocessor(object):
                     (int(self.FACE_WIDTH*0.5+0.5),int(self.FACE_HEIGHT*0.8+0.5)),
                     0, 0,360, 255, cv2.cv.CV_FILLED)
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
-    
-# if __name__ == '__name__':
-#             cv2.namedWindow("Face")
-#             cv2.imshow("Face", new_face)
-#             cv2.namedWindow("Mirror")
-#             cv2.imshow("Mirror", mirror_face)
-#     fd = FaceDetector()
