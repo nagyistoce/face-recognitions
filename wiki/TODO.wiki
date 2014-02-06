@@ -1,14 +1,22 @@
 #summary Alles was ansteht zeitlich sortiert, älteste Einträge stehen unten.
 
-== DOKU ==
+== SA + SO ==
 
-== Ablauf Testen ==
+=== DOKU ===
 
 == Fisherfaces & Eigenfaces fuer Doku abspeichern als png ==
 
-== k-Cross Fold Validation von TrainingSets ==
+== FR ==
 
-== Condfidence - Wie sicher ist das Programm das Gesicht korrekt zugeordnet zu haben == 
+=== Ablauf Testen ===
+
+=== Optional ===
+
+=== Name Anzeigen mit ID ===
+
+=== k-Cross Fold Validation von TrainingSets ===
+
+=== Condfidence - Wie sicher ist das Programm das Gesicht korrekt zugeordnet zu haben ===
 
  * Erstmal min_dist verfeinern
  * dann ggf. weitere Methoden probieren -> nachlesen
