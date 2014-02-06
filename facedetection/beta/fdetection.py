@@ -131,7 +131,7 @@ class FaceDetector(object):
             return True, lefteye_center, righteye_center
         return False, lefteye_center, righteye_center
     
-    def acceptNewFace(self, new_face,face_id):
+    def acceptNewFace(self, new_face,face_id, face_name):
         """Prueft ob neues Gesichtsbild gut vom vorigen unterscheidbar ist, wenn ja
         wird das neue Bild normal und gespiegelt auf Platte gespeichert.
         
@@ -145,8 +145,8 @@ class FaceDetector(object):
         if result.seconds >= 1 and simular >= 0.3:
             #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
-            self.training_set.save_face(new_face, face_id)
-            self.training_set.save_face(mirror_face, face_id)
+            self.training_set.save_face(new_face, face_id, face_name)
+            self.training_set.save_face(mirror_face, face_id, face_name)
             print "saved a new face"
             
             self.old_time = current_time
