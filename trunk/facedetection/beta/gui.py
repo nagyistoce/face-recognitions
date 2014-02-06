@@ -16,9 +16,10 @@ import database as db
 
 class Video():
     """Klasse zum konvertieren des Videobilds und bereitstellung des ggf. bearbeiteten Frames"""
-    def __init__(self, webcam, face_id=None, save_face=False, recognize_face=False, recognize_face_stopped=False):
+    def __init__(self, webcam, face_id=None, face_name=None, save_face=False, recognize_face=False, recognize_face_stopped=False):
         self.webcam = webcam
         self.face_id = face_id
+        self.face_name = face_name
         self.save_face = save_face
         self.recognize_face = recognize_face
         self.stop = recognize_face_stopped
@@ -48,7 +49,8 @@ class Video():
         success, read_frame=self.webcam.read()
         if success:              
             read_frame = cv2.cvtColor(read_frame, cv2.COLOR_BGR2RGB)
-            self.current_frame = self.controller.frame_to_face(read_frame,self.face_id,self.save_face, self.recognize_face)            
+            self.current_frame = self.controller.frame_to_face(read_frame,self.face_id, self.face_name,
+                                                               self.save_face, self.recognize_face)            
     
     def convert_frame(self):
         """Konvertiert Bild in ein von QtGUI akzeptiertes Format"""
@@ -180,6 +182,8 @@ class GUI(QtGui.QMainWindow):
             self.button_do_train.setText("Anhalten")
             self.video.save_face = True
             self.video.face_id = self.text_id.text()
+            self.video.face_name = self.text_name.text()
+            
         else: # not button.isChecked()
             self.button_do_train.setText("Training-Set")
             self.video.save_face = False

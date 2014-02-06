@@ -48,10 +48,10 @@ class TrainingSets(object):
             log.debug('Das id_infos_dict nach update(known_ids): %s ', dic)
         return dic
 
-    def get_image_name(self, face_id):
+    def get_image_name(self, face_id, face_name):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck"""
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')
-        return '%s_%s.png' % (str(face_id), now)
+        return '%s_%s_%s.png' % (str(face_id), face_name, now)
     
     def create_folder(self, path, face_id=''):
         """Legt einen neuen Ordner im Dateisystem an: path/name."""
@@ -97,11 +97,11 @@ class TrainingSets(object):
             #path = os.path.join(self.path, d)
             #print '%s isdir: %s' % (path, os.path.isdir(path))
             
-    def save_face(self, face, face_id):                
+    def save_face(self, face, face_id, face_name):                
         """Fuegt ein Gesichtsbild dem entsprechenden Ordner (self.ID) hinzu"""     
         assert(isinstance(face, np.ndarray))
         folder = os.path.join(self.path, str(face_id))
-        full_path = os.path.join(folder,self.get_image_name(face_id))
+        full_path = os.path.join(folder,self.get_image_name(face_id, face_name))
         if not os.path.exists(folder):
             self.create_folder(self.path, face_id)
         try:
