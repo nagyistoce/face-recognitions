@@ -115,10 +115,14 @@ class TrainingSets(object):
         face_id = id_path.split(os.sep)[-1]
         num_imgs = 0
         join = os.path.join
-        for img in [f for f in os.listdir(id_path) if os.path.isfile(join(id_path, f))]:
+        l = [f for f in os.listdir(id_path) if os.path.isfile(join(id_path, f))]
+        
+        for img in l:
             img_path = os.path.join(id_path, img)
-            try:                
+            try:    
+                         
                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+                
                 face_images.append(np.asarray(im, dtype = np.uint8))
                 num_imgs +=1
             except IOError as e:
