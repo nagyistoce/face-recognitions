@@ -1,0 +1,44 @@
+#Ablauf von Demo
+
+= Introduction =
+
+Hier ist der Ablauf der Demo, wie wir es präsentieren werden
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+  * Wurzelpfad angeben in database
+  * komplett leeren Verzeichnis:
+    * Trainings-Set wird angelegt
+      * 1 Person legt über 100 Bilder an
+      * 2 Person legt unter 100 Bilder an - Fehler abfangen und anzeigen
+      * zuerst mit 2 Personen - danach - Fehler abfangen
+      * danach mit 3 Personen
+
+  * 1 Durchgang: Person erkennen mit Button Anhalten
+    * Erkennen von allen 3 Personen --> pseudo Prozent
+  * 2 Durchgang: Personen durchgehend ohne Button_klick erkennen
+    * pseudo Prozent
+    * nicht wahrheitsentsprechend in der Konsole
+
+  * Programm beenden
+  * Programm Neustart
+    * Durchgang 1 + 2 wiederholen
+  * Schwanecke legt selbst an
+
+Voraussetzungen
+  * Name egal, ID wichtig
+  * mind. 3 Personen
+  * keine Brille
+  * mind. 100 Bilder
+  * falsche ID-Eingabe wird nicht abgefangen
+  * Name --> ID Zuordnung erst beim 1 Abspeichern eines Bildes
+  * Unbekannte Person ( Person ohne eigenen TS ) schwer differenzierter
+    * trotz min_dis & similar Schwellwerte
+  * "reset" per Hand löschen --> Verzeichnisse müssen manuell gelöscht werden
+
