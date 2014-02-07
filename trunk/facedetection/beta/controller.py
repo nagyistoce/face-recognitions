@@ -125,6 +125,7 @@ class Controller(object):
                                                     self.t_sets.KEY_COUNT : 0,
                                                     self.t_sets.KEY_ID : str(face_id)}   
                 [face_images, face_ids]=self.t_sets.get_all_faces()
+                self.detect.setCounter(0)
                 if len(face_images)!=0:
                     self.fr.trainFisherFaces(face_ids, face_images)
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
