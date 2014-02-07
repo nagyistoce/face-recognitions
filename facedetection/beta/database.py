@@ -153,6 +153,7 @@ class TrainingSets(object):
             self.create_folder(self.path, face_id)
         try:
             cv2.imwrite(full_path, face)
+            log.debug('Bild gespeichert: %s', full_path)
         except (IOError, Exception):
             log.exception("Fehler beim Abspeichern des Bildes: %s", full_path)
                 
