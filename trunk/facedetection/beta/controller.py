@@ -112,8 +112,9 @@ class Controller(object):
             if save_face:
                 # Training-Set erstellung
                 self.trigger_save = True
-                
                 self.detect.acceptNewFace(self.face, face_id, face_name)
+                self.info_text = '%s Bilder der ID: %s gespeichert.' % (self.detect.getCounter(), face_id)
+                self.notify_observer()
             elif self.trigger_save:
                 # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False                
