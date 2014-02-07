@@ -30,7 +30,7 @@ class Controller(object):
         self.sf = os.path.join(self.save_path,self.NAME_SAVE_FILE)
         try:
             self.id_infos_dict = pickle.load(open(self.sf, "rb" ))
-            log.debug('Aus Sicherungsdatei gelesenes Dictionary', self.id_infos_dict)      
+            log.debug('Aus Sicherungsdatei gelesenes Dictionary: %s', self.id_infos_dict)      
         except IOError as e:
             log.info('Die Sicherungsdatei wurde nicht gefunden. Beim ersten Programmstart korrekt.: %s', self.sf)
         self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict)
