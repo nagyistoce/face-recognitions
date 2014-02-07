@@ -34,12 +34,8 @@ class Controller(object):
         except IOError as e:
             log.info('Die Sicherungsdatei wurde nicht gefunden. Beim ersten Programmstart korrekt.: %s', self.sf)
         print 'direct nach auslesen ', self.id_infos_dict
-        known_ids = [('0', 'Julia'),
-                     ('1', 'Deniz'),
-                     ('2', 'Pascal'),
-                     ('22', 'Sebbl'),
-                     ]
-        self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict, known_ids)
+      
+        self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict)
         # Facedetekor-Objekt
         self.detect = fd()                
         self.fr = fr.FaceRecognizer()
@@ -122,8 +118,11 @@ class Controller(object):
             elif self.trigger_save:
                 # Nur einmal nach Beenden der Training-Set Aufnahme
                 self.trigger_save = False
+                
                 log.info('Beende Training-Set...')
                 log.info('Trainiere Fisher Faces mit neue Gesichter...')
+                self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME
+                                               :str(face_name), self.t_sets.KEY_COUNT:0}   
                 [face_images, face_ids]=self.t_sets.get_all_faces()
                 if len(face_images)!=0:
                     self.fr.trainFisherFaces(face_ids, face_images)
