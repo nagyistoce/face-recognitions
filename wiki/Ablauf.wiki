@@ -4,14 +4,9 @@
 
 Hier ist der Ablauf der Demo, wie wir es präsentieren werden
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-
+  * Programm-Start
+  * Gesicht erkennen Button Klick - Fehler anzeigen lassen
+  * _im Hintergrund wird Verzeichnis angelegt_
   * Wurzelpfad angeben in database
   * komplett leeren Verzeichnis:
     * Trainings-Set wird angelegt
@@ -20,9 +15,9 @@ Add your content here.  Format your content with:
       * zuerst mit 2 Personen - danach - Fehler abfangen
       * danach mit 3 Personen
 
-  * 1 Durchgang: Person erkennen mit Button Anhalten
+  * *1 Durchgang:* Person erkennen mit Button Anhalten
     * Erkennen von allen 3 Personen --> pseudo Prozent
-  * 2 Durchgang: Personen durchgehend ohne Button_klick erkennen
+  * *2 Durchgang:* Personen durchgehend ohne Button_klick erkennen
     * pseudo Prozent
     * nicht wahrheitsentsprechend in der Konsole
 
@@ -41,4 +36,3 @@ Voraussetzungen
   * Unbekannte Person ( Person ohne eigenen TS ) schwer differenzierter
     * trotz min_dis & similar Schwellwerte
   * "reset" per Hand löschen --> Verzeichnisse müssen manuell gelöscht werden
-
