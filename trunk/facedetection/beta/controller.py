@@ -82,8 +82,8 @@ class Controller(object):
             log.exception('Fehler beim zusammenrechnen der Gesamtzahl moeglicher predicts. Totalsumme: %s\ninfo_dict', total, self.id_infos_dict)
         # Info-Text in GUI
         win_dic = (sorted(self.id_infos_dict.values(), key=lambda d: d[self.t_sets.KEY_COUNT], reverse=True)[0])
-        name, percent = win_dic[self.t_sets.KEY_NAME], self.get_percentage(total, win_dic[self.t_sets.KEY_COUNT])
-        self.info_text = 'Du bist %s und da bin ich zu %s%% sicher =))' % (name, percent)
+        name, face_id, percent = win_dic[self.t_sets.KEY_NAME], win_dic[self.t_sets.KEY_ID], self.get_percentage(total, win_dic[self.t_sets.KEY_COUNT])
+        self.info_text = 'Du bist %s mit ID: %s und da bin ich zu %s%% sicher =))' % (name, face_id, percent)
         self.notify_observer()
         # Konsolen Ausgabe
         s = ['\n' + '-' * 40]
@@ -120,8 +120,9 @@ class Controller(object):
                 log.info('Beende Training-Set...')
                 log.info('Trainiere Fisher Faces mit neue Gesichter...')
                 # eingegebenen Name und ID aus GUI im Dictionary speichern
-                self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME
-                                               :str(face_name), self.t_sets.KEY_COUNT:0}   
+                self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME : str(face_name),
+                                                    self.t_sets.KEY_COUNT : 0,
+                                                    self.t_sets.KEY_ID : str(face_id)}   
                 [face_images, face_ids]=self.t_sets.get_all_faces()
                 if len(face_images)!=0:
                     self.fr.trainFisherFaces(face_ids, face_images)
