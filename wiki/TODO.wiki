@@ -13,12 +13,12 @@
 === Optional ===
 
 === Name Anzeigen mit ID ===
-
+ * *OK*
 === k-Cross Fold Validation von TrainingSets ===
 
 === Condfidence - Wie sicher ist das Programm das Gesicht korrekt zugeordnet zu haben ===
 
- * Erstmal min_dist verfeinern
+ * *OK* Erstmal min_dist verfeinern
  * dann ggf. weitere Methoden probieren -> nachlesen
 
 == DO ==
@@ -27,7 +27,7 @@
 
 == min_dist 'Verfeinern' ==
 
- * min_dist Variable die den Abstand der Eigenwerte angibt so einstellen, dass sie einen möglichst effektiven Schwellwert darstellt fuer zuverlässige Wieder-Erkennung
+ * *OK* min_dist Variable die den Abstand der Eigenwerte angibt so einstellen, dass sie einen möglichst effektiven Schwellwert darstellt fuer zuverlässige Wieder-Erkennung
 
  
 == Face recognition ==
@@ -43,7 +43,7 @@
 == Collecting Faces ==
 === Training Set ===
 
- * Gesichtsbilder der zu erkennenden Personen (Julia, Deniz, Pascal)
+ * *OK* Gesichtsbilder der zu erkennenden Personen (Julia, Deniz, Pascal)
 
  * Aspekte
   * Licht: Links, rechts, Oben, Kamera um 180Grad gedreht
