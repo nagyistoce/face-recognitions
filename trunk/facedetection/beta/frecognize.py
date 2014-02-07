@@ -7,6 +7,7 @@ Created on 27.01.2014
 import database as m
 import numpy as np
 import numpy.linalg as la
+import cv2
 #np.set_printoptions(threshold=np.nan)
 
 import logging as log
@@ -25,6 +26,7 @@ class FaceRecognizer(object):
         
         self.num_comp = 0
         self.W = []
+        self.eig_vec_pca = []
         self.mu = None
         self.threshold = np.finfo('float').max
         self.projections = []
@@ -34,17 +36,16 @@ class FaceRecognizer(object):
         # Matrix von Bildern werden in eine Zeile gespeichert
         face_images = self.face_images_as_rows(face_images)
         #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
-        [eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
+        [self.eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
         #Berechne Eigenvektoren eig_vec_lda mit LDA
-        eig_vec_lda = self.lda(self.project(face_images,eig_vec_pca, self.mu), self.face_ids, self.num_comp)
+        eig_vec_lda = self.lda(self.project(face_images,self.eig_vec_pca, self.mu), self.face_ids, self.num_comp)
         
         #Tranformations Matrix W, der ein Image Sample in ein (c-1) Dimensionen Space projeziert wird berechnet
-        self.W = np.asmatrix(np.dot(eig_vec_pca, eig_vec_lda))
+        self.W = np.asmatrix(np.dot(self.eig_vec_pca, eig_vec_lda))
         #Jedes Bild wird projeziert und die Projektion wird zu eine Liste Projectionen hinzugefügt
         for fi in face_images:
             self.projections.append(self.project(fi.reshape(1,-1),self.W,self.mu))
-        
-        
+            
     #der am nähesten Nachbar, wird berechnet, 
     #in dem die kurzeste Distanz aus die Projektionen,basiert auf den euklidischen Distanz, berechnet wird
     def predict(self,unknown_face):
@@ -54,7 +55,7 @@ class FaceRecognizer(object):
         
         """
         #TODO: Initial Wert von min_dist verfeinern
-        max_dist = 10.1 #np.finfo('float').max
+        max_dist = 1.1 #np.finfo('float').max
         face_id = -1
         min_dist = max_dist
         
@@ -65,7 +66,7 @@ class FaceRecognizer(object):
         for p in range(len(self.projections)):
             
             d = self.cosine_distance(self.projections[p], unknown_face)
-            if d < min_dist and d <=1.0:
+            if d < min_dist:
                 min_dist = d
                 face_id = self.face_ids[p]
                 #percent = 1.0 - (min_dist/max_dist)
@@ -149,9 +150,37 @@ class FaceRecognizer(object):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
         return np.sqrt(np.sum(np.power((p-q),2)))
-    
+
     def cosine_distance(self, p, q):
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
         return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
         #return -np.dot(p.T,q) / (np.sqrt(np.dot(p,p.T)*np.dot(q,q.T)))
+    def get_confidence(self,unknown_face):
+        average_face = self.reconstruct_face(unknown_face)
+        l2 = cv2.norm(unknown_face,average_face,cv2.NORM_L2)
+        similar = l2/(unknown_face.shape[0]*unknown_face.shape[1])
+        return similar
+    def reconstruct_face(self,face):
+        p = self.project(face.reshape(1,-1),self.eig_vec_pca, self.mu)
+        r = self.reconstruct(p, self.eig_vec_pca, self.mu)
+        r = r.reshape(face.shape)
+        return np.asmatrix(r, dtype = np.uint8)
+    
+    def reconstruct(self,projection,W,u = None):
+        if u is None:
+            return np.dot(projection, W.T)
+        return np.dot(projection, W.T)+u
+    def form_average_face(self,average_face,face_size):
+        correct_form = average_face[:].reshape(face_size)
+        minP = float(np.min(correct_form))
+        maxP = float(np.max(correct_form))
+        correct_form = correct_form-minP
+        correct_form = correct_form/(maxP-minP)
+        correct_form =255* correct_form
+        #correct_form =255* ((correct_form-minP)/(maxP-minP))
+        correct_form = np.asmatrix(correct_form, dtype=np.uint8)
+        print correct_form
+        cv2.namedWindow('averageface')
+        cv2.imshow('averageface', correct_form)
+        return correct_form

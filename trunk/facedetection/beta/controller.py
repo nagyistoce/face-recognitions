@@ -13,7 +13,6 @@ from fdetection import FaceDetector as fd
 import frecognize as fr
 import database as db
 
-
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI."""
 
@@ -62,7 +61,6 @@ class Controller(object):
         """Ruft update() aller zu benachritigen Objekte auf"""
         for obj in self.observer:
             obj.update()
-            
     def get_percentage(self, total, part):
         """Berrechnung des Prozentualen Anteils von part an total."""
         percent = 0.0
@@ -132,17 +130,24 @@ class Controller(object):
             elif recognize_face:                
                 self.trigger_rec = True
                 # Facedetection
-                predicted_face = self.fr.predict(self.face)
-                if predicted_face >= 0:
-                    try:
-                        self.info_text = 'Hallo %s! ID=%s =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
-                                                                predicted_face)
-                        self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
-                    except:
-                        log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
-                                      'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
-                                      self.id_infos_dict)
-                    self.notify_observer()
+                similar = self.fr.get_confidence(self.face)
+                if similar < 0.7:
+                    predicted_face = self.fr.predict(self.face)
+                    confidence = (1.0 - min(max(similar,0.0),1.0)) *100
+                    if predicted_face >= 0:
+                        try:
+                            self.info_text = 'Hallo %s! ID=%s confidence=%s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
+                                                                    predicted_face, confidence)
+                            self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
+                        except:
+                            log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
+                                          'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
+                                          self.id_infos_dict)
+                    else:
+                        self.info_text = 'Hallo unbekannter Person!'
+                else:
+                    self.info_text = 'Hallo unbekannter Person!'
+                self.notify_observer()
             elif self.trigger_rec:
                 self.stopped_face_recognition()                                    
         return self.frame
