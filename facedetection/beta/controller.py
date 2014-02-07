@@ -16,19 +16,25 @@ import database as db
 class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
 
-    Das Dictionary id_infos_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
-    id_infos_dict {'id':['username', counter_predicted], ... }
-    values-Liste enthaelt: 
-    - Benutzername
-    - Counter wie oft diese ID predict wurde im aktuellen Suchvorgang
     
     """
 
     def __init__(self):
-        """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
-        # Facedetekor-Objekt
-        self.detect = fd()        
+        """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt.
+        id_infos_dict {id = {'self.t_sets.KEY_NAME'='Pascal', self.t_sets.KEY_COUNT=0}, ... }
+        TrainingSets besitzt die Keys-des Dictionaries als Konstanten.
+        
+        """
         self.t_sets = db.TrainingSets()
+        # dictionary mit Informationen zu den Personen
+        known_ids = [('0', 'Julia'),
+                     ('1', 'Deniz'),
+                     ('2', 'Pascal'),
+                     ('22', 'Sebbl')
+                     ]
+        self.id_infos_dict = self.t_sets.get_id_infos_dict(known_ids)
+        # Facedetekor-Objekt
+        self.detect = fd()                
         self.fr = fr.FaceRecognizer()
         try:
             [face_images, face_ids] = self.t_sets.get_all_faces()
@@ -41,9 +47,7 @@ class Controller(object):
             log.info("Training Set ist leer oder Bilder können nicht geladen werden")
         self.trigger_rec = False
         self.trigger_save = False
-        # dictionary d{'id':[#_imgs, [predict, predict, ...], 'username', ...]}
-        # ids enthaelt Informationen zu den IDs: Anzahl eingelesener Bilder, liste mit allen Predicts bei facedetection-Vorgang
-        self.id_infos_dict = self.t_sets.get_id_infos_dict()
+
         self.observer = []
         self.predict = []
     
@@ -73,14 +77,18 @@ class Controller(object):
     
     def print_stat(self):
         """Erkennungs-Statistik-Ausgabe auf Konsole"""
-        total = sum([n[1] for n in self.id_infos_dict.values()])
-        s = ['\n----------------------------------------------']
+        try:
+            total = sum([v[self.t_sets.KEY_COUNT] for v in self.id_infos_dict.values()])
+        except:
+            log.exception('Fehler beim zusammenrechnen der Gesamtzahl moeglicher predicts. Totalsumme: %s\ninfo_dict', total, self.id_infos_dict)
+        s = ['\n' + '-' * 40]
         for k, v in sorted(self.id_infos_dict.items()):  
-            count = v[1]
+            count = v[self.t_sets.KEY_COUNT]
             percentage = self.get_percentage(total, count)
             s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, percentage))
         s.append('total: %s' %total)
-        s.append('----------------------------------------------\n')
+        s.append('-' * 40 + '\n')
+#         s.append('----------------------------------------------\n')
         log.info('\n'.join(s))
 
     # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
@@ -108,9 +116,12 @@ class Controller(object):
                 if predicted_face >= 0:
                     self.predict = [predicted_face]
                     try:
-                        self.id_infos_dict[str(predicted_face)][1] += 1
+                        self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
+#                         self.id_infos_dict[str(predicted_face)][1] += 1
                     except:
-                        log.exception('Fehler beim Erhoehen des predict-Zaehlers der ID: %s', str(predicted_face))
+                        log.exception('Fehler beim Erhoehen des predict-Zaehlers der ID: %s\n'
+                                      'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
+                                      self.id_infos_dict)
                     self.notify_observer()
             elif self.trigger_rec: 
                 # nur einmal bei Beenden der Gesichtserkennung
@@ -118,7 +129,7 @@ class Controller(object):
                 self.trigger_rec = False
                 self.print_stat()
                 # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
-                for k, v in self.id_infos_dict.items():
-                    v[1] = 0
+                for user in self.id_infos_dict.values():
+                    user[self.t_sets.KEY_COUNT] = 0                    
         return self.frame
     
