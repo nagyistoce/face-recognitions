@@ -17,7 +17,7 @@ class Controller(object):
     """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
 
     Das Dictionary id_infos_dict hat als Schluessel die ID und zugehoerige Informationen als Liste in den Values
-    id_infos_dict {'id':['username', counter_predicted], ... }
+    id_infos_dict {id = {'username'='Pascal', 'count_predict'=0}, ... }
     values-Liste enthaelt: 
     - Benutzername
     - Counter wie oft diese ID predict wurde im aktuellen Suchvorgang
@@ -28,12 +28,12 @@ class Controller(object):
         """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt."""
         self.t_sets = db.TrainingSets()
         # dictionary mit Informationen zu den Personen
-        known_ids = {'0' : 'Julia',
-                     '1' : 'Deniz',
-                     '2' : 'Pascal'
-                     }
+        known_ids = [('0', 'Julia'),
+                     ('1', 'Deniz'),
+                     ('2', 'Pascal')
+                     ]
         # {id : ['username', predict_counter], ... }
-        self.id_infos_dict = self.t_sets.get_id_infos_dict(known_ids)
+        self.id_infos_dict = self.t_sets.get_id_infos_dict(None)
         # Facedetekor-Objekt
         self.detect = fd()                
         self.fr = fr.FaceRecognizer()
@@ -81,8 +81,8 @@ class Controller(object):
 #         print 'das hier ', [n[1] for n in self.id_infos_dict.values()]
         
 #         total = sum([n[1] for n in self.id_infos_dict.values()])
-        print self.id_infos_dict
-
+        print self.id_infos_dict.values()
+        
         total = sum([ele['counter'] for ele in self.id_infos_dict.values()])
         s = ['\n----------------------------------------------']
         for k, v in sorted(self.id_infos_dict.items()):  

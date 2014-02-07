@@ -71,8 +71,8 @@ class GUI(QtGui.QMainWindow):
         periodischen Ausfuehren der play() Methode
         
         """
-        self.BUTTON_HEIGHT_DEFAULT = 40
-        self.BUTTON_HEIGHT_BIG = 60 
+        self.BUTTON_HEIGHT_DEFAULT = 30
+        self.BUTTON_HEIGHT_BIG = 50 
         self.database = db.TrainingSets()
         
         # Hauptlayout Vertikal-Boxlayout
@@ -210,7 +210,8 @@ class GUI(QtGui.QMainWindow):
         else: # database.bilder_is_empty()            
             self.button_who_i_am.setChecked(False)
             button_msg = QtGui.QMessageBox(icon=QtGui.QMessageBox.Warning)
-            button_msg.setText(u"Aktuell kenne ich noch kein Gesicht\n\nBitte mach uns zuerst bekannt, damit ich Dich später wieder erkennen kann.")
+            button_msg.setText(u"Aktuell kenne ich noch kein Gesicht\n\n"
+                               "Bitte mach uns zuerst bekannt, damit ich Dich wieder erkennen kann.")
             if button_msg.exec_() == QtGui.QMessageBox.Abort:
                 return
 #             window = Tkinter.Tk()   # main-window
