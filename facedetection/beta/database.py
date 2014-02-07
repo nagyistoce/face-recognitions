@@ -168,9 +168,11 @@ class TrainingSets(object):
                 num_imgs +=1
             except IOError as e:
                 log.exception("I/O error{0}: {1}".format(e.errno, e.strerror))
+                continue
             except TypeError as e:
                 log.exception('Fehler beim einlesen der Datei %s.\n'
-                              'Eventuell ist die Datei defekt.', img_path)     
+                              'Eventuell ist die Datei defekt.', img_path)
+                continue
             except:
                 log.exception("Nicht erwarteter Fehler beim einlesen der Datei "
                             "%s", img_path)
