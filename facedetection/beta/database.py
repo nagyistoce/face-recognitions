@@ -22,6 +22,7 @@ class TrainingSets(object):
         self.extensions = ['.jpg', '.JPG', '.png', '.PNG']
         self.delimiter = '_'
         # Keys fuer das Dictionary
+        self.KEY_SUM_IMGS = 'sum_imgs'
         self.KEY_ID = 'id'
         self.KEY_NAME = 'name'
         self.KEY_COUNT = 'count'
@@ -43,7 +44,13 @@ class TrainingSets(object):
                 print 'nur bilder von %s dir:\n%s' % (dir, pics)
         except:
             log.exception('Training-Set-Pfad nicht vorhanden')
-            
+    def get_sum_imgs(self, face_id):
+        """Gibt Anzahl aller Bilddateien einer ID zurueck"""
+     #   join = os.path.join
+      #  images = [f for f in os.listdir(id_path) 
+       #           if os.path.isfile(join(id_path, f)) and f[-4:] in self.extensions
+        #          ]
+        
     def get_id_infos_dict(self, dic=None, known_ids=None):
         """Gibt Dictionary mit IDs als Key zurueck, known_ids werden hinzugefuegt. 
         uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
@@ -59,7 +66,9 @@ class TrainingSets(object):
             for i in lis:
                 if i not in dic.keys():
                     log.debug('der key %s ist noch nicht im dic', i)
-                    dic[i] = {self.KEY_NAME : 'Alien', self.KEY_COUNT : 0, self.KEY_ID : i}
+                    dic[i] = {self.KEY_NAME : 'Alien', self.KEY_COUNT : 0, self.KEY_ID : i,
+                              #self.KEY_SUM_IMGS : self.get_faces(os.path.join(self.path, i))
+                              }
             log.debug('Alle IDs von Platte: gelesen %s', map(int,lis))
         except:
             log.exception('Fehler beim erstellen des Info-Dictionary anhand der Ordnernamen.')
@@ -157,15 +166,18 @@ class TrainingSets(object):
         except (IOError, Exception):
             log.exception("Fehler beim Abspeichern des Bildes: %s", full_path)
                 
-    def get_faces(self, id_path, face_images):
+    def get_faces(self, id_path, face_images=None):
         """Liest alle Bilder einer bestimmten ID ein"""
+        print 'get_faces()'
+        print 'face_imags = %s' % face_images
         face_id = id_path.split(os.sep)[-1]
         num_imgs = 0
         join = os.path.join
         images = [f for f in os.listdir(id_path) 
-             if os.path.isfile(join(id_path, f)) and f[-4:] in self.extensions
-             ]
+                  if os.path.isfile(join(id_path, f)) and f[-4:] in self.extensions
+                  ]
         for img in images:
+        #if face_images:
             try:
                 img_path = join(id_path, img)                         
                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
@@ -182,6 +194,7 @@ class TrainingSets(object):
                 log.exception("Nicht erwarteter Fehler beim einlesen der Datei "
                             "%s", img_path)
         log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
+        log.debug('num imgs = %s = %s' % (num_imgs, len(images)))
         return face_images, num_imgs
             
     def get_all_faces(self):
