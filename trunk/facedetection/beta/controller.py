@@ -163,10 +163,8 @@ class Controller(object):
         
     # Properties fuer info_text
     def get_info_text(self):
-        log.info('get info text...')
         return self._info_text
     def set_info_text(self, value):
-        log.info('set info text...')
         self._info_text = value
     def del_info_text(self):
         del self._info_text
