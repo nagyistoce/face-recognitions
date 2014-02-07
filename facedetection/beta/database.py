@@ -22,6 +22,7 @@ class TrainingSets(object):
         self.extensions = ['.jpg', '.JPG', '.png', '.PNG']
         self.delimiter = '_'
         # Keys fuer das Dictionary
+        self.KEY_ID = 'id'
         self.KEY_NAME = 'name'
         self.KEY_COUNT = 'count'
         self.images = {}
@@ -47,7 +48,7 @@ class TrainingSets(object):
         """Gibt Dictionary mit IDs als Key zurueck, known_ids werden hinzugefuegt. 
         uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
 
-        return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0}, ... }
+        return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0, self.KEY_ID}, ... }
         
         """
         join = os.path.join
@@ -58,7 +59,7 @@ class TrainingSets(object):
             for i in lis:
                 if i not in dic.keys():
                     log.debug('der key %s ist noch nicht im dic', i)
-                    dic[i] = {self.KEY_NAME : 'Alien', self.KEY_COUNT : 0}
+                    dic[i] = {self.KEY_NAME : 'Alien', self.KEY_COUNT : 0, self.KEY_ID : i}
             log.debug('Alle IDs von Platte: gelesen %s', map(int,lis))
         except:
             log.exception('Fehler beim erstellen des Info-Dictionary anhand der Ordnernamen.')
