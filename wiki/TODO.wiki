@@ -2,11 +2,39 @@
 
 == SA + SO ==
 
+===Abgabe===
+  * Code aufräumen
+  * prints --> nur logs
+  * kommentieren
+  * code was nicht benutzt wird, löschen
+
 === DOKU ===
+* Voraussetzung ergänzen
+* Face Preprocessing
+  * Bilder von uns während den 4 Schritten anzeigen lassen
+* Trainins-Set name ergänzen
+* Training
+* Alg
+  * PCA
+  * LDA
+  * FisherFace
+  * Distanzen
+* FaceRecognition
+  * Simlar Wert & min_dist einschränken
+  * funktioniert nicht so stark, wie es soll
 
 == Fisherfaces & Eigenfaces fuer Doku abspeichern als png ==
 
 == FR ==
+ to DO: 
+  * Abfangen von Fehlern:
+    * Abfangen wenn weniger als 3 Personen angelegt sind
+    * Abfangen wenn weniger als 100 Bilder gespeichert werden
+
+Extras Nice to Have:
+  * KCross Validation
+  * Bilder von Eigenface/ Fisherface ausgeben/ verbindlichen
+
 
 === Ablauf Testen ===
 
