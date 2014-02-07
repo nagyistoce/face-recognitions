@@ -5,7 +5,6 @@ Video-Bild-Konvertierungen für PyQt Support.
  
 """
 import logging as log
-
 from PyQt4 import Qt, QtCore, QtGui
 import numpy as np
 import cv2
@@ -25,11 +24,9 @@ class Video():
         self.stop = recognize_face_stopped
         self.current_frame=np.ndarray([])
         self.controller = c.Controller()
-
         self.controller.register_observer(self)
         self.observer = []
-        self.predict = []
-    
+     
     # Observer-Pattern
     def register_observer(self, obj):
         """Wird zum registrieren eines Observers verwendet"""
@@ -41,7 +38,6 @@ class Video():
             obj.update()
     def update(self):
         """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
-        self.predict = self.controller.get_predict()
         self.notify_observer()
 
     def capture_next_frame(self):
@@ -130,6 +126,8 @@ class GUI(QtGui.QMainWindow):
         self.button_quit.setPalette(palette)
         Qt.QObject.connect(self.button_quit, Qt.SIGNAL('clicked()'), Qt.qApp,
                            Qt.SLOT('quit()'))
+        Qt.QObject.connect(self.button_quit, Qt.SIGNAL('clicked()'), self.on_close)
+                           
         self.button_quit.setMinimumHeight(self.BUTTON_HEIGHT_DEFAULT)
         v_parent_layout.addWidget(self.button_quit)
 
@@ -137,7 +135,7 @@ class GUI(QtGui.QMainWindow):
         self.webcam = cv2.VideoCapture(0)
         if self.webcam.isOpened(): 
             self.video = Video(self.webcam)
-            self.video.register_observer(self)
+            self.video.controller.register_observer(self)
             self._timer = QtCore.QTimer(self)
             # timeout-SIGNAL an play-SLOT binden
             self._timer.timeout.connect(self.play)
@@ -149,7 +147,7 @@ class GUI(QtGui.QMainWindow):
     def update(self):
         """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
         # Schreibt Text in Output Zeile der GUI
-        self.text_output.setText('Hallo ich erkenne Dich als ID: {}'.format(str(self.video.predict)))
+        self.text_output.setText(self.video.controller.info_text)
         
     def on_input_output(self, text):
         """Wird automatisch bei Eingabe ins Output-Textfeld aufgerufen. Sollte Leer bleiben!"""
@@ -187,7 +185,12 @@ class GUI(QtGui.QMainWindow):
         else: # not button.isChecked()
             self.button_do_train.setText("Training-Set")
             self.video.save_face = False
-        
+            
+    def on_close(self):
+        """Bei beenden des Programms aufrufen"""
+        log.info('GUI on_close()')
+        self.video.controller.on_close()
+          
     def clicked_who_i_am(self):
         log.info('wer bin ich geklickt: %s', self.button_who_i_am.isChecked())
         # Verhindern dass gleichzeitig 'Train' Button aktiv ist
@@ -214,3 +217,4 @@ class GUI(QtGui.QMainWindow):
                                "Bitte mach uns zuerst bekannt, damit ich Dich wieder erkennen kann.")
             if button_msg.exec_() == QtGui.QMessageBox.Abort:
                 return
+    

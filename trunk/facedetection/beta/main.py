@@ -25,7 +25,10 @@ def main(args):
                 app,                             # Empfaenger
                 Qt.SLOT('quit()')                # aktivierter Slot
                 )
-    
+    app.connect(app,                             # Sender
+            Qt.SIGNAL('lastWindowClosed()'), # Signal
+            win.video.controller.on_close                # aktivierter Slot
+            )
     return app.exec_()
     
 if __name__ == '__main__':
