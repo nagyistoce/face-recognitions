@@ -9,19 +9,19 @@
   * code was nicht benutzt wird, löschen
 
 === DOKU ===
-* Voraussetzung ergänzen
-* Face Preprocessing
-  * Bilder von uns während den 4 Schritten anzeigen lassen
-* Trainins-Set name ergänzen
-* Training
-* Alg
-  * PCA
-  * LDA
-  * FisherFace
-  * Distanzen
-* FaceRecognition
-  * Simlar Wert & min_dist einschränken
-  * funktioniert nicht so stark, wie es soll
+  * Voraussetzung ergänzen
+  * Face Preprocessing
+    * Bilder von uns während den 4 Schritten anzeigen lassen
+  * Trainins-Set name ergänzen
+  * Training
+  * Alg
+    * PCA
+    * LDA
+    * FisherFace
+    * Distanzen
+  * FaceRecognition
+    * Simlar Wert & min_dist einschränken
+    * funktioniert nicht so stark, wie es soll
 
 == Fisherfaces & Eigenfaces fuer Doku abspeichern als png ==
 
