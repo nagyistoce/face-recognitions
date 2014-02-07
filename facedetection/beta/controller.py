@@ -162,9 +162,11 @@ class Controller(object):
         
     # Properties fuer info_text
     def get_info_text(self):
+        log.info('get info text...')
         return self._info_text
     def set_info_text(self, value):
+        log.info('set info text...')
         self._info_text = value
     def del_info_text(self):
-        del self.__info_text
+        del self._info_text
     info_text = property(get_info_text, set_info_text, del_info_text, "Info-Text der in GUI-Ausgabezeile erscheint.")
