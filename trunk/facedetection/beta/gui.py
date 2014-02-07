@@ -11,6 +11,7 @@ import cv2
 
 import controller as c
 import database as db
+import fdetection as fd
 
 
 class Video():
@@ -24,6 +25,7 @@ class Video():
         self.stop = recognize_face_stopped
         self.current_frame=np.ndarray([])
         self.controller = c.Controller()
+        
         self.controller.register_observer(self)
         self.observer = []
      
@@ -70,6 +72,7 @@ class GUI(QtGui.QMainWindow):
         self.BUTTON_HEIGHT_DEFAULT = 30
         self.BUTTON_HEIGHT_BIG = 50 
         self.database = db.TrainingSets()
+        #self.fdetection = fd.FaceDetector()
         
         # Hauptlayout Vertikal-Boxlayout
         QtGui.QWidget.__init__(self, *args)
@@ -176,13 +179,19 @@ class GUI(QtGui.QMainWindow):
             self.button_do_train.setChecked(False)
             log.error('Bitte erst Gesichtserkennung beenden!')
             return
-        if self.button_do_train.isChecked():
+        
+        if self.button_do_train.isChecked():            
             self.button_do_train.setText("Anhalten")
-            self.video.save_face = True
+            self.video.save_face = True            
             self.video.face_id = self.text_id.text()
             self.video.face_name = self.text_name.text()
             
+            #self.video.zaheler = 1
+            
         else: # not button.isChecked()
+            #a = self.fdetection.get_speichern_ok()
+            #print "fdetection Trainingsset-Bilder",a 
+            
             self.button_do_train.setText("Training-Set")
             self.video.save_face = False
             
@@ -206,6 +215,7 @@ class GUI(QtGui.QMainWindow):
                 self.button_who_i_am.setText("Anhalten")
                 self.video.recognize_face = True
                 self.video.face_id = self.text_id.text()
+
             else: # not button_who_i_am.isChecked()
                 self.button_who_i_am.setText("Wer-Bin-Ich?")
                 self.video.recognize_face = False

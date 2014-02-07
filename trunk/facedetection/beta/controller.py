@@ -108,11 +108,13 @@ class Controller(object):
     # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
     def frame_to_face(self, frame, face_id, face_name, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
+        
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
             if save_face:
                 # Training-Set erstellung
                 self.trigger_save = True
+                
                 self.detect.acceptNewFace(self.face, face_id, face_name)
             elif self.trigger_save:
                 # Nur einmal nach Beenden der Training-Set Aufnahme

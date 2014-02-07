@@ -41,6 +41,8 @@ class FaceDetector(object):
         self.training_set = database.TrainingSets()
         self.old_face = None
         self.old_time = datetime.now()
+        self.count = 0
+        
         
         
     def detectFace(self, frame):
@@ -139,19 +141,41 @@ class FaceDetector(object):
         # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
         current_time = datetime.now()
         simular = 1.0
+        
         if self.old_face != None:
             simular = self.compare(new_face, self.old_face)
         result = current_time - self.old_time   
         if result.seconds >= 1 and simular >= 0.3:
+            
             #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
             self.training_set.save_face(new_face, face_id, face_name)
             self.training_set.save_face(mirror_face, face_id, face_name)
             print "saved a new face"
+            self.count = self.count + 1
+            self.setCounter(self.count)
+            self.getCounter()
+            if self.count < 100:
+                self.speichern_ok = False
+                print "Trainingsset unter 100 Bilder"
+            else:
+                self.speichern_ok = True
+                print "Trainingsset OK"
             
+            print "counter", self.count
+
             self.old_time = current_time
             self.old_face = new_face.copy()
-        
+
+    def get_speichern_ok(self):
+        return self.speichern_ok 
+    def getCounter(self):
+        return self.count
+     
+    def setCounter(self, counter):
+        self.count = counter
+        print "Setter: Counter", self.count
+       
     def compare(self,new,old):
         l2 = cv2.norm(new,old,cv2.NORM_L2)
         return l2/(new.shape[0]*new.shape[1])
@@ -234,3 +258,4 @@ class FacePreprocessor(object):
                     (int(self.FACE_WIDTH*0.5+0.5),int(self.FACE_HEIGHT*0.8+0.5)),
                     0, 0,360, 255, cv2.cv.CV_FILLED)
         self.fpp_result[:,:]=np.where(ellip[:,:] == 0,0,self.fpp_result[:,:])
+        
