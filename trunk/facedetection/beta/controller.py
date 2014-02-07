@@ -31,10 +31,9 @@ class Controller(object):
         self.sf = os.path.join(self.save_path,self.NAME_SAVE_FILE)
         try:
             self.id_infos_dict = pickle.load(open(self.sf, "rb" ))
+            log.debug('Aus Sicherungsdatei gelesenes Dictionary', self.id_infos_dict)      
         except IOError as e:
             log.info('Die Sicherungsdatei wurde nicht gefunden. Beim ersten Programmstart korrekt.: %s', self.sf)
-        print 'direct nach auslesen ', self.id_infos_dict
-      
         self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict)
         # Facedetekor-Objekt
         self.detect = fd()                
@@ -117,10 +116,10 @@ class Controller(object):
                 self.detect.acceptNewFace(self.face, face_id, face_name)
             elif self.trigger_save:
                 # Nur einmal nach Beenden der Training-Set Aufnahme
-                self.trigger_save = False
-                
+                self.trigger_save = False                
                 log.info('Beende Training-Set...')
                 log.info('Trainiere Fisher Faces mit neue Gesichter...')
+                # eingegebenen Name und ID aus GUI im Dictionary speichern
                 self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME
                                                :str(face_name), self.t_sets.KEY_COUNT:0}   
                 [face_images, face_ids]=self.t_sets.get_all_faces()
