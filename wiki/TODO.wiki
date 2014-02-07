@@ -19,7 +19,7 @@
 === Condfidence - Wie sicher ist das Programm das Gesicht korrekt zugeordnet zu haben ===
 
  * *OK* Erstmal min_dist verfeinern
- * dann ggf. weitere Methoden probieren -> nachlesen
+ * *OK* dann ggf. weitere Methoden probieren -> nachlesen
 
 == DO ==
 
