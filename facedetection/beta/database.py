@@ -52,13 +52,16 @@ class TrainingSets(object):
         """
         join = os.path.join
         dic = {} if dic == None else dic
-        lis = sorted([f for f in os.listdir(self.path) 
-                      if os.path.isdir(join(self.path,f)) and f.isdigit()])
-        for i in lis:
-            if i not in dic.keys():
-                log.debug('der key %s ist noch nicht im dic', i)
-                dic[i] = {self.KEY_NAME : '', self.KEY_COUNT : 0}
-        log.debug('Alle IDs von Platte: gelesen %s', map(int,lis))
+        try:
+            lis = sorted([f for f in os.listdir(self.path) 
+                          if os.path.isdir(join(self.path,f)) and f.isdigit()])
+            for i in lis:
+                if i not in dic.keys():
+                    log.debug('der key %s ist noch nicht im dic', i)
+                    dic[i] = {self.KEY_NAME : 'Alien', self.KEY_COUNT : 0}
+            log.debug('Alle IDs von Platte: gelesen %s', map(int,lis))
+        except:
+            log.exception('Fehler beim erstellen des Info-Dictionary anhand der Ordnernamen.')
         log.debug('das dict vor update merge %s', dic)
         # Uebergebene (ID,Name) Tuple in info_dict setzen
         if known_ids:
