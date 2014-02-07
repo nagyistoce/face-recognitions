@@ -3,6 +3,7 @@
 Modul um GUI Eingaben korrekt zu verarbeiten und entsprechende Prozeduren anzustossen.
 
 """
+import os
 import logging as log
 try:
     import cPickle as pickle
@@ -14,10 +15,7 @@ import database as db
 
 
 class Controller(object):
-    """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI.
-
-    
-    """
+    """Steuert Facedetector und Facerecognizer Objekte je nach Eingaben in der GUI."""
 
     def __init__(self):
         """Instanziiert immer ein Facedetector- und ein FaceRecognizer-Objekt.
@@ -27,12 +25,21 @@ class Controller(object):
         """
         self.t_sets = db.TrainingSets()
         # dictionary mit Informationen zu den Personen
+        self.id_infos_dict = {}
+        self.save_path = self.t_sets.path
+        self.NAME_SAVE_FILE = '.save.p'
+        self.sf = os.path.join(self.save_path,self.NAME_SAVE_FILE)
+        try:
+            self.id_infos_dict = pickle.load(open(self.sf, "rb" ))
+        except IOError as e:
+            log.info('Die Sicherungsdatei wurde nicht gefunden. Beim ersten Programmstart korrekt.: %s', self.sf)
+        print 'direct nach auslesen ', self.id_infos_dict
         known_ids = [('0', 'Julia'),
                      ('1', 'Deniz'),
                      ('2', 'Pascal'),
-                     ('22', 'Sebbl')
+                     ('22', 'Sebbl'),
                      ]
-        self.id_infos_dict = self.t_sets.get_id_infos_dict(known_ids)
+        self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict, known_ids)
         # Facedetekor-Objekt
         self.detect = fd()                
         self.fr = fr.FaceRecognizer()
@@ -47,14 +54,11 @@ class Controller(object):
             log.info("Training Set ist leer oder Bilder können nicht geladen werden")
         self.trigger_rec = False
         self.trigger_save = False
-
         self.observer = []
-        self.predict = []
+        # Text der in Info-Zeile der GUI erscheint
+        self._info_text = ''
     
     # Observer Pattern        
-    def get_predict(self):
-        """Gibt ID der Erkannten Person zurueck"""
-        return self.predict
     def register_observer(self, obj):
         """Wird zum registrieren eines Observers verwendet"""
         log.debug('registriere %s an Controller', obj)
@@ -81,16 +85,31 @@ class Controller(object):
             total = sum([v[self.t_sets.KEY_COUNT] for v in self.id_infos_dict.values()])
         except:
             log.exception('Fehler beim zusammenrechnen der Gesamtzahl moeglicher predicts. Totalsumme: %s\ninfo_dict', total, self.id_infos_dict)
+        # Info-Text in GUI
+        win_dic = (sorted(self.id_infos_dict.values(), key=lambda d: d[self.t_sets.KEY_COUNT], reverse=True)[0])
+        name, percent = win_dic[self.t_sets.KEY_NAME], self.get_percentage(total, win_dic[self.t_sets.KEY_COUNT])
+        self.info_text = 'Du bist %s und da bin ich zu %s%% sicher =))' % (name, percent)
+        self.notify_observer()
+        # Konsolen Ausgabe
         s = ['\n' + '-' * 40]
-        for k, v in sorted(self.id_infos_dict.items()):  
+        for k, v in sorted(self.id_infos_dict.items(), key=lambda(k, v): v[self.t_sets.KEY_COUNT], reverse=True):  
             count = v[self.t_sets.KEY_COUNT]
             percentage = self.get_percentage(total, count)
             s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, percentage))
         s.append('total: %s' %total)
         s.append('-' * 40 + '\n')
-#         s.append('----------------------------------------------\n')
         log.info('\n'.join(s))
-
+        
+    def stopped_face_recognition(self):
+        """Nach beenden des Facerecognition Modus"""
+        # nur einmal bei Beenden der Gesichtserkennung
+        log.info('Beende Gesichtserkennung...')
+        self.trigger_rec = False
+        self.print_stat()
+        # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
+        for user in self.id_infos_dict.values():
+            user[self.t_sets.KEY_COUNT] = 0
+            
     # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
     def frame_to_face(self, frame, face_id, face_name, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
@@ -114,22 +133,32 @@ class Controller(object):
                 # Facedetection
                 predicted_face = self.fr.predict(self.face)
                 if predicted_face >= 0:
-                    self.predict = [predicted_face]
                     try:
+                        self.info_text = 'Hallo %s! ID=%s =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
+                                                                predicted_face)
                         self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
-#                         self.id_infos_dict[str(predicted_face)][1] += 1
                     except:
-                        log.exception('Fehler beim Erhoehen des predict-Zaehlers der ID: %s\n'
+                        log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
                                       'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
                                       self.id_infos_dict)
                     self.notify_observer()
-            elif self.trigger_rec: 
-                # nur einmal bei Beenden der Gesichtserkennung
-                log.info('Beende Gesichtserkennung...')
-                self.trigger_rec = False
-                self.print_stat()
-                # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
-                for user in self.id_infos_dict.values():
-                    user[self.t_sets.KEY_COUNT] = 0                    
+            elif self.trigger_rec:
+                self.stopped_face_recognition()                                    
         return self.frame
     
+    def on_close(self):
+        """Wird beim beenden des Programms aufgerufen"""
+        log.info('controller on_close()')
+        try:
+            pickle.dump(self.id_infos_dict, open(os.path.join(self.t_sets.path, self.NAME_SAVE_FILE), "wb" ) )
+        except:
+            log.exception('Fehler beim Serialisieren des Controllers.')
+        
+    # Properties fuer info_text
+    def get_info_text(self):
+        return self._info_text
+    def set_info_text(self, value):
+        self._info_text = value
+    def del_info_text(self):
+        del self.__info_text
+    info_text = property(get_info_text, set_info_text, del_info_text, "Info-Text der in GUI-Ausgabezeile erscheint.")

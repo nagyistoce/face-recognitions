@@ -43,18 +43,21 @@ class TrainingSets(object):
         except:
             log.exception('Training-Set-Pfad nicht vorhanden')
             
-    def get_id_infos_dict(self, known_ids=None):
+    def get_id_infos_dict(self, dic=None, known_ids=None):
         """Gibt Dictionary mit IDs als Key zurueck, known_ids werden hinzugefuegt. 
+        uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
 
         return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0}, ... }
         
         """
         join = os.path.join
-        dic = {}
+        dic = {} if dic == None else dic
         lis = sorted([f for f in os.listdir(self.path) 
                       if os.path.isdir(join(self.path,f)) and f.isdigit()])
         for i in lis:
-            dic[i] = {self.KEY_NAME : '', self.KEY_COUNT : 0}
+            if i not in dic.keys():
+                log.debug('der key %s ist noch nicht im dic', i)
+                dic[i] = {self.KEY_NAME : '', self.KEY_COUNT : 0}
         log.debug('Alle IDs von Platte: gelesen %s', map(int,lis))
         log.debug('das dict vor update merge %s', dic)
         # Uebergebene (ID,Name) Tuple in info_dict setzen
