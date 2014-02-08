@@ -9,6 +9,8 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle    
+from pprint import pprint as pp
+
 from fdetection import FaceDetector as fd
 import frecognize as fr
 import database as db
@@ -22,17 +24,20 @@ class Controller(object):
         TrainingSets besitzt die Keys-des Dictionaries als Konstanten.
         
         """
-        self.t_sets = db.TrainingSets()
+        self.NAME_SAVE_FILE = '.save.p'
         # dictionary mit Informationen zu den Personen
         self.id_infos_dict = {}
+        self.t_sets = db.TrainingSets()
         self.save_path = self.t_sets.path
-        self.NAME_SAVE_FILE = '.save.p'
         self.sf = os.path.join(self.save_path,self.NAME_SAVE_FILE)
         try:
             self.id_infos_dict = pickle.load(open(self.sf, "rb" ))
+            pp('unpickle %s' % self.id_infos_dict)
             log.debug('Aus Sicherungsdatei gelesenes Dictionary: %s', self.id_infos_dict)      
         except IOError as e:
             log.info('Die Sicherungsdatei wurde nicht gefunden. Beim ersten Programmstart korrekt.: %s', self.sf)
+        except:
+            log.exception('Unerwarteter Fehler beim lesen der Sicherungsdatei: %s', self.sf)
         self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict)
         # Facedetekor-Objekt
         self.detect = fd()                
@@ -103,10 +108,35 @@ class Controller(object):
         for user in self.id_infos_dict.values():
             user[self.t_sets.KEY_COUNT] = 0
             
+    def do_recognize_face(self):
+        """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
+        self.trigger_rec = True
+        # Facedetection
+        similar = self.fr.get_confidence(self.face)
+        if similar < 0.7:
+            predicted_face = self.fr.predict(self.face)
+            confidence = (1.0 - min(max(similar,0.0),1.0)) *100
+            # nur IDs ab 0 sind gueltig
+            if predicted_face >= 0:
+                try:                    
+                    self.info_text = 'Hallo %s! ID-%s confidence: %s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
+                                                            predicted_face, confidence)
+                    self.notify_observer()
+                    self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
+                except:
+                    log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
+                                  'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
+                                  self.id_infos_dict)
+            else:
+                self.info_text = 'Hallo unbekannte Person!'
+        else:
+            self.info_text = 'Hallo unbekannter Person!'
+        self.notify_observer()
+ 
+        
     # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
     def frame_to_face(self, frame, face_id, face_name, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
-        
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
             if save_face:
@@ -123,42 +153,25 @@ class Controller(object):
                 # eingegebenen Name und ID aus GUI im Dictionary speichern
                 self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME : str(face_name),
                                                     self.t_sets.KEY_COUNT : 0,
-                                                    self.t_sets.KEY_ID : str(face_id)}   
+                                                    self.t_sets.KEY_ID : str(face_id)}
+                # Alle Bilder neu einlesen, da neue hinzugekommen sind
                 [face_images, face_ids]=self.t_sets.get_all_faces()
                 self.detect.setCounter(0)
                 if len(face_images)!=0:
                     self.fr.trainFisherFaces(face_ids, face_images)
                 # TODO: Lernen der neu aufgenommenen Bilder hier starten
-            elif recognize_face:                
-                self.trigger_rec = True
-                # Facedetection
-                similar = self.fr.get_confidence(self.face)
-                if similar < 0.7:
-                    predicted_face = self.fr.predict(self.face)
-                    confidence = (1.0 - min(max(similar,0.0),1.0)) *100
-                    if predicted_face >= 0:
-                        try:
-                            self.info_text = 'Hallo %s! ID=%s confidence=%s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
-                                                                    predicted_face, confidence)
-                            self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
-                        except:
-                            log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
-                                          'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
-                                          self.id_infos_dict)
-                    else:
-                        self.info_text = 'Hallo unbekannter Person!'
-                else:
-                    self.info_text = 'Hallo unbekannter Person!'
-                self.notify_observer()
+            elif recognize_face:
+                self.do_recognize_face()
             elif self.trigger_rec:
-                self.stopped_face_recognition()                                    
+                self.stopped_face_recognition()                                   
         return self.frame
     
     def on_close(self):
         """Wird beim beenden des Programms aufgerufen"""
         log.info('controller on_close()')
         try:
-            pickle.dump(self.id_infos_dict, open(os.path.join(self.t_sets.path, self.NAME_SAVE_FILE), "wb" ) )
+            print 'zu picklendes dic ', self.id_infos_dict
+            pickle.dump(self.id_infos_dict, open(self.sf, "wb" ))
         except:
             log.exception('Fehler beim Serialisieren des Controllers.')
         
