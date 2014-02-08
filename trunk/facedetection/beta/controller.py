@@ -51,8 +51,8 @@ class Controller(object):
             self.fr.trainFisherFaces(face_ids, face_images)
         else:
             log.info("Training Set ist leer oder Bilder können nicht geladen werden")
-        self.trigger_rec = False
-        self.trigger_save = False
+        self.is_stopped_recognize = False
+        self.is_stopped_save = False
         self.observer = []
         # Text der in Info-Zeile der GUI erscheint
         self._info_text = ''
@@ -97,20 +97,32 @@ class Controller(object):
         s.append('total: %s' %total)
         s.append('-' * 40 + '\n')
         log.info('\n'.join(s))
-        
-    def stopped_face_recognition(self):
-        """Nach beenden des Facerecognition Modus"""
-        # nur einmal bei Beenden der Gesichtserkennung
-        log.info('Beende Gesichtserkennung...')
-        self.trigger_rec = False
-        self.print_stat()
-        # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
-        for user in self.id_infos_dict.values():
-            user[self.t_sets.KEY_COUNT] = 0
-            
+    
+    def do_save_face(self, face_id, face_name):
+        """Wird ausgefuehrt wenn Training-Set aufgenommen wird 'Bekannt-Machen-Button' == active()"""
+        self.is_stopped_save = True
+        self.detect.acceptNewFace(self.face, face_id, face_name)
+        self.info_text = '%s Bilder der ID: %s gespeichert.' % (self.detect.getCounter(), face_id)
+        self.notify_observer()
+
+    def stopped_save_face(self, face_id, face_name):
+        """Nach Beenden des Facerecognition Modus"""
+        self.is_stopped_save = False                
+        log.info('Beende Training-Set...')
+        log.info('Trainiere Fisher Faces mit neue Gesichter...')
+        # eingegebenen Name und ID aus GUI im Dictionary speichern
+        self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME : str(face_name),
+                                            self.t_sets.KEY_COUNT : 0,
+                                            self.t_sets.KEY_ID : str(face_id)}
+        # Alle Bilder neu einlesen, da neue hinzugekommen sind
+        [face_images, face_ids]=self.t_sets.get_all_faces()
+        self.detect.setCounter(0)
+        if len(face_images)!=0:
+            self.fr.trainFisherFaces(face_ids, face_images)
+
     def do_recognize_face(self):
         """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
-        self.trigger_rec = True
+        self.is_stopped_recognize = True
         # Facedetection
         similar = self.fr.get_confidence(self.face)
         if similar < 0.7:
@@ -132,37 +144,33 @@ class Controller(object):
         else:
             self.info_text = 'Hallo unbekannter Person!'
         self.notify_observer()
- 
         
+    def stopped_face_recognition(self):
+        """Nach beenden des Facerecognition Modus"""
+        # nur einmal bei Beenden der Gesichtserkennung
+        log.info('Beende Gesichtserkennung...')
+        self.is_stopped_recognize = False
+        self.print_stat()
+        # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
+        for user in self.id_infos_dict.values():
+            user[self.t_sets.KEY_COUNT] = 0
+         
     # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
     def frame_to_face(self, frame, face_id, face_name, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
         self.frame, self.face = self.detect.detectFace(frame)
         if self.face is not None:
+            # Training-Set erstellung
             if save_face:
-                # Training-Set erstellung
-                self.trigger_save = True
-                self.detect.acceptNewFace(self.face, face_id, face_name)
-                self.info_text = '%s Bilder der ID: %s gespeichert.' % (self.detect.getCounter(), face_id)
-                self.notify_observer()
-            elif self.trigger_save:
-                # Nur einmal nach Beenden der Training-Set Aufnahme
-                self.trigger_save = False                
-                log.info('Beende Training-Set...')
-                log.info('Trainiere Fisher Faces mit neue Gesichter...')
-                # eingegebenen Name und ID aus GUI im Dictionary speichern
-                self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME : str(face_name),
-                                                    self.t_sets.KEY_COUNT : 0,
-                                                    self.t_sets.KEY_ID : str(face_id)}
-                # Alle Bilder neu einlesen, da neue hinzugekommen sind
-                [face_images, face_ids]=self.t_sets.get_all_faces()
-                self.detect.setCounter(0)
-                if len(face_images)!=0:
-                    self.fr.trainFisherFaces(face_ids, face_images)
-                # TODO: Lernen der neu aufgenommenen Bilder hier starten
+                self.do_save_face(face_id, face_name)                
+            # Nur einmal nach Beenden der Training-Set Aufnahme
+            elif self.is_stopped_save:
+                self.stopped_save_face(face_id, face_name)
+            # Facerecognition durchfuehren
             elif recognize_face:
                 self.do_recognize_face()
-            elif self.trigger_rec:
+            # Wer-Bin-Ich-Button deaktiviert
+            elif self.is_stopped_recognize:
                 self.stopped_face_recognition()                                   
         return self.frame
     
