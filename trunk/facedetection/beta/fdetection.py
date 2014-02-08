@@ -150,32 +150,23 @@ class FaceDetector(object):
             self.count = self.count + 1
             self.setCounter(self.count)
             self.getCounter()
-            if self.count < 100:
-                self.speichern_ok = False
-                log.info("Trainingsset unter 100 Bilder")
-            else:
-                self.speichern_ok = True
-                log.info("Trainingsset OK")            
             log.debug("counter: %s", self.count)
             self.old_time = current_time
             self.old_face = new_face.copy()
             
         log.debug('Success, habe %s Bilder erfolgreich geschrieben', success)
         return success
-            
 
-    def get_speichern_ok(self):
-        return self.speichern_ok 
+    def compare(self,new,old):
+        """Berechnet die Ähnlichkeit zweier Gesicht Image Matrizen mit den L2Error """
+        l2 = cv2.norm(new,old,cv2.NORM_L2)
+        return l2/(new.shape[0]*new.shape[1])
+    
     def getCounter(self):
         return self.count
      
     def setCounter(self, counter):
         self.count = counter
-        print "Setter: Counter", self.count
-       
-    def compare(self,new,old):
-        l2 = cv2.norm(new,old,cv2.NORM_L2)
-        return l2/(new.shape[0]*new.shape[1])
     
 class FacePreprocessor(object):
     """Wichtige Bearbeitungsschritte um das Gesicht besser vergleichbar zu machen."""    
@@ -184,7 +175,7 @@ class FacePreprocessor(object):
         self.FACE_HEIGHT = self.FACE_WIDTH
         
     def doPreprocess(self,lefteye_center, righteye_center, face):
-        """Fuehrt Transformation, Histogrammausgleich, Weichzeichnungsfilter und Cropping des Gesichtes durch."""
+        """Fuehrt Transformation, Histogrammausgleich, Weichzeichnungsfilter und Cropping des Gesichtes durch und setzt ein ellyptischer Mask auf."""
         self.lefteye_center = lefteye_center
         self.righteye_center = righteye_center
         self.face = cv2.cvtColor(face,cv2.COLOR_RGB2GRAY)

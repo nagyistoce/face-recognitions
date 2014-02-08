@@ -6,7 +6,7 @@ import logging as log
 import numpy as np
 import numpy.linalg as la
 import cv2
-np.set_printoptions(threshold=np.nan)
+#np.set_printoptions(threshold=np.nan)
 
 
 
@@ -135,7 +135,6 @@ class FaceRecognizer(object):
         #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         eigenvectors = np.array(eigenvectors[:,:num_comp].real, dtype=np.float32, copy = True)
         #eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
-        
         return eigenvectors
 
     def euclidean_distance(self,p,q):
@@ -148,9 +147,7 @@ class FaceRecognizer(object):
         """ Errechnet den Kosinus Distanz zweier Projektion Matrizen """
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
-        d = (np.dot(p,q)/(la.norm(p)*la.norm(q)))
-        #print d
-        return 1-d
+        return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
 
     def get_similar(self,unknown_face):
         """Errechnet die Ähnlichkeit einer rekonstruierter Gesicht mit den unbekannter Gesicht mit den L2Error """
@@ -158,6 +155,7 @@ class FaceRecognizer(object):
         l2 = cv2.norm(unknown_face,average_face,cv2.NORM_L2)
         similar = l2/(unknown_face.shape[0]*unknown_face.shape[1])
         return similar
+    
     def reconstruct_face(self,face):
         """ Rekonstruiert ein Gesicht mit den Eigenvektoren von den PCA Algorithmus """
         p = self.project(face.reshape(1,-1),self.eig_vec_pca, self.mu)
@@ -181,7 +179,6 @@ class FaceRecognizer(object):
         correct_form =255* correct_form
         #correct_form =255* ((correct_form-minP)/(maxP-minP))
         correct_form = np.asmatrix(correct_form, dtype=np.uint8)
-#         print correct_form
 #         cv2.namedWindow('averageface')
 #         cv2.imshow('averageface', correct_form)
         return correct_form
