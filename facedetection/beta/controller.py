@@ -135,9 +135,13 @@ class Controller(object):
         # Alle Bilder neu einlesen, da neue hinzugekommen sind
         log.info('Lese neu hinzugekommene Bilder von Platte ein...')
         [face_images, face_ids]=self.t_sets.get_all_faces()
+        # Counter zurueck setzen
         self.detect.setCounter(0)
+        
         if len(face_images)!=0:
             self.fr.trainFisherFaces(face_ids, face_images)
+            self.notify_observer()
+        
 
     def do_recognize_face(self):
         

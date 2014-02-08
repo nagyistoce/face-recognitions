@@ -73,7 +73,7 @@ class GUI(QtGui.QMainWindow):
         self.BUTTON_HEIGHT_DEFAULT = 30
         self.BUTTON_HEIGHT_BIG = 50 
         self.database = db.TrainingSets()
-        self.controller = c.Controller()
+        #self.controller = c.Controller()
         #self.fdetection = fd.FaceDetector()
         
         # Hauptlayout Vertikal-Boxlayout
@@ -153,6 +153,9 @@ class GUI(QtGui.QMainWindow):
         """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
         # Schreibt Text in Output Zeile der GUI
         self.text_output.setText(self.video.controller.info_text)
+        if self.video.controller.get_len() > 2:
+            print 'jetzt habe ich mehr als 3 Tsets'
+            self.button_who_i_am.setText('Wer-Bin-Ich')
         
     def on_input_output(self, text):
         """Wird automatisch bei Eingabe ins Output-Textfeld aufgerufen. Sollte Leer bleiben!"""
@@ -212,7 +215,7 @@ class GUI(QtGui.QMainWindow):
 
         if not self.database.bilder_is_empty():
             log.info("Komm herein")
-            if self.controller.get_len()>=3:
+            if self.video.controller.get_len()>=3:
                 if self.button_who_i_am.isChecked():
                     self.button_who_i_am.setText("Anhalten")
                     self.video.recognize_face = True
