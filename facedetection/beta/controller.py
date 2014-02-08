@@ -38,6 +38,7 @@ class Controller(object):
             log.info('Die Sicherungsdatei wurde nicht gefunden. Beim ersten Programmstart korrekt.: %s', self.sf)
         except:
             log.exception('Unerwarteter Fehler beim lesen der Sicherungsdatei: %s', self.sf)
+        # Bitte nur hier einmal get_id_infos_dict() holen -> weil teure dateizugriffe
         self.id_infos_dict = self.t_sets.get_id_infos_dict(self.id_infos_dict)
         # Facedetekor-Objekt
         self.detect = fd()                
@@ -45,12 +46,11 @@ class Controller(object):
         try:
             [face_images, face_ids] = self.t_sets.get_all_faces()
         except:
-            log.exception("Es konnten keine Bilder geladen werden")
-            raise
+            log.exception("Fehler beim laden der Bilder geladen werden")
         if len(face_images) != 0:
             self.fr.trainFisherFaces(face_ids, face_images)
         else:
-            log.info("Training Set ist leer oder Bilder können nicht geladen werden")
+            log.info("Training Set ist leer, Okay beim ersten Programmstart")
         self.is_stopped_recognize = False
         self.is_stopped_save = False
         self.observer = []
@@ -99,22 +99,41 @@ class Controller(object):
         log.info('\n'.join(s))
     
     def do_save_face(self, face_id, face_name):
-        """Wird ausgefuehrt wenn Training-Set aufgenommen wird 'Bekannt-Machen-Button' == active()"""
+        """Wird ausgefuehrt wenn Training-Set aufgenommen wird also der 'Bekannt-Machen-Button' aktiviert ist."""
+#         assert(self.id_infos_dict != {})
+        face_id = str(face_id)
+        face_name = str(face_name)
         self.is_stopped_save = True
-        self.detect.acceptNewFace(self.face, face_id, face_name)
-        self.info_text = '%s Bilder der ID: %s gespeichert.' % (self.detect.getCounter(), face_id)
-        self.notify_observer()
-
+        # Test ob ID und UserDict bereits vorhanden
+        if self.id_infos_dict.has_key(face_id) and self.id_infos_dict[face_id].has_key(self.t_sets.KEY_COUNT):
+            print 'dict ist da ich zaehle versuche gesicht zu accepten ...'
+            imgs_accepted = self.detect.acceptNewFace(self.face, face_id, face_name)
+            if imgs_accepted:
+                self.id_infos_dict[face_id][self.t_sets.KEY_SUM_IMGS] += imgs_accepted
+                info = '%s Bilder der ID: %s gespeichert.' % (self.id_infos_dict[face_id][self.t_sets.KEY_SUM_IMGS], face_id)
+                self.info_text = info                
+                self.notify_observer()
+                log.info(info)
+        else: # User ist Neu
+            log.info('Neuer User beim ersten Start, lege neu an ID %s', face_id)
+            self.id_infos_dict[face_id] = {self.t_sets.KEY_NAME : face_name,
+                                           self.t_sets.KEY_COUNT : 0,  #  fuer stat
+                                           self.t_sets.KEY_ID : face_id,
+                                           self.t_sets.KEY_SUM_IMGS : 0}
+            print 'Neure user angelegt...jetzt dic ', self.id_infos_dict
+            
     def stopped_save_face(self, face_id, face_name):
         """Nach Beenden des Facerecognition Modus"""
         self.is_stopped_save = False                
         log.info('Beende Training-Set...')
         log.info('Trainiere Fisher Faces mit neue Gesichter...')
         # eingegebenen Name und ID aus GUI im Dictionary speichern
-        self.id_infos_dict[str(face_id)] = {self.t_sets.KEY_NAME : str(face_name),
-                                            self.t_sets.KEY_COUNT : 0,
-                                            self.t_sets.KEY_ID : str(face_id)}
+        self.id_infos_dict[str(face_id)].update({self.t_sets.KEY_NAME : str(face_name),
+                                                 self.t_sets.KEY_COUNT : 0,  # zuruecksetzen fuer stat
+                                                 self.t_sets.KEY_ID : str(face_id)})
+        log.debug('Das dic nach ende der TS Aufnahme %s ', self.id_infos_dict)
         # Alle Bilder neu einlesen, da neue hinzugekommen sind
+        log.info('Lese neu hinzugekommene Bilder von Platte ein...')
         [face_images, face_ids]=self.t_sets.get_all_faces()
         self.detect.setCounter(0)
         if len(face_images)!=0:

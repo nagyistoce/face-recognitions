@@ -192,7 +192,7 @@ class GUI(QtGui.QMainWindow):
             #a = self.fdetection.get_speichern_ok()
             #print "fdetection Trainingsset-Bilder",a 
             
-            self.button_do_train.setText("Training-Set")
+            self.button_do_train.setText("Bekannt machen")
             self.video.save_face = False
             
     def on_close(self):

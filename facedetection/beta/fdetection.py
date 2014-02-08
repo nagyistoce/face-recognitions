@@ -137,11 +137,16 @@ class FaceDetector(object):
         """Prueft ob neues Gesichtsbild gut vom vorigen unterscheidbar ist, wenn ja
         wird das neue Bild normal und gespiegelt auf Platte gespeichert.
         
+        return -> success 
+        
+        success ist die Anzahl korrekt gespeicherter Bilder, beachte dass jedes Bild einmal 
+        gespiegelt gespeichert wird.
+        
         """
         # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
         current_time = datetime.now()
         simular = 1.0
-        
+        success = 0
         if self.old_face != None:
             simular = self.compare(new_face, self.old_face)
         result = current_time - self.old_time   
@@ -149,8 +154,10 @@ class FaceDetector(object):
             
             #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
-            self.training_set.save_face(new_face, face_id, face_name)
-            self.training_set.save_face(mirror_face, face_id, face_name)
+            if self.training_set.save_face(new_face, face_id, face_name):
+                success += 1
+            if self.training_set.save_face(mirror_face, face_id, face_name):
+                success += 1
             print "saved a new face"
             self.count = self.count + 1
             self.setCounter(self.count)
@@ -160,12 +167,14 @@ class FaceDetector(object):
                 print "Trainingsset unter 100 Bilder"
             else:
                 self.speichern_ok = True
-                print "Trainingsset OK"
-            
+                print "Trainingsset OK"            
             print "counter", self.count
 
             self.old_time = current_time
             self.old_face = new_face.copy()
+        log.debug('succes, habe %s Bilder erfolgreich geschrieben', success)
+        return success
+            
 
     def get_speichern_ok(self):
         return self.speichern_ok 
