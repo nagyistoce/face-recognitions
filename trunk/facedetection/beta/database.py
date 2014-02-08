@@ -117,6 +117,7 @@ class TrainingSets(object):
         return -> ['path/toid1', 'path/toid2', ...]
         """
         dirs = []
+        print "Database: ", dirs
         join = os.path.join
         try:
             for folder in [f for f in os.listdir(self.path) if os.path.isdir(join(self.path,f))]:
@@ -206,7 +207,10 @@ class TrainingSets(object):
 
     def get_all_faces(self):
         """Einlesen der Gesichtsbilder von Platte mit zuordnung der jeweiligen ID durch 2 Listen."""
+        
+        print "get_all_face"
         face_images, face_ids = [], []
+       
         for dirname, dirnames, filenames in os.walk(self.path):
             for subdirname in sorted(dirnames):
                 if subdirname.isdigit():
@@ -216,8 +220,10 @@ class TrainingSets(object):
                     face_ids.extend([face_id] * number)
                 else:
                     log.info('Ueberspringe den Ordner: %s da er keine gueltige ID darstellt.', subdirname)
+
+                
         return face_images, face_ids
-#     
+       
     @property
     def KEY_ID(self):
         return self.__KEY_ID
