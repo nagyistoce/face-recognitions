@@ -30,30 +30,27 @@ class TrainingSets(object):
         self.init_folder_structure()
         self.id_infos_dict = {} # erst bei Nutzung initialisieren da teure Dateizugriffe!
 
-    def get_id_and_names(self):
-        """Liest ID und Namen aus den gespeicherten Bildern heraus. 
-        Nur verwenden wenn alle Bilder einheitlich mit ID_Name_ beginnen!
-        Siehe get_image_name().
-        
-        return -> [('id', 'name1'), ('id2', 'name2'), ... ]
-        
-        """
-        try:
-            for dir in self.get_id_dirs():
-                pics = [f for f in os.listdir(dir) if f[-4:] in self.extensions]
-#                 [p.split('-')]             
-#                 print 'nur bilder von %s dir:\n%s' % (dir, pics)
-        except:
-            log.exception('Training-Set-Pfad nicht vorhanden')
-    def get_sum_imgs(self, face_id):
-        """Gibt Anzahl aller Bilddateien einer ID zurueck"""
-     #   join = os.path.join
-      #  images = [f for f in os.listdir(id_path) 
-       #           if os.path.isfile(join(id_path, f)) and f[-4:] in self.extensions
-        #          ]
+#     def get_id_and_names(self):
+#         """Liest ID und Namen aus den gespeicherten Bildern heraus. 
+#         Nur verwenden wenn alle Bilder einheitlich mit ID_Name_ beginnen!
+#         Siehe get_image_name().
+#         
+#         return -> [('id', 'name1'), ('id2', 'name2'), ... ]
+#         
+#         """
+#         try:
+#             for dir in self.get_id_dirs():
+#                 pics = [f for f in os.listdir(dir) if f[-4:] in self.extensions]
+# #                 [p.split('-')]             
+# #                 print 'nur bilder von %s dir:\n%s' % (dir, pics)
+#         except:
+#             log.exception('Training-Set-Pfad nicht vorhanden')
+
     def get_id_infos_dict(self, dic = None):
-        """Gibt Dictionary mit IDs als Key zurueck. 
-        uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
+        """Gibt Dictionary mit IDs als Key zurueck, merged uebergebenes dict mit den Infos von Platte. 
+        Uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
+        IDs die nur im uebergebenen dic enthalten sind werden komplett entfernt wenn kein passendes Training-Set 
+        auf Platte vorliegt.
 
         return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0, self.KEY_ID}, ... }
         
@@ -71,12 +68,12 @@ class TrainingSets(object):
                 for f_id in dic.keys():
                     if f_id not in hdd:
                         del dic[f_id]
-                        log.info('ID-%s Entfernt, da kein Training-Set auf Platte gefunden wurde.', f_id)
+                        log.info('ID-%s Entfernt, da kein passendes Training-Set auf Platte gefunden wurde.', f_id)
             # IDs die nur auf Platte vorhanden sind oder auf Platte und Sicherungsdatei
             for f_id in hdd:
                 # ID nur auf Platte
                 if f_id not in dic.keys():
-                    log.info('Die ID: %s ist noch nicht im dic, fuege hinzu...', f_id)                                        
+                    log.info('Die ID: %s ist noch nicht im dic, fuege Eintrag neu hinzu...', f_id)                                        
                     dic[f_id] = {self.KEY_NAME : 'Alien', 
                                  self.KEY_COUNT : 0, 
                                  self.KEY_ID : f_id,
@@ -84,52 +81,15 @@ class TrainingSets(object):
                                  }
                 # ID auf Platte und aus Sicherungsdatei gelesen
                 else:        
-                    log.debug('Die ID: %s kenne ich auch schon aus Sicherungsdatei.', f_id)
-                    # print 'bisher %s' % (dic[f_id])
+                    log.info('Die ID: %s kenne ich auch schon aus der Sicherungsdatei, mache updates...', f_id)
                     sum_img = self.get_faces(f_id, [])[1]
                     dic[f_id].update({self.KEY_ID:f_id, self.KEY_SUM_IMGS:sum_img})
-                    # print 'jetzt %s' % dic[f_id]
-#                     dic[f_id].update(**{self.KEY_SUM_IMGS:self.get_faces(f_id, [])[1]})
-#                     dic.update({self.KEY_ID:f_id, self.KEY_SUM_IMGS:self.get_faces(f_id,[])[1]})
             log.debug('Alle IDs von Platte: gelesen %s', map(int,hdd))
         except:
             log.exception('Fehler beim erstellen des Info-Dictionary anhand der Ordnernamen.')
         log.debug('das dict nach allen ops %s', dic)
         self.id_infos_dict = dic
         return dic
-#           
-#     def get_id_infos_dict(self, dic=None, known_ids=None):
-#         """Gibt Dictionary mit IDs als Key zurueck, known_ids werden hinzugefuegt. 
-#         uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
-# 
-#         return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0, self.KEY_ID}, ... }
-#         
-#         """
-#         join = os.path.join
-#         dic = {} if dic == None else dic
-#         try:
-#             lis = sorted([f for f in os.listdir(self.path) 
-#                           if os.path.isdir(join(self.path,f)) and f.isdigit()])
-#             for i in lis:
-#                 if i not in dic.keys():
-#                     log.debug('der key %s ist noch nicht im dic', i)
-#                     dic[i] = {self.KEY_NAME : 'Alien', self.KEY_COUNT : 0, self.KEY_ID : i,
-#                               #self.KEY_SUM_IMGS : self.get_faces(os.path.join(self.path, i))
-#                               }
-#             log.debug('Alle IDs von Platte: gelesen %s', map(int,lis))
-#         except:
-#             log.exception('Fehler beim erstellen des Info-Dictionary anhand der Ordnernamen.')
-#         log.debug('das dict vor update merge %s', dic)
-#         # Uebergebene (ID,Name) Tuple in info_dict setzen
-#         if known_ids:
-#             try:                
-#                 for tup in known_ids:
-#                     td = {self.KEY_NAME:tup[1], self.KEY_COUNT:0}
-#                     dic[tup[0]] = td
-#                 log.debug('Das id_infos_dict nach update(known_ids): %s ', dic)
-#             except:
-#                 log.exception('Fehler beim hinzufugen bekannter IDs zum info_dictionary.')
-#         return dic
 
     def get_image_name(self, face_id, face_name):
         """Gibt den Bildnamen fuer ein neu zu speicherndes Gesicht zurueck.
@@ -250,38 +210,7 @@ class TrainingSets(object):
         log.debug('num cv2.imread-imgs = %s = len(dateien) = %s' % (num_imgs, len(images)))
         
         return face_images, num_imgs
-#                    
-#     def get_faces(self, id_path, face_images=None):
-#         """Liest alle Bilder einer bestimmten ID ein"""
-#         # print 'get_faces()'
-#         # print 'face_imags = %s' % face_images
-#         face_id = id_path.split(os.sep)[-1]
-#         num_imgs = 0
-#         join = os.path.join
-#         images = [f for f in os.listdir(id_path) 
-#                   if os.path.isfile(join(id_path, f)) and f[-4:] in self.extensions
-#                   ]
-#         for img in images:
-#         #if face_images:
-#             try:
-#                 img_path = join(id_path, img)                         
-#                 im = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-#                 face_images.append(np.asarray(im, dtype = np.uint8))
-#                 num_imgs +=1
-#             except IOError as e:
-#                 log.exception("I/O error{0}: {1}".format(e.errno, e.strerror))
-#                 continue
-#             except TypeError as e:
-#                 log.exception('Fehler beim einlesen der Datei %s.\n'
-#                               'Eventuell ist die Datei defekt.', img_path)
-#                 continue
-#             except:
-#                 log.exception("Nicht erwarteter Fehler beim einlesen der Datei "
-#                             "%s", img_path)
-#         log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
-#         log.debug('num imgs = %s = %s' % (num_imgs, len(images)))
-#         return face_images, num_imgs
-#             
+
     def get_all_faces(self):
         """Einlesen der Gesichtsbilder von Platte mit zuordnung der jeweiligen ID durch 2 Listen."""
         face_images, face_ids = [], []
