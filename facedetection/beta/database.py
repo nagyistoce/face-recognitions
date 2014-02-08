@@ -201,8 +201,8 @@ class TrainingSets(object):
                 log.exception("Nicht erwarteter Fehler beim einlesen der Datei "
                             "%s", img_path)
         log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
-        log.debug('num cv2.imread-imgs = %s = len(dateien) = %s' % (num_imgs, len(images)))
-        
+        log.info('Das sind %s Bilder: %s', 'genug' if num_imgs > 99 else 'zu wenig', num_imgs)
+
         return face_images, num_imgs
 
     def get_all_faces(self):
@@ -220,8 +220,7 @@ class TrainingSets(object):
                     face_ids.extend([face_id] * number)
                 else:
                     log.info('Ueberspringe den Ordner: %s da er keine gueltige ID darstellt.', subdirname)
-
-                
+  
         return face_images, face_ids
        
     @property
