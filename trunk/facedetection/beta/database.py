@@ -18,33 +18,22 @@ class TrainingSets(object):
      
     """
     def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_'):
+        print 'instanziiere ts()'
         self.path = os.path.expanduser(path)
         self.extensions = ['.jpg', '.JPG', '.png', '.PNG']
         self.delimiter = '_'
-        # Keys fuer das Dictionary
-        self.KEY_SUM_IMGS = 'sum_imgs'
-        self.KEY_ID = 'id'
-        self.KEY_NAME = 'name'
-        self.KEY_COUNT = 'count'
+        # Readonly Properties, Keys fuer das Dictionary
+#         self.KEY_SUM_IMGS = 'sum_imgs'
+#         self.KEY_ID = 'id'
+#         self.KEY_NAME = 'name'
+#         self.KEY_COUNT = 'count_predict'
+        self.__KEY_SUM_IMGS = 'sum_imgs'
+        self.__KEY_ID = 'id'
+        self.__KEY_NAME = 'name'
+        self.__KEY_COUNT = 'count'
         self.images = {}
         self.init_folder_structure()
         self.id_infos_dict = {} # erst bei Nutzung initialisieren da teure Dateizugriffe!
-
-#     def get_id_and_names(self):
-#         """Liest ID und Namen aus den gespeicherten Bildern heraus. 
-#         Nur verwenden wenn alle Bilder einheitlich mit ID_Name_ beginnen!
-#         Siehe get_image_name().
-#         
-#         return -> [('id', 'name1'), ('id2', 'name2'), ... ]
-#         
-#         """
-#         try:
-#             for dir in self.get_id_dirs():
-#                 pics = [f for f in os.listdir(dir) if f[-4:] in self.extensions]
-# #                 [p.split('-')]             
-# #                 print 'nur bilder von %s dir:\n%s' % (dir, pics)
-#         except:
-#             log.exception('Training-Set-Pfad nicht vorhanden')
 
     def get_id_infos_dict(self, dic = None):
         """Gibt Dictionary mit IDs als Key zurueck, merged uebergebenes dict mit den Infos von Platte. 
@@ -55,7 +44,7 @@ class TrainingSets(object):
         return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0, self.KEY_ID}, ... }
         
         """
-        log.debug('get_id_infos_dict()...')
+        print 'get_id_infos_dict()...'
         join = os.path.join
         dic = {} if dic == None else dic
         assert(isinstance(dic, dict))
@@ -172,6 +161,10 @@ class TrainingSets(object):
             log.debug('Bild gespeichert: %s', full_path)
         except (IOError, Exception):
             log.exception("Fehler beim Abspeichern des Bildes: %s", full_path)
+        else: # success
+            log.debug('success save_face() ein bild gespeichert return True')
+            return True
+        return False
    
     def get_faces(self, face_id, face_images):
         """Liest alle Bilder einer bestimmten ID ein, face_images ist Liste in der die Bilder gespeichert werden.
@@ -224,11 +217,24 @@ class TrainingSets(object):
                 else:
                     log.info('Ueberspringe den Ordner: %s da er keine gueltige ID darstellt.', subdirname)
         return face_images, face_ids
+#     
+    @property
+    def KEY_ID(self):
+        return self.__KEY_ID
+    @property
+    def KEY_NAME(self):
+        return self.__KEY_NAME
+    @property
+    def KEY_COUNT(self):
+        return self.__KEY_COUNT
+    @property
+    def KEY_SUM_IMGS(self):
+        return self.__KEY_SUM_IMGS
     
-if __name__ == '__main__':
-    log.basicConfig(format='%(levelname)s: %(message)s', level=log.DEBUG)
-    ts = TrainingSets()
-    ts.get_id_and_names()
+# if __name__ == '__main__':
+#     log.basicConfig(format='%(levelname)s: %(message)s', level=log.DEBUG)
+#     ts = TrainingSets()
+#     ts.get_id_and_names()
 #     print 'ts empty ',ts.trainings_set_is_empty()
 #     print 'bidler empty ', ts.bilder_is_empty()
 # #     ts.trainings_set_is_empty()
