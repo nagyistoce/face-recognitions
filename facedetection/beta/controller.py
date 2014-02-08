@@ -86,7 +86,8 @@ class Controller(object):
         # Info-Text in GUI
         win_dic = (sorted(self.id_infos_dict.values(), key=lambda d: d[self.t_sets.KEY_COUNT], reverse=True)[0])
         name, face_id, percent = win_dic[self.t_sets.KEY_NAME], win_dic[self.t_sets.KEY_ID], self.get_percentage(total, win_dic[self.t_sets.KEY_COUNT])
-        self.info_text = 'Du bist %s mit ID: %s und da bin ich zu %s%% sicher =))' % (name, face_id, percent)
+        winner_text = 'Du bist %s mit ID: %s und da bin ich zu %s%% sicher =))' % (name, face_id, percent)
+        self.info_text = winner_text
         self.notify_observer()
         # Konsolen Ausgabe
         s = ['\n' + '-' * 40]
@@ -97,6 +98,7 @@ class Controller(object):
         s.append('total: %s' %total)
         s.append('-' * 40 + '\n')
         log.info('\n'.join(s))
+        return winner_text
     
     def do_save_face(self, face_id, face_name):
         """Wird ausgefuehrt wenn Training-Set aufgenommen wird also der 'Bekannt-Machen-Button' aktiviert ist."""
@@ -104,6 +106,7 @@ class Controller(object):
         face_id = str(face_id)
         face_name = str(face_name)
         self.is_stopped_save = True
+        print ' setze save auf ', self.is_stopped_save
         # Test ob ID und UserDict bereits vorhanden
         if self.id_infos_dict.has_key(face_id) and self.id_infos_dict[face_id].has_key(self.t_sets.KEY_COUNT):
             print 'dict ist da ich zaehle versuche gesicht zu accepten ...'
@@ -145,6 +148,7 @@ class Controller(object):
 
     def do_recognize_face(self):        
         """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
+        self.is_stopped_recognize = True
         if len(self.id_infos_dict) >= 3:
             too_little = filter(lambda c: c < 101, [v[self.t_sets.KEY_SUM_IMGS] for v in self.id_infos_dict.values()])
             if too_little: 
@@ -181,7 +185,10 @@ class Controller(object):
         # nur einmal bei Beenden der Gesichtserkennung
         log.info('Beende Gesichtserkennung...')
         self.is_stopped_recognize = False
-        self.print_stat()
+        self.info_text = self.print_stat()
+        
+        self.notify_observer()
+        #self.print_stat()
         # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
         for user in self.id_infos_dict.values():
             user[self.t_sets.KEY_COUNT] = 0
@@ -191,17 +198,18 @@ class Controller(object):
     def frame_to_face(self, frame, face_id, face_name, save_face, recognize_face):
         """Verarbeitet pro Frame die Informationen der gedrueckten Buttons und gibt bearbeiteten Frame zurueck."""
         self.frame, self.face = self.detect.detectFace(frame)
+
         if self.face is not None:
             # Training-Set erstellung
             if save_face:
-                self.do_save_face(face_id, face_name)                
+                self.do_save_face(face_id, face_name)
+                self.is_stopped_save = True                
             # Nur einmal nach Beenden der Training-Set Aufnahme
             elif self.is_stopped_save:
                 self.stopped_save_face(face_id, face_name)
             # Facerecognition durchfuehren
             # Klick Wo_i_am_Button
-            elif recognize_face:
-                
+            elif recognize_face:                
                 self.do_recognize_face()
             # Wer-Bin-Ich-Button deaktiviert
             elif self.is_stopped_recognize:
