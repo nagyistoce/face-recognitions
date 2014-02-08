@@ -67,7 +67,7 @@ class Controller(object):
         for obj in self.observer:
             obj.update()
     def get_percentage(self, total, part):
-        """Berrechnung des Prozentualen Anteils von part an total."""
+        """Berechnung des Prozentualen Anteils von part an total."""
         percent = 0.0
         try:
             percent = 100 * part/float(total)
@@ -131,7 +131,7 @@ class Controller(object):
         self.id_infos_dict[str(face_id)].update({self.t_sets.KEY_NAME : str(face_name),
                                                  self.t_sets.KEY_COUNT : 0,  # zuruecksetzen fuer stat
                                                  self.t_sets.KEY_ID : str(face_id)})
-        log.debug('Das dic nach ende der TS Aufnahme %s ', self.id_infos_dict)
+        log.debug('Das Dict nach ende der TS Aufnahme %s ', self.id_infos_dict)
         # Alle Bilder neu einlesen, da neue hinzugekommen sind
         log.info('Lese neu hinzugekommene Bilder von Platte ein...')
         [face_images, face_ids]=self.t_sets.get_all_faces()
