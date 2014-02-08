@@ -11,12 +11,13 @@ import cv2
 
 import controller as c
 import database as db
-import fdetection as fd
+
 
 
 class Video():
     """Klasse zum konvertieren des Videobilds und bereitstellung des ggf. bearbeiteten Frames"""
     def __init__(self, webcam, face_id=None, face_name=None, save_face=False, recognize_face=False, recognize_face_stopped=False):
+        
         self.webcam = webcam
         self.face_id = face_id
         self.face_name = face_name
@@ -72,6 +73,7 @@ class GUI(QtGui.QMainWindow):
         self.BUTTON_HEIGHT_DEFAULT = 30
         self.BUTTON_HEIGHT_BIG = 50 
         self.database = db.TrainingSets()
+        self.controller = c.Controller()
         #self.fdetection = fd.FaceDetector()
         
         # Hauptlayout Vertikal-Boxlayout
@@ -210,14 +212,19 @@ class GUI(QtGui.QMainWindow):
 
         if not self.database.bilder_is_empty():
             log.info("Komm herein")
-
-            if self.button_who_i_am.isChecked():
-                self.button_who_i_am.setText("Anhalten")
-                self.video.recognize_face = True
-                self.video.face_id = self.text_id.text()
-
-            else: # not button_who_i_am.isChecked()
-                self.button_who_i_am.setText("Wer-Bin-Ich?")
+            if self.controller.get_len()>=3:
+                if self.button_who_i_am.isChecked():
+                    self.button_who_i_am.setText("Anhalten")
+                    self.video.recognize_face = True
+                    self.video.face_id = self.text_id.text()
+    
+                else: # not button_who_i_am.isChecked()
+                    self.button_who_i_am.setText("Wer-Bin-Ich?")
+                    self.video.recognize_face = False
+                    self.video.stop = True
+            else:
+                self.button_who_i_am.setChecked(False)
+                self.button_who_i_am.setText("Nicht genug Personen im Trainings-Set vorhanden")
                 self.video.recognize_face = False
                 self.video.stop = True
         else: # database.bilder_is_empty()            

@@ -140,30 +140,35 @@ class Controller(object):
             self.fr.trainFisherFaces(face_ids, face_images)
 
     def do_recognize_face(self):
-        """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
-        self.is_stopped_recognize = True
-        # Facedetection
-        similar = self.fr.get_similar(self.face)
-        if similar < 0.7:
-            predicted_face = self.fr.predict(self.face)
-            confidence = (1.0 - min(max(similar,0.0),1.0)) *100
-            # nur IDs ab 0 sind gueltig
-            if predicted_face >= 0:
-                try:                    
-                    self.info_text = 'Hallo %s! ID-%s confidence: %s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
-                                                            predicted_face, confidence)
-                    self.notify_observer()
-                    self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
-                except:
-                    log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
-                                  'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
-                                  self.id_infos_dict)
-            else:
-                self.info_text = 'Hallo unbekannte Person!'
-        else:
-            self.info_text = 'Hallo unbekannter Person!'
-        self.notify_observer()
         
+        """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
+        if len(self.id_infos_dict) >= 3:
+            # Facedetection
+            similar = self.fr.get_similar(self.face)
+            if similar < 0.7:
+                predicted_face = self.fr.predict(self.face)
+                confidence = (1.0 - min(max(similar,0.0),1.0)) *100
+                # nur IDs ab 0 sind gueltig
+                if predicted_face >= 0:
+                    try:                    
+                        self.info_text = 'Hallo %s! ID-%s confidence: %s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
+                                                                predicted_face, confidence)
+                        self.notify_observer()
+                        self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
+                    except:
+                        log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
+                                      'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
+                                      self.id_infos_dict)
+                else:
+                    self.info_text = 'Hallo unbekannte Person!'
+            else:
+                self.info_text = 'Hallo unbekannter Person!'
+            self.notify_observer()
+
+    
+    def get_len(self):
+        return len(self.id_infos_dict)
+    
     def stopped_face_recognition(self):
         """Nach beenden des Facerecognition Modus"""
         # nur einmal bei Beenden der Gesichtserkennung
@@ -173,6 +178,7 @@ class Controller(object):
         # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
         for user in self.id_infos_dict.values():
             user[self.t_sets.KEY_COUNT] = 0
+            
          
     # Diese Methode schlank halten, da sie pro Frame aufgerufen wird!        
     def frame_to_face(self, frame, face_id, face_name, save_face, recognize_face):
@@ -186,7 +192,9 @@ class Controller(object):
             elif self.is_stopped_save:
                 self.stopped_save_face(face_id, face_name)
             # Facerecognition durchfuehren
+            # Klick Wo_i_am_Button
             elif recognize_face:
+                
                 self.do_recognize_face()
             # Wer-Bin-Ich-Button deaktiviert
             elif self.is_stopped_recognize:
