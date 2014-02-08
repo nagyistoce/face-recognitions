@@ -143,7 +143,7 @@ class Controller(object):
         """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
         self.is_stopped_recognize = True
         # Facedetection
-        similar = self.fr.get_confidence(self.face)
+        similar = self.fr.get_similar(self.face)
         if similar < 0.7:
             predicted_face = self.fr.predict(self.face)
             confidence = (1.0 - min(max(similar,0.0),1.0)) *100
