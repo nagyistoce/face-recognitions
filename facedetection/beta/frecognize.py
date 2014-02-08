@@ -18,7 +18,7 @@ class FaceRecognizer(object):
 
     def __init__(self, num_comp = 0):
         '''
-        Constructor der leere Variablen instanziert
+        Konstruktor, der leere Variablen instanziert
         '''
         self.possible_ids = {}
         

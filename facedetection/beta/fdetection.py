@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-import os
-import math
+import os,math
 import logging as log
 from datetime import datetime
-
-import cv2, numpy as np
-
 import haarcascades
+import cv2, numpy as np
 import database
 
 class Haarcascades(object):    
@@ -26,7 +23,7 @@ class Haarcascades(object):
 
 class FaceDetector(object):
     def __init__(self):        
-        """Greift auf Haar-Cascade XML Dateien zu."""
+        """Konstruktor, Greift auf Haar-Cascade XML Dateien zu, initialisiert FacePreprocessor und TrainingSet"""
         self.haarcascades = Haarcascades()
         self.lefteye_center = cv2.CascadeClassifier(self.haarcascades.LEFT_EYE_2SPLITS)
         self.righteye_center = cv2.CascadeClassifier(self.haarcascades.RIGHT_EYE_2SPLITS)
@@ -57,10 +54,9 @@ class FaceDetector(object):
         # bereitet Bild fuer Gesichtserkennung vor
         # Konvertiert Bild zu ein Grauwertbild
         g_img = cv2.cvtColor(self.img, cv2.COLOR_RGB2GRAY)
+        # skaliert das Bild runter auf eine Breite von 320, falls Bild grösser ist als 320
         DETECTION_WIDTH = 320
         scale = self.img.shape[1] / float(DETECTION_WIDTH)
-        # skaliert das Bild runter auf eine Breite von 320, falls bild groesser ist als 320
-
         if self.img.shape[1] > DETECTION_WIDTH:
             scaled_height = int(self.img.shape[0]/scale +0.5)
             small_g = cv2.resize(g_img, (DETECTION_WIDTH,scaled_height))
@@ -68,23 +64,20 @@ class FaceDetector(object):
             small_g = g_img
         # Histrogramm Ausgleich wird noch angewendet
         small_g = cv2.equalizeHist(small_g)
-        # TODO: checken ob mit mehr Parametern ggf. Performance erhoeht wird
-        # Methode die nach Gesichter sucht, in diesem Fall nur das groesste
+        # Methode die nach Gesichter sucht, in diesem Fall nur das Grösste
         faces = self.classifier.detectMultiScale(small_g,
                                                  flags=cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
                                                  )
 
         for (x,y,w,h) in faces:
-            # Gesicht-Rechteck, Eigentschaften muessen wieder hochskaliert werden
+            # Gesicht-Rechteck, Eigentschaften müssen wieder hochskaliert werden
             if self.img.shape[1] > DETECTION_WIDTH:
                 x = int(x * scale + 0.5)
                 y = int(y * scale + 0.5)
                 w = int(w * scale + 0.5)
                 h = int(h * scale + 0.5)
-            # TODO: rausnehmen fuer Abgabe. 
             # Gesicht Bereich wird eingezeichnet
             cv2.rectangle(self.img,(x,y),(x+w,y+h),(255,0,0),2)
-            # TODO: sind diese zweischritte noetig?
             face = self.img[y:y+h, x:x+w]
             o_face = face.copy()
             # Gesicht wird an Methode detectEyes uebergeben um nach Augen zusuchen
@@ -96,10 +89,10 @@ class FaceDetector(object):
         return self.img, None
     
     def detectEyes(self, face):
-        """Erkennung von rechtem und linken Auge und berrechnung der Augenmittelpunkte."""
+        """Erkennung von rechtem und linken Auge und berechnung der Augenmittelpunkte."""
         lefteye_center = [0,0]
         righteye_center= [0,0]
-        # Festgelegte groessen wo sich typische weise die Augen sich im Gesicht befinden
+        # Festgelegte Grössen wo sich typischeweise die Augen sich im Gesicht befinden
         EYE_SX=0.12
         EYE_SY=0.17
         EYE_SW=0.37
@@ -113,10 +106,6 @@ class FaceDetector(object):
         right_x=int(face.shape[0]*(1.0-EYE_SX-EYE_SW)+0.5)
         top_left_face = g_face[top_y:top_y+height_y,left_x:left_x+width_x]
         top_right_face = g_face[top_y:top_y+height_y,right_x:right_x+width_x]
-        # Suchgebiete der Augen
-        # TODO: brauchen wir die auskommentierten Zeilen?
-        #cv2.rectangle(face,(left_x,top_y),(left_x+width_x,top_y+height_y),(0,255,255),2)
-        #cv2.rectangle(face,(right_x,top_y),(right_x+width_x,top_y+height_y),(0,255,0),2)
         # In vorherfestgelegte Augenbereich werden die Augen individuell gesucht
         lefteye = self.lefteye_center.detectMultiScale(top_left_face)
         righteye = self.righteye_center.detectMultiScale(top_right_face)
@@ -134,7 +123,7 @@ class FaceDetector(object):
         return False, lefteye_center, righteye_center
     
     def acceptNewFace(self, new_face,face_id, face_name):
-        """Prueft ob neues Gesichtsbild gut vom vorigen unterscheidbar ist, wenn ja
+        """Prueft das nur ein neues Gesichtsbild pro Sekunde gespeichert wird und ob gut vom vorigen unterscheidbar ist, wenn ja
         wird das neue Bild normal und gespiegelt auf Platte gespeichert.
         
         return -> success 
@@ -143,36 +132,35 @@ class FaceDetector(object):
         gespiegelt gespeichert wird.
         
         """
-        # TODO: Schauen ob Gesicht in 1 Sekunden Takt gemacht wurde und sich von vorherige unterscheidet
         current_time = datetime.now()
         simular = 1.0
         success = 0
+        
         if self.old_face != None:
             simular = self.compare(new_face, self.old_face)
-        result = current_time - self.old_time   
+        result = current_time - self.old_time
+        
         if result.seconds >= 1 and simular >= 0.3:
-            
-            #new_face wird gespiegelt
             mirror_face = cv2.flip(new_face,1)
             if self.training_set.save_face(new_face, face_id, face_name):
                 success += 1
             if self.training_set.save_face(mirror_face, face_id, face_name):
                 success += 1
-            print "saved a new face"
+            log.info("Neues Bild wurde gespeichert")
             self.count = self.count + 1
             self.setCounter(self.count)
             self.getCounter()
             if self.count < 100:
                 self.speichern_ok = False
-                print "Trainingsset unter 100 Bilder"
+                log.info("Trainingsset unter 100 Bilder")
             else:
                 self.speichern_ok = True
-                print "Trainingsset OK"            
-            print "counter", self.count
-
+                log.info("Trainingsset OK")            
+            log.debug("counter: %s", self.count)
             self.old_time = current_time
             self.old_face = new_face.copy()
-        log.debug('succes, habe %s Bilder erfolgreich geschrieben', success)
+            
+        log.debug('Success, habe %s Bilder erfolgreich geschrieben', success)
         return success
             
 
