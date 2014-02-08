@@ -143,10 +143,13 @@ class Controller(object):
             self.notify_observer()
         
 
-    def do_recognize_face(self):
-        
+    def do_recognize_face(self):        
         """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
         if len(self.id_infos_dict) >= 3:
+            too_little = filter(lambda c: c < 101, [v[self.t_sets.KEY_SUM_IMGS] for v in self.id_infos_dict.values()])
+            if too_little: 
+                print 'Ein Trainingset enthält zu wenig Bilder.'
+                
             # Facedetection
             similar = self.fr.get_similar(self.face)
             if similar < 0.7:
