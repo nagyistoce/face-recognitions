@@ -6,7 +6,7 @@ import logging as log
 import numpy as np
 import numpy.linalg as la
 import cv2
-#np.set_printoptions(threshold=np.nan)
+np.set_printoptions(threshold=np.nan)
 
 
 
@@ -36,7 +36,6 @@ class FaceRecognizer(object):
         self.projections = []
         # Liste von Bildern Matrizen werden umgeformt zu ein Matrix mit ein Image pro Zeile
         face_images = self.face_images_as_rows(face_images)
-        print face_images.shape
         #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
         [self.eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
         #Berechne Eigenvektoren eig_vec_lda mit LDA
@@ -94,17 +93,6 @@ class FaceRecognizer(object):
         mean = face_images.mean(axis=0)
         face_images = face_images - mean
         [eigenvectors, eigenvalues, var] = la.svd(face_images.T, full_matrices = False)
-        #Alternativen Berechnung
-#         if n>d:
-#             C = np.dot(face_images.T,face_images)
-#             [eigenvalues,eigenvectors] = np.linalg.eigh(C)
-#         else:
-#             C = np.dot(face_images,face_images.T)
-#             [eigenvalues,eigenvectors] = np.linalg.eigh(C)
-#             eigenvectors = np.dot(face_images.T,eigenvectors)
-#             for i in xrange(n):
-#                 eigenvectors[:,i] = eigenvectors[:,i]/np.linalg.norm(eigenvectors[:,i])
-
         #Sortiere, von eigenwerte abhängig, die eigenwerte und eigenvektoren absteigend 
         sort_eigen = np.argsort(-eigenvalues)
         eigenvectors = eigenvectors[:,sort_eigen]
@@ -113,7 +101,6 @@ class FaceRecognizer(object):
         #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         eigenvectors = eigenvectors[:,:num_comp].copy()
         #eigenvalues = eigenvalues[:num_comp].copy()
-        
         return eigenvectors, mean
 
     def lda(self, face_images, face_ids, num_comp = 0):
@@ -161,7 +148,9 @@ class FaceRecognizer(object):
         """ Errechnet den Kosinus Distanz zweier Projektion Matrizen """
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
-        return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
+        d = (np.dot(p,q)/(la.norm(p)*la.norm(q)))
+        #print d
+        return 1-d
 
     def get_similar(self,unknown_face):
         """Errechnet die Ähnlichkeit einer rekonstruierter Gesicht mit den unbekannter Gesicht mit den L2Error """
