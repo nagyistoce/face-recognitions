@@ -224,7 +224,8 @@ class GUI(QtGui.QMainWindow):
             self.button_who_i_am.setChecked(False)
             button_msg = QtGui.QMessageBox(icon=QtGui.QMessageBox.Warning)
             button_msg.setText(u"Aktuell kenne ich noch kein Gesicht\n\n"
-                               "Bitte mach uns zuerst bekannt, damit ich Dich wieder erkennen kann.")
+                               "Bitte gib Deinen Namen und ID ein und mache uns zuerst bekannt, "
+                               "damit ich Dich wieder erkennen kann.")
             if button_msg.exec_() == QtGui.QMessageBox.Abort:
                 return
     
