@@ -55,7 +55,8 @@ class FaceDetector(object):
         assert(self.img.shape[2] == 3)
         # bereitet Bild fuer Gesichtserkennung vor
         # Konvertiert Bild zu ein Grauwertbild
-        g_img = cv2.cvtColor(self.img, cv2.COLOR_RGB2GRAY)
+        
+        g_img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         # skaliert das Bild runter auf eine Breite von 320, falls Bild grösser ist als 320
         DETECTION_WIDTH = 320
         scale = self.img.shape[1] / float(DETECTION_WIDTH)
@@ -99,7 +100,7 @@ class FaceDetector(object):
         EYE_SY=0.17
         EYE_SW=0.37
         EYE_SH=0.36
-        g_face = cv2.cvtColor(face,cv2.COLOR_RGB2GRAY)
+        g_face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
         # Rechtes und linkes Augenbereich
         left_x=int(face.shape[0]*EYE_SX +0.5)
         top_y=int(face.shape[1]*EYE_SY +0.5)
@@ -180,11 +181,18 @@ class FacePreprocessor(object):
         """Fuehrt Transformation, Histogrammausgleich, Weichzeichnungsfilter und Cropping des Gesichtes durch und setzt ein ellyptischer Mask auf."""
         self.lefteye_center = lefteye_center
         self.righteye_center = righteye_center
-        self.face = cv2.cvtColor(face,cv2.COLOR_RGB2GRAY)
+        face=cv2.cvtColor(face, cv2.COLOR_RGB2BGR)
+        #cv2.imwrite('original.png', face)
+        self.face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+        #cv2.imwrite('grayscale.png', self.face)
         self.gTransform()
+        #cv2.imwrite('gTransform.png', self.fpp_result)
         self.allHistEqual()
+        #cv2.imwrite('histogramm _ausgleich.png', self.fpp_result)
         self.fpp_result = cv2.bilateralFilter(self.fpp_result,d=0,sigmaColor=20.0, sigmaSpace=2.0)
+        #cv2.imwrite('smoothing.png', self.fpp_result)
         self.ellipMask()
+        #cv2.imwrite('elliptischer_maske.png', self.fpp_result)
         return self.fpp_result
     
     def gTransform(self):

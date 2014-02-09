@@ -31,7 +31,7 @@ class FaceRecognizer(object):
         self.num_comp = 0
         self.W = []
         self.eig_vec_pca = []
-        self.mu = None
+        self.mean = None
         self.threshold = np.finfo('float').max
         self.projections = []
     def trainFisherFaces(self, face_ids, face_images):
@@ -43,15 +43,17 @@ class FaceRecognizer(object):
         # Liste von Bildern Matrizen werden umgeformt zu ein Matrix mit ein Image pro Zeile
         face_images = self.face_images_as_rows(face_images)
         #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
-        [self.eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
+        [self.eig_vec_pca, self.mean] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
         #Berechne Eigenvektoren eig_vec_lda mit LDA
-        self.eig_vec_lda = self.lda(self.project(face_images,self.eig_vec_pca, self.mu), self.face_ids, self.num_comp)
+        self.eig_vec_lda = self.lda(self.project(face_images,self.eig_vec_pca, self.mean), self.face_ids, self.num_comp)
         
         #Tranformations Matrix W, der ein Image Sample in ein (c-1) Dimensionen Space projeziert wird berechnet
         self.W = np.asmatrix(np.dot(self.eig_vec_pca, self.eig_vec_lda))
         #Jedes Bild wird projeziert und die Projektion wird zu eine Liste Projektionen hinzugefügt
         for fi in face_images:
-            self.projections.append(self.project(fi.reshape(1,-1),self.W,self.mu))
+            self.projections.append(self.project(fi.reshape(1,-1),self.W,self.mean))
+        #Eigenvektoren und Rekonstruktion ausführen
+        #self.form(face_images)
             
     def predict(self,unknown_face):
         """Bekommt das zu testende vorbearbeitete Gesichtsbild und gleicht es mit der Datenbank ab.
@@ -64,7 +66,7 @@ class FaceRecognizer(object):
         min_dist = max_dist
 
         #Unbekannter Gesicht wird in unser Projectionsmatrix projeziert
-        unknown_face = self.project(unknown_face.reshape(1,-1), self.W, self.mu)        
+        unknown_face = self.project(unknown_face.reshape(1,-1), self.W, self.mean)        
         #der am nähesten Nachbar, wird berechnet, 
         #in dem die kurzeste Distanz aus die Projektionen,basiert auf den euklidischen Distanz, berechnet wird
         for p in range(len(self.projections)):
@@ -143,6 +145,7 @@ class FaceRecognizer(object):
 #                 l.append(False)
 #         print False in l
 #         print eigenvectors[0], eigenvalues[0]
+#    eigentlich np.dot(e.H,e) == np.dot(e,e.H)
         #scipy: [eigenvalues, eigenvectors] = la.eig(sb, sw+sb)
         #[eigenvalues, eigenvectors] = las.eig(sb,sw+sb)
         
@@ -180,8 +183,8 @@ class FaceRecognizer(object):
     
     def reconstruct_face(self,face):
         """ Rekonstruiert ein Gesicht mit den Eigenvektoren von den PCA Algorithmus """
-        p = self.project(face.reshape(1,-1),self.eig_vec_pca, self.mu)
-        r = self.reconstruct(p, self.eig_vec_pca, self.mu)
+        p = self.project(face.reshape(1,-1),self.eig_vec_pca, self.mean)
+        r = self.reconstruct(p, self.eig_vec_pca, self.mean)
         r = r.reshape(face.shape)
         return np.asmatrix(r, dtype = np.uint8)
     
@@ -191,16 +194,48 @@ class FaceRecognizer(object):
             return np.dot(projection, W.T)
         return np.dot(projection, W.T)+u
     
-    def form_eigen_face(self,average_face,face_size):
-        """Unbenutzte Methode, soll Eigenface zu Graustufenbilder umformen"""
-        correct_form = average_face[:].reshape(face_size)
+    def form_gray_face(self,average_face):
+        """Unbenutzte Methode, soll average_face zu Graustufenbilder umformen"""
+        correct_form = average_face[:].reshape(70,70)
         minP = float(np.min(correct_form))
         maxP = float(np.max(correct_form))
         correct_form = correct_form-minP
         correct_form = correct_form/(maxP-minP)
-        correct_form =255* correct_form
-        #correct_form =255* ((correct_form-minP)/(maxP-minP))
         correct_form = np.asmatrix(correct_form, dtype=np.uint8)
-#         cv2.namedWindow('averageface')
-#         cv2.imshow('averageface', correct_form)
         return correct_form
+    def form(self,face_images):
+        """Unbenutzte Method, verbildlicht die ersten 16 Eigenvektoren von PCA und Rekonstruktion von PCA
+        und die Eigenvectoren von Fisherface und Rekonstruktion von Fisherface"""
+        count = 1
+        #Fisherfaces Eigenvektors
+        for i in xrange(min(self.W.shape[1], 16)):
+            w_row = self.W[:,i].reshape(face_images[0].shape)
+            ff = self.form_gray_face(w_row)
+            cv2.imwrite("fisherface"+str(count)+".png",ff)
+            count +=1
+        #Fisherfaces Eekonstruktion
+        for i in xrange(min(self.W.shape[1], 16)):
+            if i != 10:
+                w_row = self.W[:,i].reshape(-1,1)
+                projection = self.project(face_images[10].reshape(1,-1), w_row,self.mean)
+                reconstruct = self.reconstruct(projection,w_row, self.mean)
+                reconstruct = reconstruct.reshape(face_images[0].shape)
+                ff = self.form_gray_face(reconstruct)
+                cv2.imwrite("fisherface"+str(count)+".png",ff)
+                count +=1
+        #Eigenfaces Eigenvektors
+        for i in xrange(min(len(face_images), 16)):
+            w_row = self.eig_vec_pca[:,i].reshape(face_images[0].shape)
+            ff = self.form_gray_face(w_row)
+            cv2.imwrite("eigenface"+str(count)+".png",ff)
+            count +=1
+        #Eigenfaces Rekonstruktion
+        steps=[i for i in xrange(0, min(len(face_images), 320), 20)]
+        for i in xrange(min(len(steps), 16)):
+                n = steps[i]
+                projection = self.project(face_images[10].reshape(1,-1), self.eig_vec_pca[:,0:n],self.mean)
+                reconstruct = self.reconstruct(projection,self.eig_vec_pca[:,0:n], self.mean)
+                reconstruct = reconstruct.reshape(face_images[0].shape)
+                ff = self.form_gray_face(reconstruct)
+                cv2.imwrite("eigenface"+str(count)+".png",ff)
+                count +=1
