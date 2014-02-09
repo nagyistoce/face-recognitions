@@ -6,12 +6,6 @@ import logging as log
 import numpy as np
 import numpy.linalg as la
 import cv2
-# TODO: raus oder rein vor Abgabe
-try:
-    import scipy.linalg as las
-except ImportError:
-    log.info('scipy-modul konnte nicht importiert werden.')   
-
 #np.set_printoptions(threshold=np.nan)
 
 
@@ -134,31 +128,14 @@ class FaceRecognizer(object):
             #Innerhalb-Klassen Verteilung
             sw = sw +np.dot((face_i-mean_i).T,(face_i-mean_i))
         e = np.dot(la.inv(sw),sb)
-#         print e.shape
-#         print (e == e.T).all()
-#         l = []
         [eigenvalues, eigenvectors] = la.eig(e)
-#         for i in xrange(e.shape[0]):
-#             if (np.dot(e[:,:], eigenvectors[:,i]) == eigenvalues[i] * e[:,i]).all():
-#                 l.append(True)
-#             else:
-#                 l.append(False)
-#         print False in l
-#         print eigenvectors[0], eigenvalues[0]
-#    eigentlich np.dot(e.H,e) == np.dot(e,e.H)
-        #scipy: [eigenvalues, eigenvectors] = la.eig(sb, sw+sb)
-        #[eigenvalues, eigenvectors] = las.eig(sb,sw+sb)
-        
         #Sortiere von eigenwerte abhängig die eigenwerte und eigenvektoren absteigend 
         sort_eigen = np.argsort(-eigenvalues.real)
         eigenvectors = eigenvectors[:,sort_eigen]
         #eigenvalues = eigenvalues[sort_eigen]
-        #print eigenvectors[0], eigenvalues[0]
         #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         eigenvectors = np.array(eigenvectors[:,:num_comp].real, dtype=np.float32, copy = True)
         #eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
-        #print eigenvectors, eigenvalues
-
         return eigenvectors
 
     def euclidean_distance(self,p,q):
@@ -213,7 +190,7 @@ class FaceRecognizer(object):
             ff = self.form_gray_face(w_row)
             cv2.imwrite("fisherface"+str(count)+".png",ff)
             count +=1
-        #Fisherfaces Eekonstruktion
+        #Fisherfaces Rekonstruktion
         for i in xrange(min(self.W.shape[1], 16)):
             if i != 10:
                 w_row = self.W[:,i].reshape(-1,1)
