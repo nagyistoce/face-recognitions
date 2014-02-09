@@ -14,7 +14,6 @@ Hier ist der Ablauf der Demo, wie wir es präsentieren werden
       # 2 Person legt unter 100 Bilder an - Fehler abfangen und anzeigen
       # zuerst mit 2 Personen - danach - Fehler abfangen
       # danach mit 3 Personen
-
   # *1 Durchgang:* Person erkennen mit Button Anhalten
     # Erkennen von allen 3 Personen --> pseudo Prozent
   # *2 Durchgang:* Personen durchgehend ohne Button_klick erkennen
