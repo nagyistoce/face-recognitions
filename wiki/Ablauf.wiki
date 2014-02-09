@@ -9,8 +9,7 @@ Hier ist der Ablauf der Demo, wie wir es präsentieren werden
   # database: Wurzelpfad über-/angeben
   # main:log.level gewünscht einstellen -> INFO oder CRITICAL
   # Programm-Start
-  # Wer-Bin-Ich Button Klick - Hinweis anzeigen lassen
-   # _im Hintergrund wird Verzeichnis angelegt_
+  # Wer-Bin-Ich Button Klick - Hinweis anzeigen lassen (_im Hintergrund wird Verzeichnis angelegt_)
    # Bekannt-Machen: 1. Person legt über 100 Bilder an
    # Bekannt-Machen: 2. Person legt über 100 Bilder an
   # Wer-Bin-Ich-Button mit nur 2 Personen - Fehler abfangen
