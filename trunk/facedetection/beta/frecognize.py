@@ -45,10 +45,10 @@ class FaceRecognizer(object):
         #Berechne Eigenvektoren eig_vec_pca und Mittelwert mean mit PCA, Nummer von Komponenten muss num_comp = n-c sein
         [self.eig_vec_pca, self.mu] = self.pca(face_images, (face_images.shape[0]-len(np.unique(self.face_ids))))
         #Berechne Eigenvektoren eig_vec_lda mit LDA
-        eig_vec_lda = self.lda(self.project(face_images,self.eig_vec_pca, self.mu), self.face_ids, self.num_comp)
+        self.eig_vec_lda = self.lda(self.project(face_images,self.eig_vec_pca, self.mu), self.face_ids, self.num_comp)
         
         #Tranformations Matrix W, der ein Image Sample in ein (c-1) Dimensionen Space projeziert wird berechnet
-        self.W = np.asmatrix(np.dot(self.eig_vec_pca, eig_vec_lda))
+        self.W = np.asmatrix(np.dot(self.eig_vec_pca, self.eig_vec_lda))
         #Jedes Bild wird projeziert und die Projektion wird zu eine Liste Projektionen hinzugefügt
         for fi in face_images:
             self.projections.append(self.project(fi.reshape(1,-1),self.W,self.mu))
@@ -116,7 +116,7 @@ class FaceRecognizer(object):
         [n,d] = face_images.shape
         if num_comp<=0 or num_comp>(len(c)-1):
             num_comp = len(c)-1
-        
+
         #Errechne der Mittelwert von alle Klassen aus alle Bilder(der Gesicht Image Matrix)
         total_mean = face_images.mean(axis=0)
         sb = np.zeros((d,d), dtype = np.float32)
@@ -131,19 +131,31 @@ class FaceRecognizer(object):
             sb = sb + n * np.dot((mean_i-total_mean).T, (mean_i-total_mean))
             #Innerhalb-Klassen Verteilung
             sw = sw +np.dot((face_i-mean_i).T,(face_i-mean_i))
-        #np.svd kann nicht verwendet werden weil sw und sw nicht umbedingt symmetrische matrixen ergeben 
-        [eigenvalues, eigenvectors] = la.eig(la.inv(sw)*sb)
+        e = np.dot(la.inv(sw),sb)
+#         print e.shape
+#         print (e == e.T).all()
+#         l = []
+        [eigenvalues, eigenvectors] = la.eig(e)
+#         for i in xrange(e.shape[0]):
+#             if (np.dot(e[:,:], eigenvectors[:,i]) == eigenvalues[i] * e[:,i]).all():
+#                 l.append(True)
+#             else:
+#                 l.append(False)
+#         print False in l
+#         print eigenvectors[0], eigenvalues[0]
+        #scipy: [eigenvalues, eigenvectors] = la.eig(sb, sw+sb)
         #[eigenvalues, eigenvectors] = las.eig(sb,sw+sb)
         
         #Sortiere von eigenwerte abhängig die eigenwerte und eigenvektoren absteigend 
         sort_eigen = np.argsort(-eigenvalues.real)
         eigenvectors = eigenvectors[:,sort_eigen]
-        #eigenvalues= eigenvalues[sort_eigen]
-        
+        #eigenvalues = eigenvalues[sort_eigen]
+        #print eigenvectors[0], eigenvalues[0]
         #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         eigenvectors = np.array(eigenvectors[:,:num_comp].real, dtype=np.float32, copy = True)
         #eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
-#         print eigenvectors[0]
+        #print eigenvectors, eigenvalues
+
         return eigenvectors
 
     def euclidean_distance(self,p,q):
@@ -156,6 +168,7 @@ class FaceRecognizer(object):
         """ Errechnet den Kosinus Distanz zweier Projektion Matrizen """
         p = np.asarray(p).flatten()
         q = np.asarray(q).flatten()
+        
         return 1-(np.dot(p,q)/(la.norm(p)*la.norm(q)))
 
     def get_similar(self,unknown_face):
