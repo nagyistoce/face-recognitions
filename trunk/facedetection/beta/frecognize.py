@@ -143,7 +143,7 @@ class FaceRecognizer(object):
         #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         eigenvectors = np.array(eigenvectors[:,:num_comp].real, dtype=np.float32, copy = True)
         #eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
-        print eigenvectors[0]
+#         print eigenvectors[0]
         return eigenvectors
 
     def euclidean_distance(self,p,q):

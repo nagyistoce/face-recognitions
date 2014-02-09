@@ -23,6 +23,10 @@ class Controller(object):
         
         """
         self.NAME_SAVE_FILE = '.save.p'
+        # 3 Zustaende gut, normal, schlecht um z.b. in GUI Textfarbe entsprechend zu setzen
+        self.__GOOD = 1
+        self.__NORMAL = 0
+        self.__BAD = -1
         # dictionary mit Informationen zu den Personen
         self.id_infos_dict = {}
         self.t_sets = db.TrainingSets()
@@ -52,7 +56,9 @@ class Controller(object):
         self.running_save_face = False
         self.observer = []
         # Text der in Info-Zeile der GUI erscheint
-        self._info_text = ''
+        self.info_text = ''
+        # -1, 0, 1 schlecht, normal, gut
+        self.state = self.NORMAL
     
     # Observer Pattern        
     def register_observer(self, obj):
@@ -64,71 +70,85 @@ class Controller(object):
         """Ruft update() aller zu benachritigen Objekte auf"""
         for obj in self.observer:
             obj.update()
-    
+            
+    def started_face_face_recognition(self):
+        """Nur Einmal beim Starten der Training-Set-Aufnahme"""
+        # Check ob genug Trainingsets vorhanden sind
+        if len(self.id_infos_dict) > 2:
+            too_little = []
+            for k, v in self.id_infos_dict.items():
+                sum_imgs = v[self.t_sets.KEY_SUM_IMGS]
+                if sum_imgs < 101:
+                    too_little.append((v[self.t_sets.KEY_NAME], 'id ' + str(k), 'sum: ' + str(sum_imgs)))
+            text = 'Zu wenig Bilder der User: %s' % too_little
+#             self.set_text_and_state(text)
+            log.info(text)
+            
+    def started_save_face(self, face_id, face_name):
+        """Nur Einmal beim Starten der Training-Set-Aufnahme"""
+        face_id = str(face_id)
+        face_name = str(face_name)
+        # Check ob aktueller User neu ist
+        if not self.id_infos_dict.has_key(face_id): #and self.id_infos_dict[face_id].has_key(self.t_sets.KEY_COUNT):
+            self.id_infos_dict[face_id] = {self.t_sets.KEY_NAME : face_name,
+                                               self.t_sets.KEY_COUNT : 0,  #  fuer stat
+                                               self.t_sets.KEY_ID : face_id,
+                                               self.t_sets.KEY_SUM_IMGS : 0}
+            log.info('Neure user angelegt...jetzt dic ', self.id_infos_dict)
+
     def do_save_face(self, face_id, face_name):
-        """Wird ausgefuehrt wenn Training-Set aufgenommen wird also der 'Bekannt-Machen-Button' aktiviert ist."""
-        print 'do save face() ......'
+        """Wird pro Frame ausgefuehrt wenn Training-Set aufgenommen wird also der 'Bekannt-Machen-Button' aktiviert ist."""
         # PyQt Strings in Pythonstrings wandeln
         face_id = str(face_id)
         face_name = str(face_name)
         self.running_save_face = True
         # Test ob ID und UserDict bereits vorhanden
         if self.id_infos_dict.has_key(face_id) and self.id_infos_dict[face_id].has_key(self.t_sets.KEY_COUNT):
-            print 'dict ist da ich zaehle versuche gesicht zu accepten ...'
+            log.debug('dict ist da ich zaehle versuche gesicht zu accepten ...')
             imgs_accepted = self.detect.acceptNewFace(self.face, face_id, face_name)
             if imgs_accepted:
                 self.id_infos_dict[face_id][self.t_sets.KEY_SUM_IMGS] += imgs_accepted
-                info = '%s Bilder der ID: %s gespeichert.' % (self.id_infos_dict[face_id][self.t_sets.KEY_SUM_IMGS], face_id)
-                self.info_text = info                
-                self.notify_observer()
+                sum_imgs = self.id_infos_dict[face_id][self.t_sets.KEY_SUM_IMGS]
+                info = '%s Bilder der ID: %s gespeichert.' % (sum_imgs, face_id)
+                self.set_text_and_state(info, self.GOOD if sum_imgs > 99 else self.BAD)
+#                 self.notify_observer()
                 log.info(info)
-        else: # User ist Neu
-            log.info('Neuer User beim ersten Start, lege neu an ID %s', face_id)
-            self.id_infos_dict[face_id] = {self.t_sets.KEY_NAME : face_name,
-                                           self.t_sets.KEY_COUNT : 0,  #  fuer stat
-                                           self.t_sets.KEY_ID : face_id,
-                                           self.t_sets.KEY_SUM_IMGS : 0}
-            log.info('Neure user angelegt...jetzt dic ', self.id_infos_dict)
-
+        else:
+            log.critical('ID-%s nicht vorhanden beim Versuch Fotos hinzuzufuegen, sollte in started_save_face() angelegt werden.', face_id)
+  
     def do_face_recognition(self):        
-        """Wird ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
+        """Wird pro Frame ausgefuehrt wenn Gesichtswiedererkennung Aktiviert wurde"""
         self.running_face_recognition = True
+        # Check ob genug TrainingSets vorhanden sind
         if len(self.id_infos_dict) >= 3:
-            too_little = filter(lambda c: c < 101, [v[self.t_sets.KEY_SUM_IMGS] for v in self.id_infos_dict.values()])
-            if too_little: 
-                print 'Ein Trainingset enthält zu wenig Bilder.'
-                
-            # Facedetection
             similar = self.fr.get_similar(self.face)
             if similar < 0.7:
                 predicted_face = self.fr.predict(self.face)
                 confidence = (1.0 - min(max(similar,0.0),1.0)) *100
                 # nur IDs ab 0 sind gueltig
                 if predicted_face >= 0:
-                    try:                    
-                        self.info_text = 'Hallo %s! ID-%s confidence: %s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
+                    try:                        
+                        text = 'Hallo %s! ID-%s confidence: %s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
                                                                 predicted_face, confidence)
-                        self.notify_observer()
+                        self.set_text_and_state(text, self.NORMAL)
                         self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_COUNT] += 1
                     except:
                         log.exception('Fehler beim Zugriff auf das Info-Dictionary, auf ID: %s\n'
                                       'Der Key koennte falsch sein oder nicht existieren.\ninfo_dict: %s', str(predicted_face),
                                       self.id_infos_dict)
                 else:
-                    self.info_text = 'Hallo unbekannte Person!'
+                    self.set_text_and_state('Hallo unbekannte Person!', self.NORMAL)
             else:
-                self.info_text = 'Hallo unbekannter Person!'
-            self.notify_observer()
+                self.set_text_and_state('Hallo unbekannte Person!', self.NORMAL)            
     
     def stopped_save_face(self, face_id, face_name):
-        """Neu eingegebene Daten merken und neu anlernen.
+        """Nur einmal beim Beenden einer Bilderserie, neu eingegebene Daten merken und neu anlernen.
         Code der nach dem Beenden des Facerecognition Modus genau einmal ausgefuehrt wird.
         
         """
         self.running_save_face = False                
-        log.info('Beende Training-Set...')
-        
-        # eingegebenen Name und ID aus GUI im Dictionary speichern
+        log.info('Beende Training-Set...')        
+        # User Dict updaten und zaehler zuruecksetzen
         self.id_infos_dict[str(face_id)].update({self.t_sets.KEY_NAME : str(face_name),
                                                  self.t_sets.KEY_COUNT : 0,  # zuruecksetzen fuer stat
                                                  self.t_sets.KEY_ID : str(face_id)})
@@ -141,18 +161,14 @@ class Controller(object):
         if len(face_images)!=0:
             log.info('Trainiere Fisher Faces mit neue Gesichter...')
             self.fr.trainFisherFaces(face_ids, face_images)
-            self.notify_observer()        
-
+            self.notify_observer()
     
     def stopped_face_recognition(self):
-        """Nach beenden des Facerecognition Modus"""
+        """Nur einmal, nach beenden des Facerecognition Modus"""
         # nur einmal bei Beenden der Gesichtserkennung
         log.info('Beende Gesichtserkennung...')
         self.running_face_recognition = False
-        self.info_text = self.print_stat()
-        
-        self.notify_observer()
-        #self.print_stat()
+        self.print_stat()
         # Leeren der gemerkten predicts, damit bei nochmaligem Start die liste Leer ist
         for user in self.id_infos_dict.values():
             user[self.t_sets.KEY_COUNT] = 0
@@ -192,8 +208,7 @@ class Controller(object):
         win_dic = (sorted(self.id_infos_dict.values(), key=lambda d: d[self.t_sets.KEY_COUNT], reverse=True)[0])
         name, face_id, percent = win_dic[self.t_sets.KEY_NAME], win_dic[self.t_sets.KEY_ID], self.get_percentage(total, win_dic[self.t_sets.KEY_COUNT])
         winner_text = 'Du bist %s mit ID: %s und da bin ich zu %s%% sicher =))' % (name, face_id, percent)
-        self.info_text = winner_text
-        self.notify_observer()
+        self.set_text_and_state(winner_text, self.GOOD if percent > float(50) else self.BAD)
         # Konsolen Ausgabe
         s = ['\n' + '-' * 40]
         for k, v in sorted(self.id_infos_dict.items(), key=lambda(k, v): v[self.t_sets.KEY_COUNT], reverse=True):  
@@ -214,7 +229,14 @@ class Controller(object):
             pickle.dump(self.id_infos_dict, open(self.sf, "wb" ))
         except:
             log.exception('Fehler beim Serialisieren des Controllers.')
-            
+    
+    def set_text_and_state(self, text, state=None):
+        """Setzt Info-Text und Status, benachrichtigt anschliessend die Observer"""
+        if state:
+            self.state = state
+        self.info_text = text        
+        self.notify_observer()
+        
     def get_sum_of_users(self):
         return len(self.id_infos_dict)
     
@@ -229,11 +251,12 @@ class Controller(object):
             log.exception('Unerwarteter Fehler beim Berrechnen des Prozentanteils.')
         return percent
     
-    # Properties fuer info_text
-    def get_info_text(self):
-        return self._info_text    
-    def set_info_text(self, value):
-        self._info_text = value        
-    def del_info_text(self):
-        del self._info_text
-    info_text = property(get_info_text, set_info_text, del_info_text, "Info-Text der in GUI-Ausgabezeile erscheint.")
+    @property
+    def GOOD(self):
+        return self.__GOOD
+    @property
+    def NORMAL(self):
+        return self.__NORMAL
+    @property
+    def BAD(self):
+        return self.__BAD
