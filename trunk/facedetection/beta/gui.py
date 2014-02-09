@@ -171,17 +171,16 @@ class GUI(QtGui.QMainWindow):
     def clicked_get_known(self):
         """Aendert 'Bekannt-Machen-Button'-Text und Wird einmal pro Klick auf  ausgefuehrt"""
         log.info('Training-Set: %s', self.button_do_train.isChecked())
-        self.set_color_output_color('black')
+#         self.set_color_output_color('black')
         # Abfangen dass Facedetection Button gleichzeitig gedrueckt ist
         if self.button_who_i_am.isChecked():
             self.button_do_train.setChecked(False)
             log.error('Bitte erst Gesichtserkennung beenden!')
             return
         # Bekannt-Machen-Button wurde erfolgreich aktiviert
-        if self.button_do_train.isChecked():
-            face_id = self.text_id.text()
-            face_name = self.text_name.text()
-            self.video.controller.started_save_face(face_id, face_name)
+        face_id = self.text_id.text()
+        face_name = self.text_name.text()
+        if self.button_do_train.isChecked() and self.video.controller.started_save_face(face_id, face_name):
             self.button_do_train.setText("Anhalten")
             self.video.save_face = True  
             # Usereingaben verarbeiten     
@@ -190,7 +189,6 @@ class GUI(QtGui.QMainWindow):
             
         # Bekannt-Machen-Button wurde erfolgreich deaktiviert
         else: #  !self.button_do_train.isChecked()
-            self.set_color_output_color('green')
             self.button_do_train.setText("Bekannt machen")
             self.video.save_face = False
 

@@ -19,7 +19,9 @@ class TrainingSets(object):
     def __init__(self, path=None):
         log.debug('instanziiere TrainingSets()')
         path = '~/Dropbox/FACERECOGNITION/_TRAINING_SETS_' if path is None else path
+#         path = os.path.join(os.getcwd(),'_TRAINING_SETS_') if path is None else path
         self.path = os.path.expanduser(path)
+        log.info('Der Wurzelpfad der TrainingSets: %s', self.path)
         self.extensions = ['.jpg', '.JPG', '.png', '.PNG']
         self.delimiter = '_'
         # Readonly Properties, Keys fuer das Dictionary

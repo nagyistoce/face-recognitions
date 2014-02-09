@@ -89,12 +89,19 @@ class Controller(object):
         face_id = str(face_id)
         face_name = str(face_name)
         # Check ob aktueller User neu ist
+        if face_id in ['', 'ID']:
+            text = 'ID nicht gueltig. Vergeben sind IDs: %s' % ','.join(self.id_infos_dict.keys())
+            log.info(text)
+            self.set_text_and_state(text, self.BAD)
+            return False
+        self.state = self.GOOD 
         if not self.id_infos_dict.has_key(face_id): #and self.id_infos_dict[face_id].has_key(self.t_sets.KEY_COUNT):
             self.id_infos_dict[face_id] = {self.t_sets.KEY_NAME : face_name,
                                                self.t_sets.KEY_COUNT : 0,  #  fuer stat
                                                self.t_sets.KEY_ID : face_id,
                                                self.t_sets.KEY_SUM_IMGS : 0}
-            log.info('Neure user angelegt...jetzt dic ', self.id_infos_dict)
+            log.info('Neuer user angelegt...jetzt dic ', self.id_infos_dict)
+        return True
 
     def do_save_face(self, face_id, face_name):
         """Wird pro Frame ausgefuehrt wenn Training-Set aufgenommen wird also der 'Bekannt-Machen-Button' aktiviert ist."""
@@ -128,6 +135,7 @@ class Controller(object):
                 # nur IDs ab 0 sind gueltig
                 if predicted_face >= 0:
                     try:                        
+                        self.state = self.NORMAL
                         text = 'Hallo %s! ID-%s confidence: %s %% =)' % (self.id_infos_dict[str(predicted_face)][self.t_sets.KEY_NAME],
                                                                 predicted_face, confidence)
                         self.set_text_and_state(text, self.NORMAL)
@@ -217,7 +225,9 @@ class Controller(object):
             s.append('Predicts: ID: %s    %sx => %s%%' % (k, count, percentage))
         s.append('total: %s' %total)
         s.append('-' * 40 + '\n')
-        log.info('\n'.join(s))
+        text = '\n'.join(s)
+        print text
+        #log.info(text)
         return winner_text
     
     def on_close(self):
