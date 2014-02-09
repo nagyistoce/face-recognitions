@@ -17,7 +17,7 @@ class TrainingSets(object):
      
     """
     def __init__(self, path=None):
-        print 'instanziiere ts()'
+        log.debug('instanziiere TrainingSets()')
         path = '~/Dropbox/FACERECOGNITION/_TRAINING_SETS_' if path is None else path
         self.path = os.path.expanduser(path)
         self.extensions = ['.jpg', '.JPG', '.png', '.PNG']
@@ -33,16 +33,17 @@ class TrainingSets(object):
 
     def get_id_infos_dict(self, dic = None):
         """Gibt Dictionary mit IDs als Key zurueck, merged uebergebenes dict mit den Infos von Platte.
+        
+        return -> id_infos_dict {id = {'self.KEY_NAME'='username', 'self.KEY_COUNT'=0,
+                                        self.KEY_ID:0, self.KEY_SUM_IMGS:0}, ... }
+                                        
         Bitte nur sparsam verwenden -> weil teure Dateizugriffe.
         Uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
         IDs die nur im uebergebenen dic enthalten sind werden komplett entfernt 
         wenn kein passendes Training-Set auf Platte vorliegt.
-
-        return -> id_infos_dict {id = {'self.KEY_NAME'='username', 'self.KEY_COUNT'=0,
-                                        self.KEY_ID:0, self.KEY_SUM_IMGS:0}, ... }
         
         """
-        print 'get_id_infos_dict()...'
+        log.info('Sicherungsdatei und HDD Inhalt zusammenfuehren...')
         join = os.path.join
         dic = {} if dic == None else dic
         assert(isinstance(dic, dict))
@@ -74,7 +75,7 @@ class TrainingSets(object):
             log.debug('Alle IDs von Platte: gelesen %s', map(int,hdd))
         except:
             log.exception('Fehler beim erstellen des Info-Dictionary anhand der Ordnernamen.')
-        log.debug('das dict nach allen ops %s', dic)
+        log.debug('das dict nach allen Operationen: %s', dic)
         self.id_infos_dict = dic
         return dic
 
@@ -115,7 +116,6 @@ class TrainingSets(object):
         return -> ['path/toid1', 'path/toid2', ...]
         """
         dirs = []
-        print "Database: ", dirs
         join = os.path.join
         try:
             for folder in [f for f in os.listdir(self.path) if os.path.isdir(join(self.path,f))]:
@@ -204,8 +204,6 @@ class TrainingSets(object):
 
     def get_all_faces(self):
         """Einlesen der Gesichtsbilder von Platte mit zuordnung der jeweiligen ID durch 2 Listen."""
-        
-        print "get_all_face"
         face_images, face_ids = [], []
        
         for dirname, dirnames, filenames in os.walk(self.path):
@@ -216,8 +214,7 @@ class TrainingSets(object):
                     face_images, number = self.get_faces(id_path, face_images)
                     face_ids.extend([face_id] * number)
                 else:
-                    log.info('Ueberspringe den Ordner: %s da er keine gueltige ID darstellt.', subdirname)
-  
+                    log.info('Ueberspringe den Ordner: %s da er keine gueltige ID darstellt.', subdirname)  
         return face_images, face_ids
        
     @property
@@ -232,12 +229,3 @@ class TrainingSets(object):
     @property
     def KEY_SUM_IMGS(self):
         return self.__KEY_SUM_IMGS
-    
-# if __name__ == '__main__':
-#     log.basicConfig(format='%(levelname)s: %(message)s', level=log.DEBUG)
-#     ts = TrainingSets()
-#     ts.get_id_and_names()
-#     print 'ts empty ',ts.trainings_set_is_empty()
-#     print 'bidler empty ', ts.bilder_is_empty()
-# #     ts.trainings_set_is_empty()
-    

@@ -89,16 +89,13 @@ class GUI(QtGui.QMainWindow):
         widget.setLayout(v_parent_layout)
         # QLabel als Videoframe Container
         self.video_label = QtGui.QLabel("Videobild")
-        v_parent_layout.addWidget(self.video_label)
-
-        
+        v_parent_layout.addWidget(self.video_label)        
         # Ausgabe Textfeld
         self.text_output = QtGui.QLineEdit(u"Pfüet Di! Wenn Du mich zum ersten mal startest mach mir bitte Dein Gesicht bekannt.", self)
         Qt.QObject.connect(self.text_output, Qt.SIGNAL('textChanged(const QString&)'), self.on_text_name)
         self.text_output.setMinimumHeight(40)
-        v_parent_layout.addWidget(self.text_output)
-       
-       # Wer-Bin-Ich-Button
+        v_parent_layout.addWidget(self.text_output)       
+        # Wer-Bin-Ich-Button
         self.button_who_i_am = QtGui.QPushButton("Wer-Bin-Ich?", self)
         self.button_who_i_am.setCheckable(True)
         palette = QtGui.QPalette()
@@ -107,7 +104,6 @@ class GUI(QtGui.QMainWindow):
         Qt.QObject.connect(self.button_who_i_am, Qt.SIGNAL('clicked()'), self.clicked_who_i_am)
         self.button_who_i_am.setMinimumHeight(self.BUTTON_HEIGHT_BIG)
         v_parent_layout.addWidget(self.button_who_i_am)
-        
         # SubLayout fuer Textfelder nebeneinander
         h_line_layout_text = QtGui.QHBoxLayout()
         v_parent_layout.addLayout(h_line_layout_text)
@@ -152,13 +148,16 @@ class GUI(QtGui.QMainWindow):
     # Observer Pattern
     def update(self):
         """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
-        # Schreibt Text in Output Zeile der GUI
+        # OutputText je nach Systemstatus setzen
+        state = self.video.controller.state
+        if state < 0:
+            self.set_color_output_color('red')
+        elif state == 0:
+            self.set_color_output_color('black')
+        elif state > 0:
+            self.set_color_output_color('green')
         self.text_output.setText(self.video.controller.info_text)
-        if self.video.controller.get_sum_of_users() > 2:
-            # TODO checken wird oft aufgerufen!! print ' habe ich mehr als 3 Tsets'
-            log.debug('update und mehr als 2 user... setze btn text wer bin ich neu')
-            self.button_who_i_am.setText('Wer-Bin-Ich')
-        
+
     def play(self):
         """Zum stetig wiederholtem Aufrufen um Kamerabild zu aktualisieren"""
         try:
@@ -179,13 +178,16 @@ class GUI(QtGui.QMainWindow):
             log.error('Bitte erst Gesichtserkennung beenden!')
             return
         # Bekannt-Machen-Button wurde erfolgreich aktiviert
-        if self.button_do_train.isChecked(): 
+        if self.button_do_train.isChecked():
+            face_id = self.text_id.text()
+            face_name = self.text_name.text()
+            self.video.controller.started_save_face(face_id, face_name)
             self.button_do_train.setText("Anhalten")
             self.video.save_face = True  
             # Usereingaben verarbeiten     
-            self.video.face_id = self.text_id.text()
-            self.video.face_name = self.text_name.text()
-            self.video.controller.started_save_face()            
+            self.video.face_id = face_id #self.text_id.text()
+            self.video.face_name = face_name # self.text_name.text()
+            
         # Bekannt-Machen-Button wurde erfolgreich deaktiviert
         else: #  !self.button_do_train.isChecked()
             self.set_color_output_color('green')
@@ -205,21 +207,22 @@ class GUI(QtGui.QMainWindow):
             # Check ob genug Trainingsets vorhanden sind min: 3
             if self.video.controller.get_sum_of_users() > 2:
                 # Wenn Erfolgreich Wer-Bin-Ich aktiviert
-                if self.button_who_i_am.isChecked():                    
+                if self.button_who_i_am.isChecked():
+                    self.video.controller.started_face_face_recognition()        
                     self.button_who_i_am.setText("Anhalten")
                     self.video.recognize_face = True
                     self.video.face_id = self.text_id.text()    
                 # Erfolgreich Wer-Bin-Ich deaktiviert
                 else: #  !self.button_who_i_am.isChecked()
-#                     self.set_color_output_color('green')
                     self.button_who_i_am.setText("Wer-Bin-Ich?")
                     self.video.recognize_face = False
-                    # self.video.recognize_face_stopped = True
             # Weniger als 3 TrainingSets erkannt
             else: # self.video.controller.get_sum_of_users() < 3:
                 self.set_color_output_color('red')
                 self.button_who_i_am.setChecked(False)
-                msg = "Nicht genug Personen bekannt! Minimum: 3"
+                length = len(self.video.controller.id_infos_dict)
+                msg = "Ich kenne nur %s! Minimum sind 3 damit ich arbeiten kann =)" % \
+                        ('eine Person' if length == 1 else str(length) + ' Personen')
                 self.text_output.setText(msg)
                 self.video.recognize_face = False
         # Garkeine TrainingSets vorhanden
