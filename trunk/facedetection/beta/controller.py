@@ -79,10 +79,10 @@ class Controller(object):
             for k, v in self.id_infos_dict.items():
                 sum_imgs = v[self.t_sets.KEY_SUM_IMGS]
                 if sum_imgs < 101:
+                    f_id, u_name, imgs = v[self.t_sets.KEY_NAME], k, sum_imgs
                     too_little.append((v[self.t_sets.KEY_NAME], 'id ' + str(k), 'sum: ' + str(sum_imgs)))
-            text = 'Zu wenig Bilder der User: %s' % too_little
+                    log.info('Zu wenig Bilder des Users: %s mit ID: %s und %s Bildern', f_id, u_name, imgs)
 #             self.set_text_and_state(text)
-            log.info(text)
             
     def started_save_face(self, face_id, face_name):
         """Nur Einmal beim Starten der Training-Set-Aufnahme"""
