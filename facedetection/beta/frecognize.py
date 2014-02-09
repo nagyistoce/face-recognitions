@@ -6,6 +6,12 @@ import logging as log
 import numpy as np
 import numpy.linalg as la
 import cv2
+# TODO: raus oder rein vor Abgabe
+try:
+    import scipy.linalg as las
+except ImportError:
+    log.info('scipy-modul konnte nicht importiert werden.')   
+
 #np.set_printoptions(threshold=np.nan)
 
 
@@ -127,6 +133,8 @@ class FaceRecognizer(object):
             sw = sw +np.dot((face_i-mean_i).T,(face_i-mean_i))
         #np.svd kann nicht verwendet werden weil sw und sw nicht umbedingt symmetrische matrixen ergeben 
         [eigenvalues, eigenvectors] = la.eig(la.inv(sw)*sb)
+        #[eigenvalues, eigenvectors] = las.eig(sb,sw+sb)
+        
         #Sortiere von eigenwerte abhängig die eigenwerte und eigenvektoren absteigend 
         sort_eigen = np.argsort(-eigenvalues.real)
         eigenvectors = eigenvectors[:,sort_eigen]
@@ -135,6 +143,7 @@ class FaceRecognizer(object):
         #Schneide Eigenvektoren ab Anzahl von Komponenten ab, wollen nur non-null comp haben
         eigenvectors = np.array(eigenvectors[:,:num_comp].real, dtype=np.float32, copy = True)
         #eigenvalues = np.array(eigenvalues[:num_comp].real, dtype=np.float32, copy = True)
+        print eigenvectors[0]
         return eigenvectors
 
     def euclidean_distance(self,p,q):
