@@ -6,7 +6,6 @@ Die Klasse TrainingSets stelt Werkzeug-Methoden bereit, sie ist kein Singleton u
 """
 import os
 import errno
-import sys
 import datetime
 import logging as log
 
@@ -17,16 +16,13 @@ class TrainingSets(object):
     Sie haelt selbst keine Daten und dient nur als Werkzeug.
      
     """
-    def __init__(self, path='~/Dropbox/FACERECOGNITION/_TRAINING_SETS_'):
+    def __init__(self, path=None):
         print 'instanziiere ts()'
+        path = '~/Dropbox/FACERECOGNITION/_TRAINING_SETS_' if path is None else path
         self.path = os.path.expanduser(path)
         self.extensions = ['.jpg', '.JPG', '.png', '.PNG']
         self.delimiter = '_'
         # Readonly Properties, Keys fuer das Dictionary
-#         self.KEY_SUM_IMGS = 'sum_imgs'
-#         self.KEY_ID = 'id'
-#         self.KEY_NAME = 'name'
-#         self.KEY_COUNT = 'count_predict'
         self.__KEY_SUM_IMGS = 'sum_imgs'
         self.__KEY_ID = 'id'
         self.__KEY_NAME = 'name'
@@ -36,12 +32,14 @@ class TrainingSets(object):
         self.id_infos_dict = {} # erst bei Nutzung initialisieren da teure Dateizugriffe!
 
     def get_id_infos_dict(self, dic = None):
-        """Gibt Dictionary mit IDs als Key zurueck, merged uebergebenes dict mit den Infos von Platte. 
+        """Gibt Dictionary mit IDs als Key zurueck, merged uebergebenes dict mit den Infos von Platte.
+        Bitte nur sparsam verwenden -> weil teure Dateizugriffe.
         Uebergebene Namen, werden von denen die hier von Platte gelesen werden ueberschrieben!
-        IDs die nur im uebergebenen dic enthalten sind werden komplett entfernt wenn kein passendes Training-Set 
-        auf Platte vorliegt.
+        IDs die nur im uebergebenen dic enthalten sind werden komplett entfernt 
+        wenn kein passendes Training-Set auf Platte vorliegt.
 
-        return -> id_infos_dict {id = {'self.KEY_NAME'='Pascal', 'self.KEY_COUNT'=0, self.KEY_ID}, ... }
+        return -> id_infos_dict {id = {'self.KEY_NAME'='username', 'self.KEY_COUNT'=0,
+                                        self.KEY_ID:0, self.KEY_SUM_IMGS:0}, ... }
         
         """
         print 'get_id_infos_dict()...'
@@ -200,9 +198,8 @@ class TrainingSets(object):
             except:
                 log.exception("Nicht erwarteter Fehler beim einlesen der Datei "
                             "%s", img_path)
-        log.info('ID %s: %s Bilder eingelesen', face_id, num_imgs)
-        log.info('Das sind %s Bilder: %s', 'genug' if num_imgs > 99 else 'zu wenig', num_imgs)
-
+        log.info('ID %s: %s Bilder eingelesen. Das sind %s Bilder: %s',
+                 face_id, num_imgs, 'genug' if num_imgs > 99 else 'sehr wenig (<100)', num_imgs)
         return face_images, num_imgs
 
     def get_all_faces(self):

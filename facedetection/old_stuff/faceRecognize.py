@@ -44,7 +44,7 @@ class CameraDevice(QtCore.QObject):
     @paused.setter
     def paused(self, p):
         if p:
-            self._timer.stop()
+            self._timer.recognize_face_stopped()
         else:
             self._timer.start()
 
