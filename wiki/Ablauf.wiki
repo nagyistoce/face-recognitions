@@ -14,7 +14,9 @@ Hier ist der Ablauf der Demo, wie wir es präsentieren werden
    # Bekannt-Machen: 2. Person legt über 100 Bilder an
   # Wer-Bin-Ich-Button mit nur 2 Personen - Fehler abfangen
    # Bekannt-Machen: 3. Person legt über 100 Bilder an
-  # Wer-Bin-Ich-Button mit nur 3 Personen
+    # Wer-Bin-Ich-Button während Bekanntmachung -> Zeigen dass dies nicht zugelassen
+  # Wer-Bin-Ich-Button mit 3 Personen
+   # Bekannt-Machen-Button klicken während Erkennungsmodus -> zeigen dass nicht zugelassen
    # *Durchgang:* 1. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
    # *Durchgang:* 2. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
    # *Durchgang:* 3. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
@@ -32,6 +34,7 @@ Hier ist der Ablauf der Demo, wie wir es präsentieren werden
    * LDA funktioniert erst ab 3 Personen da Classes-1 Eigenvektoren entstehen, was bei 2 Klassen zu einem Skalar führen würde und in bei der Matrixmultiplikation die Matrix auf einen Skalar abbilden würde.
    * Eigenwertproblem -> Lösung?
    * Usability Aspekte bewusst aufgrund Zeitdruck hinten angestellt, Anzahl bilder immer checken etc.
+   * Man kann nicht Trainings-Modus und  Erkennungsmodus gleichzeitig starten.
  
 
 
