@@ -5,8 +5,8 @@
 Hier ist der Ablauf der Demo, wie wir es präsentieren werden
 
   # Programm-Start
-  # Gesicht erkennen Button Klick - Fehler anzeigen lassen
-  # _im Hintergrund wird Verzeichnis angelegt_
+  # Gesicht erkennen Button Klick - Hinweis anzeigen lassen
+   # _im Hintergrund wird Verzeichnis angelegt_
   # Wurzelpfad angeben in database
   # komplett leeren Verzeichnis:
     # Trainings-Set wird angelegt
