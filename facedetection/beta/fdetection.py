@@ -11,6 +11,7 @@ class Haarcascades(object):
     def __init__(self):
         assert(haarcascades.__file__)
         self.haarcascades_xml_path = os.path.split(haarcascades.__file__)[0]
+        print self.haarcascades_xml_path
         self.FRONTAL_FACE_DEFAULT = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_default.xml')
         self.FRONTAL_FACE_ALT2 = os.path.join(self.haarcascades_xml_path, 'haarcascade_frontalface_alt2.xml')
         self.PROFILE_FACE = os.path.join(self.haarcascades_xml_path, 'haarcascade_profileface.xml')
