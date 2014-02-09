@@ -43,10 +43,12 @@ class FaceDetector(object):
         
         
     def detectFace(self, frame):
-        """Sucht nach Gesichtern im Frame (Facedetection), wobei Gesicht und Augen erkannt werden muessen sonst ist 
-        das Gesichtsbild == None.
-        Bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt.
+        """Sucht nach Gesichtern im Frame (Facedetection) und fuehrt Preprocessing durch.
+        
         return -> (Bearbeiteter Kamera-Frame, Gesichtsbild) 
+        
+        Gesicht und Augen muessen erkannt werden sonst ist das Gesichtsbild == None.
+        Bei Erfolg wird das Gesichts-Preprocessing durchgefuehrt.
         
         """        
         self.img = frame.copy()

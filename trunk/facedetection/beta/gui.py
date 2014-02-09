@@ -5,6 +5,7 @@ Video-Bild-Konvertierungen für PyQt Support.
  
 """
 import logging as log
+
 from PyQt4 import Qt, QtCore, QtGui
 import numpy as np
 import cv2
@@ -13,20 +14,20 @@ import controller as c
 import database as db
 
 
-
 class Video():
     """Klasse zum konvertieren des Videobilds und bereitstellung des ggf. bearbeiteten Frames"""
-    def __init__(self, webcam, face_id=None, face_name=None, save_face=False, recognize_face=False, recognize_face_stopped=False):
-        
+    def __init__(self, webcam, face_id=None, face_name=None, save_face=False,
+                 recognize_face=False, 
+                 #recognize_face_stopped=False
+                 ):
         self.webcam = webcam
         self.face_id = face_id
         self.face_name = face_name
         self.save_face = save_face
         self.recognize_face = recognize_face
-        self.stop = recognize_face_stopped
+        #self.recognize_face_stopped = recognize_face_stopped
         self.current_frame=np.ndarray([])
-        self.controller = c.Controller()
-        
+        self.__controller = c.Controller()
         self.controller.register_observer(self)
         self.observer = []
      
@@ -62,6 +63,10 @@ class Video():
             return image
         except:
             log.exception("Fehler beim konvertieren des Kamerabildes")
+                
+    @property
+    def controller(self):
+        return self.__controller  
         
 class GUI(QtGui.QMainWindow):
     """PyQt GUI fuer Button-Support und effiziente Kameraansteuerung."""
@@ -70,12 +75,10 @@ class GUI(QtGui.QMainWindow):
         periodischen Ausfuehren der play() Methode
         
         """
+        # GUI Elemente
         self.BUTTON_HEIGHT_DEFAULT = 30
         self.BUTTON_HEIGHT_BIG = 50 
         self.database = db.TrainingSets()
-        #self.controller = c.Controller()
-        #self.fdetection = fd.FaceDetector()
-        
         # Hauptlayout Vertikal-Boxlayout
         QtGui.QWidget.__init__(self, *args)
         # selbst als Vater und Hauptwidget setzen 
@@ -84,11 +87,9 @@ class GUI(QtGui.QMainWindow):
         # vertikales Layout setzen
         v_parent_layout = QtGui.QVBoxLayout()    
         widget.setLayout(v_parent_layout)
-        
         # QLabel als Videoframe Container
         self.video_label = QtGui.QLabel("Videobild")
         v_parent_layout.addWidget(self.video_label)
-        
         # Bedienelemente
         palette = QtGui.QPalette()
         # Ausgabe Textfeld
@@ -100,13 +101,10 @@ class GUI(QtGui.QMainWindow):
         self.button_who_i_am = QtGui.QPushButton("Wer-Bin-Ich?", self)
         self.button_who_i_am.setCheckable(True)
         palette.setColor(self.button_who_i_am.foregroundRole(), Qt.QColor("green"))
-#         self.font_bold = QtGui.QFont("Arial", 55, QtGui.QFont.Bold)
-#         self.button_who_i_am.fontChange(self.font_bold)
         self.button_who_i_am.setPalette(palette)
         Qt.QObject.connect(self.button_who_i_am, Qt.SIGNAL('clicked()'), self.clicked_who_i_am)
         self.button_who_i_am.setMinimumHeight(self.BUTTON_HEIGHT_BIG)
         v_parent_layout.addWidget(self.button_who_i_am)
-        
         # SubLayout fuer Textfelder nebeneinander
         h_line_layout_text = QtGui.QHBoxLayout()
         v_parent_layout.addLayout(h_line_layout_text)
@@ -132,7 +130,6 @@ class GUI(QtGui.QMainWindow):
         Qt.QObject.connect(self.button_quit, Qt.SIGNAL('clicked()'), Qt.qApp,
                            Qt.SLOT('quit()'))
         Qt.QObject.connect(self.button_quit, Qt.SIGNAL('clicked()'), self.on_close)
-                           
         self.button_quit.setMinimumHeight(self.BUTTON_HEIGHT_DEFAULT)
         v_parent_layout.addWidget(self.button_quit)
 
@@ -153,8 +150,8 @@ class GUI(QtGui.QMainWindow):
         """Wird vom Observierten Objekt aufgerufen wenn es sich geandert hat"""
         # Schreibt Text in Output Zeile der GUI
         self.text_output.setText(self.video.controller.info_text)
-        if self.video.controller.get_len() > 2:
-            print 'jetzt habe ich mehr als 3 Tsets'
+        if self.video.controller.get_sum_of_users() > 2:
+           # TODO checken wird oft aufgerufen!! print ' habe ich mehr als 3 Tsets'
             self.button_who_i_am.setText('Wer-Bin-Ich')
         
     def on_input_output(self, text):
@@ -178,58 +175,50 @@ class GUI(QtGui.QMainWindow):
     
     # Button-Callback-Funktionen
     def clicked_do_train(self):
+        """Aendert 'Bekannt-Machen-Button'-Text und Wird einmal pro Klick auf  ausgefuehrt"""
         log.info('Training-Set: %s', self.button_do_train.isChecked())
         # Abfangen dass Facedetection Button gleichzeitig gedrueckt ist
         if self.button_who_i_am.isChecked():
             self.button_do_train.setChecked(False)
             log.error('Bitte erst Gesichtserkennung beenden!')
             return
-        
         if self.button_do_train.isChecked():            
             self.button_do_train.setText("Anhalten")
-            self.video.save_face = True            
+            self.video.save_face = True  
+            # Usereingaben verarbeiten          
             self.video.face_id = self.text_id.text()
             self.video.face_name = self.text_name.text()
-            
-            #self.video.zaheler = 1
-            
-        else: # not button.isChecked()
-            #a = self.fdetection.get_speichern_ok()
-            #print "fdetection Trainingsset-Bilder",a 
-            
+        else: #  !self.button_do_train.isChecked()
             self.button_do_train.setText("Bekannt machen")
             self.video.save_face = False
             
     def on_close(self):
-        """Bei beenden des Programms aufrufen"""
-        log.info('GUI on_close()')
+        """Wird beim Beenden des Programms aufrufen"""
+        log.debug('GUI on_close()')
         self.video.controller.on_close()
           
     def clicked_who_i_am(self):
-        log.info('wer bin ich geklickt: %s', self.button_who_i_am.isChecked())
+        log.debug('wer bin ich geklickt Status: %s', self.button_who_i_am.isChecked())
         # Verhindern dass gleichzeitig 'Train' Button aktiv ist
         if self.button_do_train.isChecked():                            
             self.button_who_i_am.setChecked(False)
-            log.error('Bitte erst Trainings-Modus beenden!')
+            log.info('Bitte erst Trainings-Modus beenden, bevor Erkennung gestartete wird!')
             return
-
         if not self.database.bilder_is_empty():
-            log.info("Komm herein")
-            if self.video.controller.get_len()>=3:
+            if self.video.controller.get_sum_of_users() > 2:
                 if self.button_who_i_am.isChecked():
                     self.button_who_i_am.setText("Anhalten")
                     self.video.recognize_face = True
-                    self.video.face_id = self.text_id.text()
-    
+                    self.video.face_id = self.text_id.text()    
                 else: # not button_who_i_am.isChecked()
                     self.button_who_i_am.setText("Wer-Bin-Ich?")
                     self.video.recognize_face = False
-                    self.video.stop = True
-            else:
+                    # self.video.recognize_face_stopped = True
+            else: # self.video.controller.get_sum_of_users() < 3:
                 self.button_who_i_am.setChecked(False)
-                self.button_who_i_am.setText("Nicht genug Personen im Trainings-Set vorhanden")
+                self.button_who_i_am.setText("Nicht genug Personen im Trainings-Set vorhanden. Minimum: 3")
                 self.video.recognize_face = False
-                self.video.stop = True
+                # self.video.recognize_face_stopped = True
         else: # database.bilder_is_empty()            
             self.button_who_i_am.setChecked(False)
             button_msg = QtGui.QMessageBox(icon=QtGui.QMessageBox.Warning)
