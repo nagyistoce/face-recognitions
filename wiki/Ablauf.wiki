@@ -4,26 +4,28 @@
 
 Hier ist der Ablauf der Demo, wie wir es präsentieren werden
 
+  # Wurzelpfad-Ordner löschen
+  # Dropbox abschalten
+  # database: Wurzelpfad über-/angeben
+  # main:log.level gewünscht einstellen -> INFO oder CRITICAL
   # Programm-Start
-  # Gesicht erkennen Button Klick - Hinweis anzeigen lassen
+  # Wer-Bin-Ich Button Klick - Hinweis anzeigen lassen
    # _im Hintergrund wird Verzeichnis angelegt_
-  # Wurzelpfad angeben in database
-  # komplett leeren Verzeichnis:
-    # Trainings-Set wird angelegt
-      # 1 Person legt über 100 Bilder an
-      # 2 Person legt unter 100 Bilder an - Fehler abfangen und anzeigen
-      # zuerst mit 2 Personen - danach - Fehler abfangen
-      # danach mit 3 Personen
-  # *1 Durchgang:* Person erkennen mit Button Anhalten
-    # Erkennen von allen 3 Personen --> pseudo Prozent
-  # *2 Durchgang:* Personen durchgehend ohne Button_klick erkennen
-    # pseudo Prozent
-    # nicht wahrheitsentsprechend in der Konsole
-
+   # Bekannt-Machen: 1. Person legt über 100 Bilder an
+   # Bekannt-Machen: 2. Person legt über 100 Bilder an
+  # Wer-Bin-Ich-Button mit nur 2 Personen - Fehler abfangen
+   # Bekannt-Machen: 3. Person legt über 100 Bilder an
+  # Wer-Bin-Ich-Button mit nur 3 Personen
+   # *Durchgang:* 1. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
+   # *Durchgang:* 2. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
+   # *Durchgang:* 3. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
+   # *Durchgang:* Alle Personen durchgehend ohne Button_klick erkennen -> *pseudoprozent  nicht wahrheitsentsprechend in der Konsole*
   # Programm beenden
   # Programm Neustart
-    # Durchgang 1 + 2 wiederholen
-  # Schwanecke legt selbst an
+  # Bekannt-Machen (Uli): 4. Person legt über 100 Bilder an
+   # *Durchgang:* 4. Person erkennen mit _-> Button Anhalten_ -> pseudoprozent
+   # *Durchgang:* Alle Personen durchgehend ohne Button_klick erkennen -> *pseudoprozent  nicht wahrheitsentsprechend in der Konsole*
+
 
 Voraussetzungen
   * Name egal, ID wichtig
